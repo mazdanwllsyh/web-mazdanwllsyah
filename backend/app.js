@@ -19,8 +19,8 @@ import skillsRouter from "./routers/skillsRouter.js";
 import projectRouter from "./routers/projectRouter.js";
 import sertifikatRouter from "./routers/sertifikatRouter.js";
 
-import { noCache } from "./Middleware/noCacheMiddleware.js";
-import { errorHandler, notFound } from "./Middleware/errorMiddleware.js";
+import { noCache } from "./middleware/noCacheMiddleware.js";
+import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 
 import { v2 as cloudinary } from "cloudinary";
 
