@@ -94,7 +94,6 @@ function Hero() {
     if (imageLoaded) {
       setTimeout(() => {
         AOS.refresh();
-        console.log("AOS refreshed in Hero (with delay)");
       }, 100);
     }
   }, [imageLoaded]);

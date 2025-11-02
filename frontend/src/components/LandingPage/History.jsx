@@ -12,7 +12,6 @@ function History() {
     if (!loading) {
       setTimeout(() => {
         AOS.refresh();
-        console.log("AOS refreshed in History (with delay)");
       }, 100);
     }
   }, [loading]);

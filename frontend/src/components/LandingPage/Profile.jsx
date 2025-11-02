@@ -150,7 +150,7 @@ function Profile() {
         formData.append("password", newPassword);
       }
 
-      const response = await instance.put("/api/users/profile", formData, {
+      const response = await instance.put("/users/profile", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
