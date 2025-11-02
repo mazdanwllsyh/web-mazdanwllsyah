@@ -88,7 +88,7 @@ export const usePagination = (data, config) => {
 
   const PaginationComponent = () =>
     totalPages > 1 ? (
-      <div className="join" data-aos="fade-up">
+      <div className="join">
         <button
           className="join-item btn"
           onClick={goToPrev}
