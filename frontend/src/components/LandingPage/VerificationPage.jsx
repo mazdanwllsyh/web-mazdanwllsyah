@@ -45,7 +45,7 @@ function VerificationPage() {
 
     try {
       // Panggil API /register-verify
-      const response = await instance.post("/api/users/register-verify", {
+      const response = await instance.post("/users/register-verify", {
         email,
         verificationCode: code,
       });
@@ -74,7 +74,7 @@ function VerificationPage() {
     setIsResending(true);
     try {
       // Panggil API /resend-verification
-      const response = await instance.post("/api/users/resend-verification", {
+      const response = await instance.post("/users/resend-verification", {
         email,
       });
       showSuccessSwal("Berhasil Dikirim", response.data.message);

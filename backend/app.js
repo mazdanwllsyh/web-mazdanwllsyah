@@ -52,7 +52,7 @@ app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 
 const allowedOrigins = [
   "http://localhost:5173",
-  // "https://webmazda.bejalen.com" 
+  // "https://mazdaweb.bejalen.com" 
 ];
 
 app.use(
