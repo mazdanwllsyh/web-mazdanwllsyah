@@ -1,0 +1,21 @@
+# =================================================================
+# Monorepo .gitignore(Frontend + Backend)
+# =================================================================
+
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+.DS_Store
+
+/frontend/node_modules
+/frontend/dist
+/frontend/build
+/frontend/.env
+/frontend/.env.*
+/frontend/coverage
+/frontend/.eslintcache
+
+/backend/node_modules
+/backend/.env
