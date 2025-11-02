@@ -1,4 +1,3 @@
-// app.js
 console.log(
   "--- BACKEND BERJALAN PADA ... " + new Date().toISOString() + " ---"
 );
