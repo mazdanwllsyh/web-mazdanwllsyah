@@ -61,7 +61,6 @@ function Gallery() {
   useEffect(() => {
     if (!loading) {
       AOS.refresh();
-      console.log("AOS refreshed in Gallery");
     }
   }, [loading]);
 
