@@ -46,7 +46,7 @@ function Footer() {
     <>
       <footer className="footer py-5 footer-center bg-base-200 text-base-content rounded border-t-2 border-base-300">
         <aside>
-          <p className="text-3xl font-bold font-display">
+          <p className="text-xl font-bold font-display">
             {siteData.brandNameShort}
           </p>
           <p className="font-semibold">{siteData.jobTitle}</p>

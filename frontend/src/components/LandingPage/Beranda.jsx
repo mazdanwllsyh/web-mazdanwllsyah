@@ -10,8 +10,8 @@ function Beranda() {
   return (
     <>
       <SeoHelmet
-        title="Utama - Porto Mazda.N" 
-        description="Portofolio pribadi Mazda Nawallsyah, seorang Mahasiswa Fresh Graduate Universitas Prodi S1 - Teknik Informatika, yang berminat ban berfokus di Bidang Front-End Web Developer."
+        title="Utama - Mazda N" 
+        description="Portofolio pribadi Mazda Nawallsyah, seorang Mahasiswa Fresh Graduate Universitas Prodi S1 - Teknik Informatika, yang berminat dan berfokus di Bidang Front-End Web Developer."
         url="/" 
       />
 
