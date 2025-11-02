@@ -6,7 +6,7 @@ import {
 import {
   protectedMiddleware,
   adminMiddleware,
-} from "../Middleware/authMiddleware.js";
+} from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 

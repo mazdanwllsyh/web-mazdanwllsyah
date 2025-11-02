@@ -9,7 +9,7 @@ import upload from "../utils/upload.js";
 import {
   protectedMiddleware,
   adminMiddleware,
-} from "../Middleware/authMiddleware.js";
+} from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 

@@ -24,8 +24,8 @@ import {
   protectedMiddleware,
   roleMiddleware,
   superAdminMiddleware,
-} from "../Middleware/authMiddleware.js";
-import { noCache } from "../Middleware/noCacheMiddleware.js";
+} from "../middleware/authMiddleware.js";
+import { noCache } from "../middleware/noCacheMiddleware.js";
 import upload from "../utils/upload.js";
 
 const router = express.Router();
