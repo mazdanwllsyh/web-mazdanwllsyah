@@ -105,8 +105,10 @@ app.use((err, req, res, next) => {
 app.use(notFound);
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`app.js Berjalan di port ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`app.js Berjalan di port ${PORT}`);
+  });
+}
 
 export default app;
