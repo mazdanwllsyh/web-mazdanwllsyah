@@ -20,7 +20,7 @@ const UserDashboard = lazy(() =>
 
 const PageTitle = ({ title }) => {
   useEffect(() => {
-    document.title = `${title} | Dashboard`;
+    document.title = `${title} | Dashboard Mazda Nawallsyah`;
   }, [title]);
   return null;
 };
