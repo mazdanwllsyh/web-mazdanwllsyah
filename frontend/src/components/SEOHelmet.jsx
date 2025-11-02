@@ -5,7 +5,7 @@ import { useAppContext } from "../context/AppContext";
 const defaultImageUrl =
   "https://res.cloudinary.com/dk0yjrhvx/image/upload/v1759605657/member_photos/jbsfiyuahppa3nrckdk4.webp";
 
-const siteUrl = "https://webmazda.bejalen.com";
+const siteUrl = "https://mazdaweb.bejalen.com";
 
 function SeoHelmet({ title, description, imageUrl, url }) {
   const { siteData } = useAppContext();
