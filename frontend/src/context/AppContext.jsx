@@ -14,7 +14,7 @@ const darkThemes = [
 
 const initialSiteData = {
   brandName: "webMazda.N",
-  brandNameShort: "MazdaN",
+  brandNameShort: "Mazda Nawallsyah",
   jobTitle: "Front-End Developer",
   location: "Powered by https://bejalen.com",
   contactLinks: {
@@ -34,11 +34,25 @@ const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
   const [theme, setTheme] = useState(() => {
+    
     const storedTheme = localStorage.getItem("theme");
     if (storedTheme) {
       return storedTheme;
     }
-    return "emerald";
+
+    const osPrefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    ).matches;
+
+    const defaultTheme = osPrefersDark ? "night" : "emerald";
+
+    try {
+      localStorage.setItem("theme", defaultTheme);
+    } catch (e) {
+      console.error("Gagal menyimpan tema default ke localStorage", e);
+    }
+
+    return defaultTheme;
   });
 
   const themeMode = lightThemes.includes(theme) ? "light" : "dark";
@@ -101,7 +115,7 @@ export const AppProvider = ({ children }) => {
           "Content-Type": "multipart/form-data",
         },
       });
-      setSiteData(response.data); 
+      setSiteData(response.data);
       return response.data;
     } catch (error) {
       console.error("Gagal upload gambar:", error);
@@ -116,7 +130,7 @@ export const AppProvider = ({ children }) => {
           "Content-Type": "multipart/form-data",
         },
       });
-      setSiteData(response.data); 
+      setSiteData(response.data);
       return response.data;
     } catch (error) {
       console.error("Gagal update gambar:", error);

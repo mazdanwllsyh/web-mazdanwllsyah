@@ -8,28 +8,21 @@
       "sizes": "192x192"
     },
     {
-      "src": "https://res.cloudinary.com/dr7olcn4r/image/upload/c_fill,h_256,w_256/v1761388118/croppedsebelumgembuldanmenjadijawir_cdep6a.png",
-      "type": "image/png",
-      "sizes": "256x256"
-    },
-    {
-      "src": "https://res.cloudinary.com/dr7olcn4r/image/upload/c_fill,h_384,w_384/v1761388118/croppedsebelumgembuldanmenjadijawir_cdep6a.png",
-      "type": "image/png",
-      "sizes": "384x384"
-    },
-    {
       "src": "https://res.cloudinary.com/dr7olcn4r/image/upload/c_fill,h_512,w_512/v1761388118/croppedsebelumgembuldanmenjadijawir_cdep6a.png",
       "type": "image/png",
       "sizes": "512x512"
     },
     {
-      "src": "https://res.cloudinary.com/dr7olcn4r/image/upload/c_fill,h_900,w_900/v1761388118/croppedsebelumgembuldanmenjadijawir_cdep6a.png",
+      "src": "https://res.cloudinary.com/dr7olcn4r/image/upload/c_fill,h_512,w_512/v1761388118/croppedsebelumgembuldanmenjadijawir_cdep6a.png",
       "type": "image/png",
-      "sizes": "900x900"
+      "sizes": "512x512",
+      "purpose": "any maskable" 
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
   "display": "standalone",
-  "theme_color": "#000000FF",
-  "background_color": "#37cdbe"
+  "theme_color": "#37cdbe",
+  "background_color": "#37cdbe",
+  "scope": "/",
+  "description": "Portofolio pribadi Mazda Nawallsyah, seorang Front-End Web Developer."
 }

@@ -1,52 +1,138 @@
 <!DOCTYPE html>
-<html lang="id" data-theme="emerald">
+<html lang="id">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <script>
+      (function () {
+        try {
+          
+          const storedTheme = localStorage.getItem("theme");
+          if (storedTheme) {
+            document.documentElement.setAttribute("data-theme", storedTheme);
+            return;
+          }
+
+          const osPrefersDark = window.matchMedia(
+            "(prefers-color-scheme: dark)"
+          ).matches;
+          
+          const defaultTheme = osPrefersDark ? "synthwave" : "emerald";
+          document.documentElement.setAttribute("data-theme", defaultTheme);
+        } catch (e) {
+          
+          document.documentElement.setAttribute("data-theme", "light");
+        }
+      })();
+    </script>
+
+    <title>Mazda Nawallsyah - Portfolio Front-End Dev</title>
     <meta
       name="description"
-      content="Website Portofolio Mazda Nawallsyah - Newbie Front End Developer."
+      content="Portofolio pribadi Mazda Nawallsyah, seorang Front-End Web Developer yang berfokus pada React, Node.js, dan Tailwind CSS."
     />
+    <meta
+      name="keywords"
+      content="Mazda Nawallsyah, Nawallsyah, G211210082, Frontend Developer, Ambarawa, React, Tailwind, Milord de Rafford, Mas Mas Ambarawa, Mazda Keren, Mazda Bejalen"
+    />
+    <meta name="author" content="Mazda Nawallsyah" />
+    <meta name="robots" content="index, follow" />
+    <meta
+      name="google-site-verification"
+      content="xC078DXDZSS51W4HFcb-md_5jfB-gEW-NRdh5v_mdag"
+    />
+
+    <link rel="canonical" href="https://mazdaweb.bejalen.com/" />
+    <link rel="preconnect" href="https://be-web-mazdanwllsyah.vercel.app" />
+    <link rel="preconnect" href="https://res.cloudinary.com" />
+
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#37cdbe" />
     <link
       rel="icon"
       type="image/png"
       href="https://res.cloudinary.com/dr7olcn4r/image/upload/v1761388118/croppedsebelumgembuldanmenjadijawir_cdep6a.png"
     />
-    <meta name="theme-color" content="#37cdbe" />
-    <meta
-      name="keywords"
-      content="Mazda Nawallsyah, G211210082, Frontend Developer, Ambarawa, React, Tailwind, Milord de Rafford"
-    />
-    <meta name="author" content="Mazda Nawallsyah" />
-    <meta name="robots" content="index, follow" />
-    <link rel="manifest" href="/manifest.json" />
-    <link rel="canonical" href="https://mazdaweb.bejalen.com/" />
-    <meta
-      property="og:image"
-      content="https://res.cloudinary.com/dr7olcn4r/image/upload/v1761387808/gweh_keren_dlvpt1.jpg"
-    />
-    <meta property="og:title" content="Portofolio Mazda Nawallsyah" />
-    <meta
-      property="og:description"
-      content="Website Portofolio Mazda Nawallsyah - Newbie Front End Developer. Menggunakan React, Tailwind CSS, DaisyUI, Vite."
-    />
-    <meta name="google-site-verification" content="xC078DXDZSS51W4HFcb-md_5jfB-gEW-NRdh5v_mdag" />
-    <title>Mazda Nawallsyah - Portfolio</title>
-    <meta property="og:title" content="Mazda Nawallsyah - Web Portofolio" />
     <link
       rel="apple-touch-icon"
-      href="https://res.cloudinary.com/dk0yjrhvx/image/upload/v1759605657/member_photos/jbsfiyuahppa3nrckdk4.webp"
+      href="https://res.cloudinary.com/dr7olcn4r/image/upload/v1761989348/portfolio_profile/portfolio_profile/MazdaN_Profile_Image_1761989345137.webp"
     />
-    <meta property="og:url" content="https://mazdaweb.bejalen.com" />
-    <link
-      rel="shortcut icon"
-      href="https://res.cloudinary.com/dr7olcn4r/image/upload/v1761388118/croppedsebelumgembuldanmenjadijawir_cdep6a.png"
-      type="image/x-icon"
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://mazdaweb.bejalen.com/" />
+    <meta property="og:title" content="Mazda Nawallsyah - Portfolio Web" />
+    <meta
+      property="og:description"
+      content="Portofolio pribadi Mazda Nawallsyah, seorang Newbie Front-End Web Developer."
     />
+    <meta
+      property="og:image"
+      content="https://res.cloudinary.com/dr7olcn4r/image/upload/v1761989348/portfolio_profile/portfolio_profile/MazdaN_Profile_Image_1761989345137.webp"
+    />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://mazdaweb.bejalen.com/" />
+    <meta name="twitter:title" content="Mazda Nawallsyah - Portfolio Web" />
+    <meta
+      name="twitter:description"
+      content="Portofolio pribadi Mazda Nawallsyah, seorang Newbie Front-End Web Developer."
+    />
+    <meta
+      name="twitter:image"
+      content="https://res.cloudinary.com/dr7olcn4r/image/upload/v1761989565/portfolio_profile/portfolio_profile/MazdaN_Profile_Image_1761989561920.webp"
+    />
+
     <script src="https://accounts.google.com/gsi/client" async defer></script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div
+        style="
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          min-height: 100vh;
+          font-family: system-ui, sans-serif;
+        "
+      >
+        <span
+          style="
+            height: 2.2rem;
+            width: 2.2rem;
+            animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            border-radius: 50%;
+            background-color: currentColor;
+          "
+        ></span>
+        <p style="margin-top: 1rem; font-weight: 600">Memuat...</p>
+      </div>
+    </div>
+
+    <noscript>
+      <div
+        style="
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          min-height: 100vh;
+          font-family: system-ui, sans-serif;
+          text-align: center;
+          padding: 1rem;
+        "
+      >
+        <h1>JavaScript Diperlukan</h1>
+        <p>
+          Website portofolio ini dibuat menggunakan ReactJS.
+          <br />
+          Anda harus mengaktifkan JavaScript di browser Anda untuk melihatnya,
+          Terimakasih atas pengertiannya.
+        </p>
+      </div>
+    </noscript>
+
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
