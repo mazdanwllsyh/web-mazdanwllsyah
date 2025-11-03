@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import AOS from "aos";
 import { usePortfolioData } from "../../context/PortofolioDataContext";
-import { transformCloudinaryUrl } from "../../utils/imageHelper";
 
 function History() {
   const { historyData, isHistoryLoading } = usePortfolioData();
@@ -152,7 +151,7 @@ function History() {
                     <div className="avatar hidden lg:block">
                       <div className="w-16 h-16 rounded-full ring ring-secondary ring-offset-base-100 ring-offset-2">
                         <img
-                          src={transformCloudinaryUrl(item.logoUrl, 64, 64)}
+                          src={item.logoUrl}
                           alt={`${item.institution} logo`}
                         />
                       </div>

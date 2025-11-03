@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Icon } from "@iconify/react";
 import { useAppContext } from "../../context/AppContext";
-import { transformCloudinaryUrl } from "../../utils/imageHelper";
 import { Link } from "react-router-dom";
 import { TypeAnimation } from "react-type-animation";
 import AOS from "aos";
@@ -114,7 +113,7 @@ function Hero() {
                 <div className="skeleton w-full h-full cursor-wait"></div>
               )}
               <img
-                src={transformCloudinaryUrl(randomImageUrl, 288, 288)}
+                src={randomImageUrl}
                 alt="Foto Mazda Nawallsyah"
                 fetchPriority="high"
                 className={`w-full h-full object-cover transition-all duration-300 ease-in-out cursor-pointer ${
@@ -215,7 +214,7 @@ function Hero() {
                   sequence={dynamicSequence}
                   wrapper="span"
                   speed={28}
-                  className="text-2xl font-semibold text-success"
+                  className="text-2xl font-semibold"
                   repeat={Infinity}
                 />
                 <div className="divider before:bg-base-content/20 after:bg-base-content/20 lg:hidden"></div>
@@ -231,9 +230,10 @@ function Hero() {
                   data-aos-delay="400"
                 >
                   Tentang Saya?
-                  <Icon tabIndex={0}
+                  <Icon
                     icon="streamline-flex:finger-snapping"
-                    className="w-6 h-6 ml-1 group-hover:scale-85 group-focus-within:scale-105 transition-transform"
+                    className="w-6 h-6 ml-1 group-hover:scale-85 transition-transform"
+                    focusable="false"
                   />
                 </Link>
                 <div

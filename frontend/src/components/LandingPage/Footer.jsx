@@ -49,7 +49,6 @@ function Footer() {
           <p className="text-xl font-bold font-display">
             {siteData.brandNameShort}
           </p>
-          <p className="font-semibold">{siteData.jobTitle}</p>
           <a
             href="https://bejalen.com"
             target="_blank"
@@ -61,7 +60,7 @@ function Footer() {
         </aside>
 
         <nav>
-          <p className="footer-title text-base-content font-bold">Contact Me</p>
+          <p className="font-bold">Contact Me</p>
           <div className="flex flex-wrap justify-center gap-4 w-35 md:w-auto md:flex-nowrap">
             {socialLinkConfig
               .filter((link) => availableLinks[link.key])
@@ -85,7 +84,6 @@ function Footer() {
         </nav>
 
         <nav>
-          <p className="footer-title text-base-content font-bold">Halaman</p>
           <Link to="/tentang" className="link link-hover">
             Tentang Saya
           </Link>

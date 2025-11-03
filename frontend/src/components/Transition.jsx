@@ -4,6 +4,14 @@ import { useAppContext } from "../context/AppContext.jsx";
 const fallbackImageUrl =
   "https://res.cloudinary.com/dk0yjrhvx/image/upload/v1759605657/member_photos/jbsfiyuahppa3nrckdk4.webp";
 
+const transformCloudinaryUrl = (url, width, height) => {
+  if (!url || !url.includes("res.cloudinary.com")) {
+    return url;
+  }
+  const transform = `upload/w_${width},h_${height},c_fill,q_auto`;
+  return url.replace("/upload/", `/${transform}/`);
+};
+
 const getThemeColor = (varName, fallback) => {
   if (typeof window === "undefined") return fallback;
   const hslValue = getComputedStyle(document.documentElement)
@@ -18,30 +26,36 @@ const getThemeColor = (varName, fallback) => {
 function Transition({ isLoading }) {
   const { themeMode, siteData, isSiteDataLoading } = useAppContext();
 
-  const [currentImageUrl, setCurrentImageUrl] = useState(null); 
+  const [currentImageUrl, setCurrentImageUrl] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     if (isLoading) {
       setIsVisible(true);
-
       const images = siteData?.profileImages;
 
       if (isSiteDataLoading) {
         setCurrentImageUrl(null);
       } else if (images && images.length > 0) {
         const randomIndex = Math.floor(Math.random() * images.length);
-        setCurrentImageUrl(images[randomIndex] || fallbackImageUrl);
-      } else {
-        console.log(
-          "Transition - Using fallback image"
+        const optimizedUrl = transformCloudinaryUrl(
+          images[randomIndex] || fallbackImageUrl,
+          372,
+          372
         );
-        setCurrentImageUrl(fallbackImageUrl);
+        setCurrentImageUrl(optimizedUrl);
+      } else {
+        const optimizedFallback = transformCloudinaryUrl(
+          fallbackImageUrl,
+          372,
+          372
+        );
+        setCurrentImageUrl(optimizedFallback);
       }
     } else {
       setIsVisible(false);
     }
-  }, [isLoading, siteData, isSiteDataLoading]); 
+  }, [isLoading, siteData, isSiteDataLoading]);
 
   const bgColor = getThemeColor(
     "--b1",
