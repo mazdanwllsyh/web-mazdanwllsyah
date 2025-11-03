@@ -61,7 +61,7 @@ function Footer() {
         </aside>
 
         <nav>
-          <h6 className="footer-title">Sosial Media</h6>
+          <p className="footer-title text-base-content font-bold">Contact Me</p>
           <div className="flex flex-wrap justify-center gap-4 w-35 md:w-auto md:flex-nowrap">
             {socialLinkConfig
               .filter((link) => availableLinks[link.key])
@@ -85,7 +85,7 @@ function Footer() {
         </nav>
 
         <nav>
-          <h6 className="footer-title">Halaman</h6>
+          <p className="footer-title text-base-content font-bold">Halaman</p>
           <Link to="/tentang" className="link link-hover">
             Tentang Saya
           </Link>

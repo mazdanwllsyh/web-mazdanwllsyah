@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Icon } from "@iconify/react";
 import { useAppContext } from "../../context/AppContext";
+import { transformCloudinaryUrl } from "../../utils/imageHelper";
 import { Link } from "react-router-dom";
 import { TypeAnimation } from "react-type-animation";
 import AOS from "aos";
@@ -113,8 +114,9 @@ function Hero() {
                 <div className="skeleton w-full h-full cursor-wait"></div>
               )}
               <img
-                src={randomImageUrl}
+                src={transformCloudinaryUrl(randomImageUrl, 288, 288)}
                 alt="Foto Mazda Nawallsyah"
+                fetchPriority="high"
                 className={`w-full h-full object-cover transition-all duration-300 ease-in-out cursor-pointer ${
                   imageLoaded
                     ? "opacity-100 group-hover:scale-115 group-focus-within:scale-115"

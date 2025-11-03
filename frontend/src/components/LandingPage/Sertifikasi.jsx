@@ -7,6 +7,7 @@ import SeoHelmet from "../SEOHelmet.jsx";
 import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
 import { usePagination } from "../../hooks/usePagination";
 import { usePortfolioData } from "../../context/PortofolioDataContext.jsx";
+import { transformCloudinaryUrl } from "../../utils/imageHelper.js";
 
 const SertifikasiSkeleton = ({ count = 3 }) => (
   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
@@ -167,7 +168,7 @@ function Sertifikasi() {
                 >
                   <figure className="relative aspect-[849/600]" tabIndex={0}>
                     <img
-                      src={cert.imageUrl}
+                      src={transformCloudinaryUrl(cert.imageUrl, 849, 600)}
                       alt={cert.title}
                       className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-110 group-focus-within:scale-110"
                     />
