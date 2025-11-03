@@ -88,64 +88,64 @@ function Kontak() {
           <h2 className="text-4xl font-bold font-display mb-2">Hubungi Saya</h2>
         </div>
         <div className="max-w-3xl mx-auto flex flex-col items-center">
-          <div
-            className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mb-8"
-          >
-            {/* Card Email */}
-            <div
-              className={`card shadow-sm p-6 flex flex-col items-center text-center space-y-2 border cursor-pointer transition-all duration-200 ${
-                selectedMethod === "email"
-                  ? "border-primary scale-105 bg-base-200"
-                  : "border-base-300 bg-base-100"
-              }`}
-              onClick={() => setSelectedMethod("email")}
-              data-aos="fade-right"
-              data-aos-delay="150"
-            >
-              <Icon
-                icon="mdi:email-outline"
-                className="w-10 h-10 text-primary"
-              />
-              <div>
-                <h3 className="font-bold font-display text-lg">Email</h3>
-                <p className="text-sm text-base-content/80 break-all">
-                  {siteData.contactLinks.email}
-                </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mb-8">
+            <div data-aos="fade-right" data-aos-delay="150">
+              <div
+                className={`card shadow-sm p-6 flex flex-col items-center text-center space-y-2 border cursor-pointer transition-all duration-200 ${
+                  selectedMethod === "email"
+                    ? "border-primary scale-105 bg-base-200"
+                    : "border-base-300 bg-base-100"
+                }`}
+                onClick={() => setSelectedMethod("email")}
+              >
+                <Icon
+                  icon="mdi:email-outline"
+                  className="w-10 h-10 text-primary"
+                />
+                <div>
+                  <h3 className="font-bold font-display text-lg">Email</h3>
+                  <p className="text-sm text-base-content/80 break-all">
+                    {siteData.contactLinks.email}
+                  </p>
+                </div>
               </div>
             </div>
-            <div
-              className={`card shadow-sm p-6 flex flex-col items-center text-center space-y-2 border cursor-pointer transition-all duration-200 ${
-                selectedMethod === "whatsapp"
-                  ? "border-success scale-105 bg-base-200"
-                  : "border-base-300 bg-base-100"
-              }`}
-              onClick={() => setSelectedMethod("whatsapp")}
-              data-aos="fade-up"
-              data-aos-delay="300"
-            >
-              <Icon icon="mdi:whatsapp" className="w-10 h-10 text-success" />
-              <div>
-                <h3 className="font-bold font-display text-lg">WhatsApp</h3>
-                <p className="text-sm text-base-content/80">{siteData.contactLinks.whatsapp}</p>
+
+            <div data-aos="fade-up" data-aos-delay="300">
+              <div
+                className={`card shadow-sm p-6 flex flex-col items-center text-center space-y-2 border cursor-pointer transition-all duration-200 ${
+                  selectedMethod === "whatsapp"
+                    ? "border-success scale-105 bg-base-200"
+                    : "border-base-300 bg-base-100"
+                }`}
+                onClick={() => setSelectedMethod("whatsapp")}
+              >
+                <Icon icon="mdi:whatsapp" className="w-10 h-10 text-success" />
+                <div>
+                  <h3 className="font-bold font-display text-lg">WhatsApp</h3>
+                  <p className="text-sm text-base-content/80">
+                    {siteData.contactLinks.whatsapp}
+                  </p>
+                </div>
               </div>
             </div>
-            {/* Card Telegram */}
-            <div
-              className={`card shadow-sm p-6 flex flex-col items-center text-center space-y-2 border cursor-pointer transition-all duration-200 ${
-                selectedMethod === "telegram"
-                  ? "border-info scale-105 bg-base-200"
-                  : "border-base-300 bg-base-100"
-              }`}
-              onClick={() => setSelectedMethod("telegram")}
-              data-aos="fade-left"
-              data-aos-delay="500"
-            >
-              <Icon icon="mdi:telegram" className="w-10 h-10 text-info" />
-              <div>
-                <h3 className="font-bold font-display text-lg">Telegram</h3>
-                <p className="text-sm text-base-content/80">
-                  @{siteData.contactLinks.telegram}
-                </p>
+
+            <div data-aos="fade-left" data-aos-delay="590">
+              <div
+                className={`card shadow-sm p-6 flex flex-col items-center text-center space-y-2 border cursor-pointer transition-all duration-200 ${
+                  selectedMethod === "telegram"
+                    ? "border-info scale-105 bg-base-200"
+                    : "border-base-300 bg-base-100"
+                }`}
+                onClick={() => setSelectedMethod("telegram")}
+              >
+                <Icon icon="mdi:telegram" className="w-10 h-10 text-info" />
+                <div>
+                  <h3 className="font-bold font-display text-lg">Telegram</h3>
+                  <p className="text-sm text-base-content/80">
+                    @{siteData.contactLinks.telegram}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
