@@ -7,7 +7,6 @@
     <script>
       (function () {
         try {
-          
           const storedTheme = localStorage.getItem("theme");
           if (storedTheme) {
             document.documentElement.setAttribute("data-theme", storedTheme);
@@ -17,11 +16,10 @@
           const osPrefersDark = window.matchMedia(
             "(prefers-color-scheme: dark)"
           ).matches;
-          
+
           const defaultTheme = osPrefersDark ? "synthwave" : "emerald";
           document.documentElement.setAttribute("data-theme", defaultTheme);
         } catch (e) {
-          
           document.documentElement.setAttribute("data-theme", "light");
         }
       })();
@@ -44,8 +42,13 @@
     />
 
     <link rel="canonical" href="https://mazdaweb.bejalen.com/" />
-    <link rel="preconnect" href="https://be-web-mazdanwllsyah.vercel.app" />
-    <link rel="preconnect" href="https://res.cloudinary.com" />
+    <link
+      rel="preconnect"
+      href="https://be-web-mazdanwllsyah.vercel.app"
+      crossorigin
+    />
+    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin />
+    <link rel="preconnect" href="https://api.iconify.design" crossorigin />
 
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#37cdbe" />
