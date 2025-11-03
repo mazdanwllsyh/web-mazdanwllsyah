@@ -90,8 +90,6 @@ function Kontak() {
         <div className="max-w-3xl mx-auto flex flex-col items-center">
           <div
             className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mb-8"
-            data-aos="flip-up"
-            data-aos-delay="100"
           >
             {/* Card Email */}
             <div
@@ -101,6 +99,8 @@ function Kontak() {
                   : "border-base-300 bg-base-100"
               }`}
               onClick={() => setSelectedMethod("email")}
+              data-aos="fade-right"
+              data-aos-delay="150"
             >
               <Icon
                 icon="mdi:email-outline"
@@ -113,7 +113,6 @@ function Kontak() {
                 </p>
               </div>
             </div>
-            {/* Card WhatsApp */}
             <div
               className={`card shadow-sm p-6 flex flex-col items-center text-center space-y-2 border cursor-pointer transition-all duration-200 ${
                 selectedMethod === "whatsapp"
@@ -121,6 +120,8 @@ function Kontak() {
                   : "border-base-300 bg-base-100"
               }`}
               onClick={() => setSelectedMethod("whatsapp")}
+              data-aos="fade-up"
+              data-aos-delay="300"
             >
               <Icon icon="mdi:whatsapp" className="w-10 h-10 text-success" />
               <div>
@@ -136,6 +137,8 @@ function Kontak() {
                   : "border-base-300 bg-base-100"
               }`}
               onClick={() => setSelectedMethod("telegram")}
+              data-aos="fade-left"
+              data-aos-delay="500"
             >
               <Icon icon="mdi:telegram" className="w-10 h-10 text-info" />
               <div>

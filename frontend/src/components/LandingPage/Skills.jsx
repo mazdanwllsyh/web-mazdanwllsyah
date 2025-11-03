@@ -19,7 +19,6 @@ const SkillsSkeleton = () => (
       </div>
     </div>
 
-    {/* Skeleton Kolom Kiri (Hard Skills) - SEKARANG DI BAWAH */}
     <div className="card bg-base-200 shadow-xl p-4 w-full">
       <div className="skeleton h-6 w-1/3 mb-4 mx-auto"></div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -74,16 +73,21 @@ function Skills() {
           <SkillsSkeleton />
         ) : (
           <div className="flex flex-col items-center gap-8 md:gap-12 max-w-4xl mx-auto">
-            <div
-              className="card shadow-md p-4 border border-base-300 w-full"
-              data-aos="zoom-out-up"
-            >
-              <h3 className="text-lg font-bold font-display mb-4 text-center">
+            <div className="card shadow-md p-4 border border-base-300 w-full">
+              <h3
+                className="text-lg font-bold font-display mb-4 text-center"
+                data-aos="zoom-out-up"
+              >
                 Soft Skills
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-y-3 gap-x-8">
-                {displayedSoftSkills.map((skill) => (
-                  <div key={skill} className="flex items-center space-x-2">
+                {displayedSoftSkills.map((skill, index) => (
+                  <div
+                    key={skill}
+                    className="flex items-center space-x-2"
+                    data-aos="zoom-in-up"
+                    data-aos-delay={index * 180}
+                  >
                     <Icon
                       icon="mdi:check-circle"
                       className="w-5 h-5 text-success flex-shrink-0"
@@ -94,19 +98,21 @@ function Skills() {
               </div>
             </div>
 
-            <div
-              className="card shadow-md p-4 border border-base-300 w-full"
-              data-aos="zoom-in-up"
-              data-aos-delay="100"
-            >
-              <h3 className="text-lg font-bold font-display mb-4 text-center">
+            <div className="card shadow-md p-4 border border-base-300 w-full">
+              <h3
+                className="text-lg font-bold font-display mb-4 text-center"
+                data-aos="zoom-in-up"
+              >
                 Hard Skills
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
-                {displayedHardSkills.map((skill) => (
+                {displayedHardSkills.map((skill, index) => (
                   <div
                     key={skill.name}
-                    className="p-4 rounded-lg shadow flex items-center space-x-3 border border-base-300 cursor-pointer transition-all duration-300 ease-in-out hover:scale-102 hover:bg-base-200 hover:shadow-lg hover:border-primary"
+                    tabIndex={0}
+                    className="p-4 rounded-lg shadow flex items-center space-x-3 border border-base-300 cursor-pointer transition-all duration-300 ease-in-out hover:scale-102 hover:bg-base-200 hover:shadow-lg hover:border-primary focus:outline-none focus-within:scale-102 focus-within:bg-base-200 focus-within:shadow-lg focus-within:border-primary"
+                    data-aos="fade-up"
+                    data-aos-delay={index * 120}
                   >
                     <Icon icon={skill.icon} className="w-8 h-8 flex-shrink-0" />
                     <div>

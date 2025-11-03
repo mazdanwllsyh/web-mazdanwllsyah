@@ -21,27 +21,49 @@ const GallerySkeleton = ({ count = 3 }) => (
   </div>
 );
 
+const shuffleArray = (array) => {
+  let currentIndex = array.length,
+    randomIndex;
+
+  while (currentIndex !== 0) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex],
+      array[currentIndex],
+    ];
+  }
+
+  return array;
+};
+
 function Gallery() {
   const { projects, isProjectsLoading } = usePortfolioData();
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
 
+  const shuffledProjects = useMemo(() => {
+    const projectsCopy = [...projects];
+    return shuffleArray(projectsCopy);
+  }, [projects]);
+
   const filteredProjects = useMemo(() => {
     if (!searchTerm) {
-      return projects;
+      return shuffledProjects;
     }
     const lowerCaseSearch = searchTerm.toLowerCase();
 
-    return projects.filter(
+    return shuffledProjects.filter(
       (proj) =>
         proj.title.toLowerCase().includes(lowerCaseSearch) ||
         proj.description.toLowerCase().includes(lowerCaseSearch) ||
         (proj.tags && proj.tags.toLowerCase().includes(lowerCaseSearch))
     );
-  }, [searchTerm, projects]);
+  }, [searchTerm, shuffledProjects]);
 
   const paginationConfig = {
-    sm: 3,
+    sm: 2,
     md: 4,
     lg: 6,
   };
@@ -75,7 +97,7 @@ function Gallery() {
             Galeri Proyek
           </h2>
           <p className="text-lg text-base-content/70">
-            Beberapa proyek terakhir saya
+            Beberapa proyek terakhir
           </p>
         </div>
 
@@ -101,7 +123,7 @@ function Gallery() {
           </div>
         )}
 
-        {(isProjectsLoading || loading) ? (
+        {isProjectsLoading || loading ? (
           <GallerySkeleton count={projects.length || 3} />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
@@ -112,7 +134,10 @@ function Gallery() {
                 data-aos="zoom-in"
                 data-aos-delay={100 + index * 100}
               >
-                <figure className="relative aspect-square focus:outline-none" tabIndex={0}>
+                <figure
+                  className="relative aspect-square focus:outline-none"
+                  tabIndex={0}
+                >
                   <img
                     src={project.imageUrl}
                     alt={project.title}
@@ -142,20 +167,7 @@ function Gallery() {
                           <Icon icon="mdi:web" className="w-4 h-4 mr-1" />
                           Kunjungi
                         </a>
-                      ) : (
-                        <div
-                          className="tooltip"
-                          data-tip="Sedang dalam pengembangan"
-                        >
-                          <div className="btn btn-info btn-sm opacity-65 cursor-not-allowed">
-                            <Icon
-                              icon="mdi:web-clock"
-                              className="w-4 h-4 mr-1"
-                            />
-                            Ongoing
-                          </div>
-                        </div>
-                      )}
+                      ) : null}
 
                       {project.sourceUrl && project.sourceUrl !== "#" && (
                         <a
@@ -168,6 +180,22 @@ function Gallery() {
                           Source Code
                         </a>
                       )}
+
+                      {(!project.demoUrl || project.demoUrl === "#") &&
+                        (!project.sourceUrl || project.sourceUrl === "#") && (
+                          <div
+                            className="tooltip"
+                            data-tip="Sedang dalam pengembangan"
+                          >
+                            <div className="btn btn-info btn-sm opacity-65 cursor-not-allowed">
+                              <Icon
+                                icon="mdi:web-clock"
+                                className="w-4 h-4 mr-1"
+                              />
+                              Ongoing
+                            </div>
+                          </div>
+                        )}
                     </div>
                   </div>
                 </figure>

@@ -38,14 +38,13 @@ function About() {
           const nextIndex2 = (prevIndices[2] + 1) % profileImages.length;
           return [nextIndex0, nextIndex1, nextIndex2];
         });
-      }, 10000);
+      }, 8000);
 
       return () => clearInterval(intervalId);
     }
   }, [profileImages.length, loading]);
 
   const stats = useMemo(() => {
-    // Hitung jumlah data
     const experienceCount = historyData.experience?.length || 0;
     const projectCount = projects?.length || 0;
     const sertifikatCount = sertifikatData?.length || 0;
@@ -142,11 +141,7 @@ function About() {
             )}
           </div>
 
-          {/* Elemen #2: Foto */}
-          <div
-            className="py-8 flex flex-col items-center lg:items-center order-2 lg:order-none lg:col-start-1 lg:row-start-1 lg:row-span-3"
-            data-aos="fade-right"
-          >
+          <div className="py-8 flex flex-col items-center lg:items-center order-2 lg:order-none lg:col-start-1 lg:row-start-1 lg:row-span-3">
             {loading ? (
               <PhotoSkeleton />
             ) : (
@@ -159,6 +154,8 @@ function About() {
                   <div
                     className="card absolute inset-0 bg-base-300 shadow-xl transform -rotate-9 translate-x-1 translate-y-2 overflow-hidden"
                     aria-hidden="true"
+                    data-aos="fade-right"
+                    data-aos-delay="200"
                   >
                     <figure className="h-full w-full">
                       <img
@@ -171,8 +168,10 @@ function About() {
                 )}
                 {profileImages.length > 1 && (
                   <div
-                    className="card absolute inset-0 bg-base-200 shadow-xl transform rotate-15 -translate-x-1 overflow-hidden"
+                    className="card absolute inset-0 bg-base-200 shadow-xl transform rotate-12 -translate-x-1 overflow-hidden"
                     aria-hidden="true"
+                    data-aos="fade-up-right"
+                    data-aos-delay="520"
                   >
                     <figure className="h-full w-full">
                       <img
@@ -184,7 +183,11 @@ function About() {
                   </div>
                 )}
                 {profileImages.length > 0 && (
-                  <div className="card absolute inset-0 bg-base-100 shadow-xl z-10 overflow-hidden">
+                  <div
+                    className="card absolute inset-0 bg-base-100 shadow-xl z-10 overflow-hidden"
+                    data-aos="fade-down-left"
+                    data-aos-delay="1880"
+                  >
                     <figure className="h-full w-full">
                       <img
                         src={profileImages[currentIndices[0]]}
@@ -212,7 +215,7 @@ function About() {
                 data-aos-delay="250"
               >
                 {siteData.aboutParagraph ||
-                  "Paragraf tentang Anda akan muncul di sini."}
+                  "Paragraf tentang Saya akan muncul di sini."}
               </p>
             )}
           </div>
@@ -242,7 +245,10 @@ function About() {
             {loading ? (
               <StatsSkeleton />
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+              <div
+                className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6"
+                tabIndex={0}
+              >
                 {stats.map((stat, index) => (
                   <HashLink
                     to={stat.link}
@@ -250,7 +256,7 @@ function About() {
                     smooth={stat.link.startsWith("#")}
                     data-aos="fade-up"
                     data-aos-delay={100 + index * 100}
-                    className="card bg-base-100 shadow-md border border-base-300 p-4 text-center hover:shadow-lg transition-all duration-300 hover:bg-base-200 hover:scale-[1.03] transform hover:cursor-pointer no-underline group"
+                    className="card bg-base-100 shadow-md border border-base-300 p-4 text-center hover:shadow-lg transition-all duration-300 hover:bg-base-200 hover:scale-[1.03] transform hover:cursor-pointer no-underline group focus:outline-none focus-within:scale-102"
                   >
                     <div
                       className={`transition-opacity duration-500 ${

@@ -6,11 +6,9 @@ const fallbackImageUrl =
 
 const getThemeColor = (varName, fallback) => {
   if (typeof window === "undefined") return fallback;
-
   const hslValue = getComputedStyle(document.documentElement)
     .getPropertyValue(varName)
     .trim();
-
   if (hslValue) {
     return `hsl(${hslValue})`;
   }
@@ -18,35 +16,32 @@ const getThemeColor = (varName, fallback) => {
 };
 
 function Transition({ isLoading }) {
-  const { themeMode, siteData } = useAppContext();
+  const { themeMode, siteData, isSiteDataLoading } = useAppContext();
 
-  const [currentImageUrl, setCurrentImageUrl] = useState(fallbackImageUrl);
-
+  const [currentImageUrl, setCurrentImageUrl] = useState(null); 
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     if (isLoading) {
-      const images = siteData?.profileImages || [];
-      let selectedImage = fallbackImageUrl;
+      setIsVisible(true);
 
-      if (!images || images.length === 0) {
-        console.log("Transition - Using fallback image");
-      } else {
+      const images = siteData?.profileImages;
+
+      if (isSiteDataLoading) {
+        setCurrentImageUrl(null);
+      } else if (images && images.length > 0) {
         const randomIndex = Math.floor(Math.random() * images.length);
-        selectedImage = images[randomIndex] || fallbackImageUrl;
+        setCurrentImageUrl(images[randomIndex] || fallbackImageUrl);
+      } else {
+        console.log(
+          "Transition - Using fallback image"
+        );
+        setCurrentImageUrl(fallbackImageUrl);
       }
-
-      setCurrentImageUrl(selectedImage);
-
-      const showTimer = setTimeout(() => {
-        setIsVisible(true);
-      }, 0);
-
-      return () => clearTimeout(showTimer);
     } else {
       setIsVisible(false);
     }
-  }, [isLoading, siteData?.profileImages]); //
+  }, [isLoading, siteData, isSiteDataLoading]); 
 
   const bgColor = getThemeColor(
     "--b1",
@@ -60,13 +55,19 @@ function Transition({ isLoading }) {
       }`}
       style={{ backgroundColor: bgColor }}
     >
-      <div className="animate-zoom-in-out my-4">
-        <img
-          src={currentImageUrl}
-          alt="Mazda Nawallsyah Loading"
-          className="w-64 h-64 rounded-full object-cover shadow-lg"
-        />
-      </div>
+      {!currentImageUrl ? (
+        <div className="animate-pulse my-4">
+          <div className="skeleton w-64 h-64 rounded-full shadow-lg"></div>
+        </div>
+      ) : (
+        <div className="animate-zoom-in-out my-4">
+          <img
+            src={currentImageUrl}
+            alt="Mazda Nawallsyah Loading"
+            className="w-64 h-64 rounded-full object-cover shadow-lg"
+          />
+        </div>
+      )}
 
       <span className="loading loading-dots loading-lg mt-8"></span>
     </div>

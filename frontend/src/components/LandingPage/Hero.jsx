@@ -44,7 +44,6 @@ function Hero() {
   const randomImageUrl = useMemo(() => {
     const images = siteData?.profileImages || [];
     if (!images || images.length === 0) {
-      console.log("Hero - Using default avatar");
       return "/default-avatar.png";
     }
 
@@ -108,7 +107,7 @@ function Hero() {
           data-aos="fade-left"
           data-aos-delay="300"
         >
-          <div className="avatar">
+          <div tabIndex={0} className="avatar">
             <div className="w-56 md:w-72 rounded-full ring-7 ring-base-300 ring-offset-base-100 ring-offset-4 overflow-hidden">
               {!imageLoaded && (
                 <div className="skeleton w-full h-full cursor-wait"></div>
@@ -117,7 +116,9 @@ function Hero() {
                 src={randomImageUrl}
                 alt="Foto Mazda Nawallsyah"
                 className={`w-full h-full object-cover transition-all duration-300 ease-in-out cursor-pointer ${
-                  imageLoaded ? "opacity-100 hover:scale-115" : "opacity-0"
+                  imageLoaded
+                    ? "opacity-100 group-hover:scale-115 group-focus-within:scale-115"
+                    : "opacity-0"
                 }`}
                 onLoad={() => setImageLoaded(true)}
                 onError={(e) => {
@@ -211,28 +212,32 @@ function Hero() {
                 <TypeAnimation
                   sequence={dynamicSequence}
                   wrapper="span"
-                  speed={25}
+                  speed={28}
                   className="text-2xl font-semibold text-success"
                   repeat={Infinity}
                 />
-                <div className="divider before:bg-base-content/20 after:bg-base-content/20 lg:hidden"></div>{" "}
+                <div className="divider before:bg-base-content/20 after:bg-base-content/20 lg:hidden"></div>
                 <div className="hidden lg:block h-1 w-50 bg-accent my-4"></div>{" "}
                 <p className="py-6 text-base md:text-lg text-base-content/80 text-justify">
                   {displayParagraph}
                 </p>
                 <Link
+                  tabIndex={0}
                   to="/tentang"
                   className="btn bg-base-300 font-display border border-neutral border-2 shadow-lg group rounded-2xl"
                   data-aos="fade-down"
                   data-aos-delay="400"
                 >
                   Tentang Saya?
-                  <Icon
+                  <Icon tabIndex={0}
                     icon="streamline-flex:finger-snapping"
-                    className="w-6 h-6 ml-1 group-hover:scale-85 transition-transform"
+                    className="w-6 h-6 ml-1 group-hover:scale-85 group-focus-within:scale-105 transition-transform"
                   />
                 </Link>
-                <div className="flex sm:hidden space-x-4 mt-6 justify-center lg:justify-start">
+                <div
+                  tabIndex={0}
+                  className="flex sm:hidden space-x-4 mt-6 justify-center lg:justify-start"
+                >
                   {socialLinkConfig
                     .filter((link) => availableLinks[link.key])
                     .map((link) => {
@@ -245,7 +250,7 @@ function Hero() {
                           target="_blank"
                           rel="noopener noreferrer"
                           aria-label={link.label}
-                          className="text-base-content/70 hover:text-primary transition-colors duration-200"
+                          className="text-base-content/70 hover:text-primary transition-colors duration-200 group-focus-within:text-secondary"
                         >
                           <Icon icon={link.icon} className="w-6 h-6" />
                         </a>

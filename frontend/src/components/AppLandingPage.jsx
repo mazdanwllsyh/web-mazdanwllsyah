@@ -11,6 +11,7 @@ import Transition from "./Transition";
 import Header from "../components/LandingPage/Header";
 import Footer from "../components/LandingPage/Footer";
 import ProtectedRoute from "../routes/ProtectedRoute";
+import { useAppContext } from "../context/AppContext";
 import { useUser } from "../context/UserContext";
 import AOS from "aos";
 
@@ -37,7 +38,7 @@ function NotFoundRedirect() {
 }
 
 const PublicOnlyWrapper = () => {
-  const { user, isUserLoading } = useUser(); //
+  const { user, isUserLoading } = useUser();
 
   if (isUserLoading) {
     return <Transition isLoading={true} />;
@@ -54,6 +55,11 @@ const PublicOnlyWrapper = () => {
 function AppLandingPage() {
   const [isLoading, setIsLoading] = useState(true);
   const location = useLocation();
+
+  const { isSiteDataLoading } = useAppContext();
+  const { isUserLoading } = useUser();
+
+  const aosInitCalled = useRef(false);
 
   useEffect(() => {
     const hash = location.hash;
@@ -97,7 +103,7 @@ function AppLandingPage() {
     setIsLoading(true);
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 1350);
+    }, 1650);
     return () => {
       clearTimeout(timer);
       setIsLoading(true);
@@ -105,7 +111,8 @@ function AppLandingPage() {
   }, [location.pathname]);
 
   useEffect(() => {
-    if (!isLoading) {
+    if (!isLoading && !aosInitCalled.current) {
+      aosInitCalled.current = true;
       AOS.init({
         duration: 800,
         once: true,
@@ -114,13 +121,15 @@ function AppLandingPage() {
     }
   }, [isLoading]);
 
+  const isAppLoading = isLoading || isSiteDataLoading || isUserLoading;
+
   return (
     <div className="flex flex-col min-h-screen overflow-x-hidden">
-      <Transition isLoading={isLoading} />
+      <Transition isLoading={isAppLoading} />
 
       <div className="flex flex-col flex-grow">
         <Header />
-        {!isLoading && (
+        {!isAppLoading && (
           <>
             <main className="flex-grow pt-16">
               <Suspense

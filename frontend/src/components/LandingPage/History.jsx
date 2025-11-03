@@ -20,9 +20,9 @@ function History() {
     setLoading(true);
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 600);
+    }, 500);
     return () => clearTimeout(timer);
-  }, [activeTab]); 
+  }, [activeTab]);
 
   const activeData =
     activeTab === "pendidikan" ? historyData.education : historyData.experience;
@@ -119,7 +119,7 @@ function History() {
           </button>
         </div>
 
-        {(loading || isHistoryLoading) ? (
+        {loading || isHistoryLoading ? (
           <TimelineSkeleton count={activeData.length || 3} />
         ) : (
           <ul className="timeline timeline-snap-icon max-md:timeline-compact timeline-vertical px-4">
@@ -162,14 +162,16 @@ function History() {
                   )}
 
                   <div
-                    className={`mb-10 ${
+                    className={`mb-3 group ${
                       index % 2 === 0
                         ? "timeline-start md:text-end"
                         : "timeline-end md:text-start"
                     }`}
                   >
-                    {/* Card */}
-                    <div className="card w-[14rem] md:w-[18rem] lg:w-[24rem] bg-base-100 shadow-md border border-base-300 cursor-pointer transition-transform duration-200 hover:-translate-y-2 hover:border-primary hover:bg-base-200 hover:shadow-lg">
+                    <div
+                      tabIndex={0}
+                      className="card w-[17rem] md:w-[20rem] lg:w-[24rem] bg-base-100 shadow-md border border-base-300 cursor-pointer transition-transform duration-200 hover:-translate-y-2 hover:border-primary hover:bg-base-200 hover:shadow-lg focus:outline-none focus-within:-translate-y-2 focus-within:border-primary focus-within:bg-base-200 focus-within:shadow-lg"
+                    >
                       <div className="card-body p-6">
                         <h3 className="card-title text-lg font-bold font-display">
                           {item.institution}
