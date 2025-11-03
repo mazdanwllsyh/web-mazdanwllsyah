@@ -23,6 +23,11 @@ const SertifikasiSkeleton = ({ count = 3 }) => (
 );
 
 function Sertifikasi() {
+  useEffect(() => {
+    import("@react-pdf-viewer/core/lib/styles/index.css");
+    import("@react-pdf-viewer/default-layout/lib/styles/index.css");
+  }, []);
+
   const { sertifikatData, categories, isSertifikatLoading } =
     usePortfolioData();
   const { themeMode } = useAppContext();
@@ -170,8 +175,8 @@ function Sertifikasi() {
                     <img
                       src={transformCloudinaryUrl(cert.imageUrl, 700, 495)}
                       alt={cert.title}
-                      width="849" 
-                      height="600" 
+                      width="849"
+                      height="600"
                       loading="lazy"
                       className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
                     />

@@ -6,17 +6,13 @@ import Transition from "./Transition";
 import { useUser } from "../context/UserContext";
 
 const DashboardBeranda = lazy(() =>
-  import(
-    /* webpackChunkName: "chunk-dashboard-charts" */ "../components/Dashboard/DashboardBeranda"
-  )
+  import("../components/Dashboard/DashboardBeranda")
 );
 const DataSaya = lazy(() => import("../components/Dashboard/DataSaya"));
 const KelolaKonten = lazy(() => import("../components/Dashboard/KelolaKonten"));
 const EditGallery = lazy(() => import("../components/Dashboard/EditGallery"));
 const EditSertifikat = lazy(() =>
-  import(
-    /* webpackChunkName: "chunk-dashboard-pdf" */ "../components/Dashboard/EditSertifikasi"
-  )
+  import("../components/Dashboard/EditSertifikasi")
 );
 const UserDashboard = lazy(() =>
   import("../components/Dashboard/UserDashboard")

@@ -49,8 +49,8 @@ function Hero() {
     }
 
     const randomIndex = Math.floor(Math.random() * images.length);
-    const selectedImage = images[randomIndex];
-    return selectedImage || "/default-avatar.png";
+    const selectedImage = images[randomIndex] || "/default-avatar.png";
+
     return transformCloudinaryUrl(selectedImage, 576, 576);
   }, [siteData?.profileImages]);
 
@@ -118,7 +118,7 @@ function Hero() {
                 src={randomImageUrl}
                 alt="Foto Mazda Nawallsyah"
                 fetchPriority="high"
-                width="288" 
+                width="288"
                 height="288"
                 className={`w-full h-full object-cover transition-all duration-300 ease-in-out cursor-pointer ${
                   imageLoaded

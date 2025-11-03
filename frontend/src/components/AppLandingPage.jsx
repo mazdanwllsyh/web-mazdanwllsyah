@@ -17,11 +17,7 @@ import AOS from "aos";
 
 const Beranda = lazy(() => import("../components/LandingPage/Beranda"));
 const About = lazy(() => import("../components/LandingPage/About"));
-const Sertifikasi = lazy(() =>
-  import(
-    /* webpackChunkName: "chunk-sertifikasi-pdf" */ "../components/LandingPage/Sertifikasi"
-  )
-);
+const Sertifikasi = lazy(() => import("../components/LandingPage/Sertifikasi"));
 const Profile = lazy(() => import("../components/LandingPage/Profile"));
 const LoginPage = lazy(() => import("../components/LandingPage/LoginPage"));
 const RegisterPage = lazy(() =>

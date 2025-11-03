@@ -32,11 +32,7 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks(id) {
-          if (id.includes("react-pdf-viewer") || id.includes("pdfjs-dist")) {
-            return "pdfviewer";
-          }
-        },
+        manualChunks(id) {},
       },
     },
   },
