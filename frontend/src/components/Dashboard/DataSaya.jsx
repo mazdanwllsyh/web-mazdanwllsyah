@@ -274,10 +274,7 @@ function DataSaya() {
   }
 
   return (
-    <div
-      className="card bg-base-100 shadow-md border border-base-200"
-      data-aos="fade-up"
-    >
+    <div className="card bg-base-100 shadow-md border border-base-200">
       <form className="card-body" onSubmit={handleSave}>
         <h2 className="card-title text-2xl font-display text-center justify-center">
           Data Situs
@@ -377,7 +374,9 @@ function DataSaya() {
           />
         </div>
 
-        <div className="divider mt-8 font-bold">Pengaturan Tentang dan Gambar</div>
+        <div className="divider mt-8 font-bold">
+          Pengaturan Tentang dan Gambar
+        </div>
         <div className="my-2">
           <FloatingLabelTextarea
             id="aboutParagraph"

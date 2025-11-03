@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
+import { visualizer } from "rollup-plugin-visualizer";
 
 export default defineConfig({
   plugins: [
@@ -25,5 +26,24 @@ export default defineConfig({
       },
     }),
     react(),
+    visualizer({ open: true }),
   ],
+
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("chart.js")) {
+            return "chartjs"; 
+          }
+          if (id.includes("react-pdf-viewer") || id.includes("pdfjs-dist")) {
+            return "pdfviewer"; 
+          }
+          if (id.includes("node_modules")) {
+            return "vendor";
+          }
+        },
+      },
+    },
+  },
 });
