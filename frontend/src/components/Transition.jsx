@@ -40,15 +40,15 @@ function Transition({ isLoading }) {
         const randomIndex = Math.floor(Math.random() * images.length);
         const optimizedUrl = transformCloudinaryUrl(
           images[randomIndex] || fallbackImageUrl,
-          372,
-          372
+          512,
+          512
         );
         setCurrentImageUrl(optimizedUrl);
       } else {
         const optimizedFallback = transformCloudinaryUrl(
           fallbackImageUrl,
-          372,
-          372
+          512,
+          512
         );
         setCurrentImageUrl(optimizedFallback);
       }
@@ -79,6 +79,8 @@ function Transition({ isLoading }) {
             src={currentImageUrl}
             alt="Mazda Nawallsyah Loading"
             fetchPriority="high"
+            width="256"
+            height="256"
             className="w-64 h-64 rounded-full object-cover shadow-lg"
           />
         </div>

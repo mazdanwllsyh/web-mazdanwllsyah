@@ -6,13 +6,17 @@ import Transition from "./Transition";
 import { useUser } from "../context/UserContext";
 
 const DashboardBeranda = lazy(() =>
-  import("../components/Dashboard/DashboardBeranda")
+  import(
+    /* webpackChunkName: "chunk-dashboard-charts" */ "../components/Dashboard/DashboardBeranda"
+  )
 );
 const DataSaya = lazy(() => import("../components/Dashboard/DataSaya"));
 const KelolaKonten = lazy(() => import("../components/Dashboard/KelolaKonten"));
 const EditGallery = lazy(() => import("../components/Dashboard/EditGallery"));
 const EditSertifikat = lazy(() =>
-  import("../components/Dashboard/EditSertifikasi")
+  import(
+    /* webpackChunkName: "chunk-dashboard-pdf" */ "../components/Dashboard/EditSertifikasi"
+  )
 );
 const UserDashboard = lazy(() =>
   import("../components/Dashboard/UserDashboard")
@@ -71,7 +75,7 @@ function AppDashboard() {
           <div className="flex-none">
             <button
               className="btn btn-error btn-square"
-              onClick={handleSignOut} 
+              onClick={handleSignOut}
               aria-label="Logout"
             >
               <Icon icon="mdi:logout" className="h-6 w-6" />

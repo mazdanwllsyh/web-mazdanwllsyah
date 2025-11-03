@@ -192,7 +192,7 @@ function Hero() {
           <div
             className={`transition-opacity duration-500 ${
               imageLoaded ? "opacity-100" : "opacity-0"
-            }`}
+            } min-h-[350px]`}
             data-aos="zoom-out"
           >
             {!imageLoaded && (

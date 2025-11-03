@@ -168,9 +168,12 @@ function Sertifikasi() {
                 >
                   <figure className="relative aspect-[849/600]" tabIndex={0}>
                     <img
-                      src={transformCloudinaryUrl(cert.imageUrl, 849, 600)}
+                      src={transformCloudinaryUrl(cert.imageUrl, 700, 495)}
                       alt={cert.title}
-                      className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-110 group-focus-within:scale-110"
+                      width="849" 
+                      height="600" 
+                      loading="lazy"
+                      className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
                     />
                     <div
                       className="absolute inset-0 bg-neutral bg-opacity-80 backdrop-blur-sm 
