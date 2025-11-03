@@ -64,6 +64,7 @@ function Transition({ isLoading }) {
           <img
             src={currentImageUrl}
             alt="Mazda Nawallsyah Loading"
+            fetchPriority="high"
             className="w-64 h-64 rounded-full object-cover shadow-lg"
           />
         </div>
