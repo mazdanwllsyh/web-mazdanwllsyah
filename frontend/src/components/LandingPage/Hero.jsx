@@ -4,6 +4,7 @@ import { useAppContext } from "../../context/AppContext";
 import { Link } from "react-router-dom";
 import { TypeAnimation } from "react-type-animation";
 import AOS from "aos";
+import { transformCloudinaryUrl } from "../../utils/imageHelper";
 
 const socialLinkConfig = [
   {
@@ -50,6 +51,7 @@ function Hero() {
     const randomIndex = Math.floor(Math.random() * images.length);
     const selectedImage = images[randomIndex];
     return selectedImage || "/default-avatar.png";
+    return transformCloudinaryUrl(selectedImage, 576, 576);
   }, [siteData?.profileImages]);
 
   const displayParagraph = useMemo(() => {
@@ -116,6 +118,8 @@ function Hero() {
                 src={randomImageUrl}
                 alt="Foto Mazda Nawallsyah"
                 fetchPriority="high"
+                width="288" 
+                height="288"
                 className={`w-full h-full object-cover transition-all duration-300 ease-in-out cursor-pointer ${
                   imageLoaded
                     ? "opacity-100 group-hover:scale-115 group-focus-within:scale-115"
@@ -198,11 +202,16 @@ function Hero() {
             {!imageLoaded && (
               <div className="space-y-4">
                 <div className="skeleton h-8 md:h-10 w-3/4"></div>
-                <div className="skeleton h-6 md:h-8 w-1/2"></div>
-                <div className="skeleton h-1 w-20"></div>
-                <div className="skeleton h-4 w-full"></div>
-                <div className="skeleton h-4 w-5/6"></div>
-                <div className="skeleton h-12 w-32 rounded-lg"></div>
+                <div className="skeleton h-7 w-1/2"></div>
+                <div className="py-6">
+                  <div className="space-y-2">
+                    <div className="skeleton h-4 w-full"></div>
+                    <div className="skeleton h-4 w-full"></div>
+                    <div className="skeleton h-4 w-5/6"></div>
+                  </div>
+                </div>
+
+                <div className="skeleton h-12 w-40 rounded-2xl"></div>
               </div>
             )}
             {imageLoaded && (

@@ -3,6 +3,7 @@ import { Icon } from "@iconify/react";
 import AOS from "aos";
 import { usePagination } from "../../hooks/usePagination";
 import { usePortfolioData } from "../../context/PortofolioDataContext";
+import { transformCloudinaryUrl } from "../../utils/imageHelper";
 
 const GallerySkeleton = ({ count = 3 }) => (
   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto hover:cursor-wait">
@@ -139,8 +140,11 @@ function Gallery() {
                   tabIndex={0}
                 >
                   <img
-                    src={project.imageUrl}
+                    src={transformCloudinaryUrl(project.imageUrl, 640, 640)}
                     alt={project.title}
+                    width="318" 
+                    height="318" 
+                    loading="lazy"
                     className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:shadow-lg group-hover:scale-105 group-focus-within:scale-105"
                   />
                   <div className="absolute bottom-0 left-0 right-0 h-5/5 bg-neutral bg-opacity-80 backdrop-blur-sm translate-y-full group-hover:translate-y-0 group-focus-within:translate-y-0 transition-transform duration-300 ease-in-out flex flex-col items-center justify-center text-justify p-4 text-neutral-content">

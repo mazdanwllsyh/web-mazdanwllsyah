@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense, lazy } from "react";
 import { Routes, Route } from "react-router-dom";
 import Transition from "./components/Transition";
-import AppLandingPage from "./components/AppLandingPage";
-import AppDashboard from "./components/AppDashboard";
+
 import AdminRoute from "./routes/AdminRoute";
+
+const AppLandingPage = lazy(() => import("./components/AppLandingPage"));
+const AppDashboard = lazy(() => import("./components/AppDashboard"));
 
 function App() {
   const [isPreloading, setIsPreloading] = useState(true);
@@ -23,12 +25,14 @@ function App() {
           isPreloading ? "opacity-0" : "opacity-100"
         }`}
       >
-        <Routes>
-          <Route path="/*" element={<AppLandingPage />} />
-          <Route element={<AdminRoute />}>
-            <Route path="/dashboard/*" element={<AppDashboard />} />
-          </Route>
-        </Routes>
+        <Suspense fallback={<Transition isLoading={true} />}>
+          <Routes>
+            <Route path="/*" element={<AppLandingPage />} />
+            <Route element={<AdminRoute />}>
+              <Route path="/dashboard/*" element={<AppDashboard />} />
+            </Route>
+          </Routes>
+        </Suspense>
       </main>
     </div>
   );

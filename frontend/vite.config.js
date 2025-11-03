@@ -33,14 +33,8 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          if (id.includes("chart.js")) {
-            return "chartjs"; 
-          }
           if (id.includes("react-pdf-viewer") || id.includes("pdfjs-dist")) {
-            return "pdfviewer"; 
-          }
-          if (id.includes("node_modules")) {
-            return "vendor";
+            return "pdfviewer";
           }
         },
       },
