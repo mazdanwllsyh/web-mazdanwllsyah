@@ -44,9 +44,9 @@ function Footer() {
 
   return (
     <>
-      <footer className="footer py-5 footer-center bg-base-200 text-base-content rounded border-t-2 border-base-300">
+      <footer className="py-5 bg-base-200 text-base-content rounded border-t-2 border-base-300 grid-cols-1 grid md:grid-cols-3 md:gap-3 place-items-center mx-auto w-full items-start gap-6">
         <aside>
-          <p className="text-xl font-bold font-display">
+          <p className="text-xl font-bold font-display text-center md:text-start">
             {siteData.brandNameShort}
           </p>
           <a
@@ -59,9 +59,9 @@ function Footer() {
           </a>
         </aside>
 
-        <nav>
-          <p className="font-bold">Contact Me</p>
-          <div className="flex flex-wrap justify-center gap-4 w-35 md:w-auto md:flex-nowrap">
+        <nav className="space-y-4">
+          <p className="font-bold text-center">Contact Me</p>
+          <div className="flex justify-center gap-4 w-35 md:w-auto md:flex-nowrap">
             {socialLinkConfig
               .filter((link) => availableLinks[link.key])
               .map((link) => {
@@ -83,7 +83,7 @@ function Footer() {
           </div>
         </nav>
 
-        <nav>
+        <nav className="flex flex-col items-center md:items-start">
           <Link to="/tentang" className="link link-hover">
             Tentang Saya
           </Link>
