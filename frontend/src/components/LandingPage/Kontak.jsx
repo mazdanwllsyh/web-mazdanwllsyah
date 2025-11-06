@@ -91,7 +91,7 @@ function Kontak() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mb-8">
             <div data-aos="fade-right" data-aos-delay="150">
               <div
-                className={`card shadow-sm p-6 flex flex-col items-center text-center space-y-2 border cursor-pointer transition-all duration-200 ${
+                className={`card shadow-sm p-6 flex flex-col items-center text-center space-y-2 border cursor-pointer transition-all duration-200 h-full ${
                   selectedMethod === "email"
                     ? "border-primary scale-105 bg-base-200"
                     : "border-base-300 bg-base-100"
@@ -113,7 +113,7 @@ function Kontak() {
 
             <div data-aos="fade-up" data-aos-delay="300">
               <div
-                className={`card shadow-sm p-6 flex flex-col items-center text-center space-y-2 border cursor-pointer transition-all duration-200 ${
+                className={`card shadow-sm p-6 flex flex-col items-center text-center space-y-2 border cursor-pointer transition-all duration-200 h-full ${
                   selectedMethod === "whatsapp"
                     ? "border-success scale-105 bg-base-200"
                     : "border-base-300 bg-base-100"
@@ -132,7 +132,7 @@ function Kontak() {
 
             <div data-aos="fade-left" data-aos-delay="590">
               <div
-                className={`card shadow-sm p-6 flex flex-col items-center text-center space-y-2 border cursor-pointer transition-all duration-200 ${
+                className={`card shadow-sm p-6 flex flex-col items-center text-center space-y-2 border cursor-pointer transition-all duration-200 h-full ${
                   selectedMethod === "telegram"
                     ? "border-info scale-105 bg-base-200"
                     : "border-base-300 bg-base-100"
