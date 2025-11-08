@@ -13,6 +13,7 @@ import Footer from "../components/LandingPage/Footer";
 import ProtectedRoute from "../routes/ProtectedRoute";
 import { useAppContext } from "../context/AppContext";
 import { useUser } from "../context/UserContext";
+import { useSiteStore } from "../stores/siteStore";
 import AOS from "aos";
 
 const Beranda = lazy(() => import("../components/LandingPage/Beranda"));
@@ -59,7 +60,12 @@ function AppLandingPage() {
   const { isSiteDataLoading } = useAppContext();
   const { isUserLoading } = useUser();
 
+  const { fetchSiteData } = useSiteStore();
   const aosInitCalled = useRef(false);
+
+  useEffect(() => {
+    fetchSiteData();
+  }, [fetchSiteData]);
 
   useEffect(() => {
     const hash = location.hash;
