@@ -112,7 +112,7 @@ function Hero() {
       <SeoHelmet
         title="Mazda Nawallsyah"
         description="Portofolio pribadi Mazda Nawallsyah, Web Developer MERN Stack."
-        imageUrl={heroImage} 
+        imageUrl={heroImage}
         url="/"
       />
 
@@ -132,9 +132,10 @@ function Hero() {
                 alt="Foto Mazda Nawallsyah"
                 fetchPriority="high"
                 decoding="async"
+                loading="eager"
                 width="288"
                 height="288"
-                className={`w-full h-full object-cover transition-all duration-300 ease-in-out cursor-pointer ${
+                className={`w-[288px] h-[288px] object-cover transition-all duration-300 ease-in-out cursor-pointer ${
                   imageLoaded
                     ? "opacity-100 group-hover:scale-115"
                     : "opacity-0"

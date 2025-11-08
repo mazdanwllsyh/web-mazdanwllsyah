@@ -40,6 +40,10 @@
   themes: all;
 }
 
+img {
+  aspect-ratio: attr(width) / attr(height);
+}
+
 /* TRANSISI or PRE-LOADING */
 @keyframes zoom-in-out {
   0%,
@@ -81,7 +85,7 @@
 
 /* SWAL */
 .swal2-container {
-  z-index: 9998 !important; 
+  z-index: 9998 !important;
 }
 
 .swal2-popup {
@@ -89,7 +93,7 @@
 }
 
 .swal2-popup.swal2-popup-bordered {
-  border: 3px solid hsl(var(--p)); 
+  border: 3px solid hsl(var(--p));
 }
 
 /* HERO */

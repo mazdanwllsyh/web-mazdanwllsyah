@@ -7,7 +7,6 @@ import { useAppContext } from "../../context/AppContext";
 import useCustomSwals from "../../hooks/useCustomSwals";
 import instance from "../../utils/axios"; //
 
-// --- PERBAIKAN 1: FloatingLabelInput DIKEMBALIKAN ---
 const FloatingLabelInput = ({
   id,
   label,
@@ -37,7 +36,6 @@ const FloatingLabelInput = ({
     </label>
   </div>
 );
-// --- BATAS PERBAIKAN 1 ---
 
 function LoginPage() {
   const { siteData } = useAppContext();
@@ -54,7 +52,7 @@ function LoginPage() {
   };
 
   const handleLoginSuccess = (user) => {
-    login(user); 
+    login(user);
     const isAdmin = user.role === "admin" || user.role === "superAdmin";
     const destination = isAdmin ? "/dashboard" : "/profil";
     navigate(destination);
@@ -70,7 +68,7 @@ function LoginPage() {
       });
 
       const user = response.data.user;
-      login(user); 
+      login(user);
       await showSuccessSwal(
         `Selamat Datang, ${user.fullName}!`,
         "Login berhasil."
@@ -113,22 +111,31 @@ function LoginPage() {
   };
 
   useEffect(() => {
+    const loadGsiScript = () => {
+      const script = document.createElement("script");
+      script.src = "https://accounts.google.com/gsi/client";
+      script.async = true;
+      script.defer = true;
+      document.body.appendChild(script);
+    };
+    if (window.location.pathname === "/signin") loadGsiScript();
+  }, []);
+
+  useEffect(() => {
     if (window.google) {
       window.google.accounts.id.initialize({
         client_id: import.meta.env.VITE_APP_GOOGLE_CLIENT_ID,
         callback: handleGoogleLogin,
-        auto_select: true, // Mencoba login otomatis jika user sudah pernah login
+        auto_select: true, 
       });
 
-      // Tampilkan pop-up FedCM
       window.google.accounts.id.prompt((notification) => {
         if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-          // (Opsional) Log jika pop-up gagal muncul
-          console.log("FedCM prompt tidak ditampilkan.");
+          console.log("FedCM tidak dapat ditampilkan.");
         }
       });
     }
-  }, []); // <-- Dependensi kosong, hanya berjalan sekali
+  }, []); 
 
   return (
     <div className="min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center bg-base-100 px-4 py-8">
@@ -157,25 +164,20 @@ function LoginPage() {
 
           <div className="divider my-2"></div>
 
-          {/* --- PERBAIKAN 3: Tombol Google & Divider "ATAU" DIHAPUS --- */}
-          {/* <div id="googleSignInButton" ...></div> */}
-          {/* <div className="divider">ATAU</div> */}
-
-          {/* Input Email (Sekarang di atas) */}
           <div className="relative form-control mt-3">
-            <FloatingLabelInput // <-- Menggunakan komponen yang dikembalikan
+            <FloatingLabelInput 
               id="emailLogin"
               label="Email"
               type="text"
               value={email}
-              onChange={(e) => setEmail(e.target.value)} // <-- Bug 'setemail' diperbaiki
+              onChange={(e) => setEmail(e.target.value)} 
               name="email"
             />
           </div>
 
           {/* Input Password */}
           <div className="relative form-control mt-3">
-            <FloatingLabelInput // <-- Menggunakan komponen yang dikembalikan
+            <FloatingLabelInput 
               id="passwordLogin"
               label="Password"
               type={showPassword ? "text" : "password"}
@@ -183,7 +185,6 @@ function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               name="password"
             />
-            {/* Tombol Show/Hide */}
             <button
               type="button"
               onClick={togglePasswordVisibility}
