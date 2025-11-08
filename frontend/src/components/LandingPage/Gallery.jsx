@@ -106,7 +106,7 @@ function Gallery() {
           projects?.[0]?.imageUrl ||
           "https://res.cloudinary.com/dk0yjrhvx/image/upload/v1759605657/member_photos/jbsfiyuahppa3nrckdk4.webp"
         }
-        url="/#galeri"
+        url="/"
       />
 
       <div className="container mx-auto px-4">

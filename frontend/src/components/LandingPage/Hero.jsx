@@ -113,7 +113,7 @@ function Hero() {
         title="Mazda Nawallsyah"
         description="Portofolio pribadi Mazda Nawallsyah, Web Developer MERN Stack."
         imageUrl={heroImage} 
-        url="/#hero"
+        url="/"
       />
 
       <div className="hero-content flex flex-col lg:flex-row-reverse items-center justify-between w-full max-w-6xl mx-auto px-4">
