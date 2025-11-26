@@ -4,7 +4,7 @@ import AOS from "aos";
 import { usePagination } from "../../hooks/usePagination";
 import { usePortfolioData } from "../../context/PortofolioDataContext";
 import { transformCloudinaryUrl } from "../../utils/imageHelper";
-import { Helmet } from "react-helmet-async"; 
+import { Helmet } from "react-helmet-async";
 
 const GallerySkeleton = ({ count = 3 }) => (
   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto hover:cursor-wait">
@@ -176,7 +176,7 @@ function Gallery() {
                       ${transformCloudinaryUrl(project.imageUrl, 800, 800)} 800w
                     `}
                     sizes="(max-width: 640px) 480px, 800px"
-                    alt={`Preview proyek ${project.title}`} 
+                    alt={`Preview proyek ${project.title}`}
                     width="800"
                     height="800"
                     loading="lazy"
@@ -217,6 +217,7 @@ function Gallery() {
                           Kunjungi
                         </a>
                       )}
+
                       {project.sourceUrl && project.sourceUrl !== "#" && (
                         <a
                           href={project.sourceUrl}
@@ -229,6 +230,22 @@ function Gallery() {
                           Source Code
                         </a>
                       )}
+
+                      {(!project.demoUrl || project.demoUrl === "#") &&
+                        (!project.sourceUrl || project.sourceUrl === "#") && (
+                          <div
+                            className="tooltip tooltip-bottom"
+                            data-tip="Proyek ini masih tahap pengembangan"
+                          >
+                            <button className="btn btn-sm btn-ghost border-white/20 text-white/70 btn-disabled cursor-not-allowed">
+                              <Icon
+                                icon="mdi:progress-wrench"
+                                className="w-4 h-4 mr-1"
+                              />
+                              Sedang dalam Pengembangan
+                            </button>
+                          </div>
+                        )}
                     </div>
                   </div>
                 </figure>
