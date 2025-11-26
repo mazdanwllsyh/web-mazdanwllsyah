@@ -219,7 +219,6 @@ function Profile() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            {/* Kolom Kiri: Foto & Navigasi */}
             <div className="lg:col-span-4 mb-4 lg:mb-0 order-1 lg:order-1">
               <div
                 className="card bg-base-100 shadow-md border border-base-200"
@@ -265,7 +264,6 @@ function Profile() {
                 </div>
               </div>
 
-              {/* --- PERBAIKAN: Tombol Navigasi Admin & Logout --- */}
               <div className="hidden lg:block text-center mt-3 space-y-3">
                 {isAdmin && (
                   <Link to="/dashboard" className="btn btn-neutral w-full">
@@ -274,7 +272,6 @@ function Profile() {
                   </Link>
                 )}
 
-                {/* Tombol Logout (Tetap di sini) */}
                 <button
                   className="btn btn-error w-full text-white"
                   onClick={handleSignOut}
@@ -283,6 +280,31 @@ function Profile() {
                   Logout
                 </button>
               </div>
+
+              {!isEditing && (
+                <div className="lg:hidden w-full mt-3">
+                  {isAdmin && (
+                    <Link
+                      to="/dashboard"
+                      className="btn btn-neutral w-full mb-3"
+                    >
+                      <Icon
+                        icon="mdi:view-dashboard-outline"
+                        className="mr-2"
+                      />
+                      Ke Dashboard
+                    </Link>
+                  )}
+                  <button
+                    type="button"
+                    className="btn btn-error w-full text-white"
+                    onClick={handleSignOut}
+                  >
+                    <Icon icon="mdi:logout" className="mr-2" />
+                    Logout
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Kolom Kanan: Form Data Diri */}
@@ -307,11 +329,10 @@ function Profile() {
                       id="fullName"
                       name="fullName"
                       placeholder=" "
-                      className={`input input-bordered w-full pt-4 peer text-base ${
-                        !isEditing
+                      className={`input input-bordered w-full pt-4 peer text-base ${!isEditing
                           ? "disabled:bg-base-100 disabled:text-base-content/70 disabled:border-base-300"
                           : ""
-                      }`}
+                        }`}
                       value={profileData.fullName}
                       onChange={handleInputChange}
                       disabled={!isEditing}
@@ -367,11 +388,11 @@ function Profile() {
                         id="phone"
                         name="phone"
                         placeholder=" "
-                        className={`input input-bordered w-full pt-4 peer text-base ${
-                          !isEditing
+                        autoComplete="tel"
+                        className={`input input-bordered w-full pt-4 peer text-base ${!isEditing
                             ? "disabled:bg-base-100 disabled:text-base-content/70 disabled:border-base-300"
                             : ""
-                        }`}
+                          }`}
                         value={profileData.phone}
                         onChange={handleInputChange}
                         disabled={!isEditing}
@@ -394,11 +415,10 @@ function Profile() {
                     </label>
                     <select
                       name="gender"
-                      className={`select select-bordered w-full text-base ${
-                        !isEditing
+                      className={`select select-bordered w-full text-base text-center ${!isEditing
                           ? "disabled:bg-base-100 disabled:text-base-content/70 disabled:border-base-300"
                           : ""
-                      }`}
+                        }`}
                       value={profileData.gender || ""}
                       onChange={handleInputChange}
                       disabled={!isEditing}
@@ -483,11 +503,9 @@ function Profile() {
                     </div>
                   )}
 
-                  {/* Tombol Aksi */}
                   <div className="mt-6 flex flex-col items-center gap-2">
                     {isEditing ? (
                       <div className="flex flex-col md:flex-row gap-2 w-full">
-                        {/* Tombol Batal (KIRI di desktop) */}
                         <button
                           type="button"
                           onClick={handleCancelEdit}
@@ -497,7 +515,6 @@ function Profile() {
                           <Icon icon="mdi:close-circle" className="mr-2" />
                           Batal Edit
                         </button>
-                        {/* Tombol Simpan (KANAN di desktop) */}
                         <button
                           type="button"
                           onClick={handleSaveChanges}
@@ -521,32 +538,6 @@ function Profile() {
                         <Icon icon="mdi:pencil" className="mr-2" />
                         Edit Data
                       </button>
-                    )}
-                    {/* Tombol Logout (Mobile) */}
-                    {!isEditing && (
-                      <div className="lg:hidden w-full mt-3">
-                        {/* TOMBOL BARU (Mobile): Hanya muncul jika admin */}
-                        {isAdmin && (
-                          <Link
-                            to="/dashboard"
-                            className="btn btn-neutral w-full mb-3"
-                          >
-                            <Icon
-                              icon="mdi:view-dashboard-outline"
-                              className="mr-2"
-                            />
-                            Ke Dashboard
-                          </Link>
-                        )}
-                        <button
-                          type="button"
-                          className="btn btn-error w-full text-white"
-                          onClick={handleSignOut}
-                        >
-                          <Icon icon="mdi:logout" className="mr-2" />
-                          Logout
-                        </button>
-                      </div>
                     )}
                   </div>
                 </form>
