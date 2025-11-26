@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { HashLink } from "react-router-hash-link";
 import { Icon } from "@iconify/react";
 import SeoHelmet from "../SEOHelmet";
@@ -9,12 +9,8 @@ import AOS from "aos";
 function About() {
   const [loading, setLoading] = useState(true);
   const { siteData } = useAppContext();
-
   const { historyData, projects, sertifikatData } = usePortfolioData();
-
   const profileImages = siteData?.profileImages || [];
-  useEffect(() => {}, [profileImages, loading]);
-
   const [currentIndices, setCurrentIndices] = useState([0, 1, 2]);
 
   useEffect(() => {
@@ -23,53 +19,21 @@ function About() {
   }, []);
 
   useEffect(() => {
-    if (!loading) {
-      AOS.refresh();
-      console.log("AOS refreshed in About");
-    }
+    if (!loading) AOS.refresh();
   }, [loading]);
 
   useEffect(() => {
     if (profileImages.length > 1 && !loading) {
       const intervalId = setInterval(() => {
-        setCurrentIndices((prevIndices) => {
-          const nextIndex0 = (prevIndices[0] + 1) % profileImages.length;
-          const nextIndex1 = (prevIndices[1] + 1) % profileImages.length;
-          const nextIndex2 = (prevIndices[2] + 1) % profileImages.length;
-          return [nextIndex0, nextIndex1, nextIndex2];
-        });
-      }, 8000);
-
+        setCurrentIndices((prev) => [
+          (prev[0] + 1) % profileImages.length,
+          (prev[1] + 1) % profileImages.length,
+          (prev[2] + 1) % profileImages.length,
+        ]);
+      }, 7700);
       return () => clearInterval(intervalId);
     }
   }, [profileImages.length, loading]);
-
-  const stats = useMemo(() => {
-    const experienceCount = historyData.experience?.length || 0;
-    const projectCount = projects?.length || 0;
-    const sertifikatCount = sertifikatData?.length || 0;
-
-    return [
-      {
-        icon: "mdi:briefcase-check",
-        value: `${experienceCount}`,
-        label: "Pengalaman",
-        link: "/#histori",
-      },
-      {
-        icon: "mdi:flask",
-        value: `${projectCount}`,
-        label: "Proyek",
-        link: "/#galeri",
-      },
-      {
-        icon: "mdi:certificate",
-        value: `${sertifikatCount}`,
-        label: "Sertifikat",
-        link: "/sertifikasi",
-      },
-    ];
-  }, [historyData, projects, sertifikatData]);
 
   const PhotoSkeleton = () => (
     <div className="flex flex-col items-center lg:items-center w-full hover:cursor-wait">
@@ -108,20 +72,42 @@ function About() {
     </div>
   );
 
+  const stats = useMemo(() => {
+    return [
+      {
+        icon: "mdi:briefcase-check",
+        value: `${historyData.experience?.length || 0}`,
+        label: "Pengalaman",
+        link: "/#histori",
+      },
+      {
+        icon: "mdi:flask",
+        value: `${projects?.length || 0}`,
+        label: "Proyek",
+        link: "/#galeri",
+      },
+      {
+        icon: "mdi:certificate",
+        value: `${sertifikatData?.length || 0}`,
+        label: "Sertifikat",
+        link: "/sertifikasi",
+      },
+    ];
+  }, [historyData, projects, sertifikatData]);
+
+  const handleStatClick = (label) => {
+    if (label === "Pengalaman") {
+      localStorage.setItem("activeHistoryTab", "pengalaman");
+      window.dispatchEvent(new Event("changeHistoryTab"));
+    }
+  };
+
   return (
     <div className="py-16 bg-base-100 text-base-content" id="tentang">
-      <SeoHelmet
-        title="Tentang Saya"
-        description={
-          siteData.aboutParagraph
-            ? siteData.aboutParagraph.substring(0, 160)
-            : "Pelajari lebih lanjut tentang saya, pengalaman, dan proyek."
-        }
-        url="/tentang"
-      />
+      <SeoHelmet />
+
       <div className="container mx-auto px-4">
         <div className="flex flex-col items-center lg:grid lg:grid-cols-2 lg:gap-6 lg:items-center">
-          {/* Elemen #1: Judul */}
           <div
             className="w-full order-1 lg:order-none lg:col-start-2 text-center lg:text-left max-w-lg"
             data-aos="fade-left"
@@ -153,14 +139,13 @@ function About() {
                 {profileImages.length > 2 && (
                   <div
                     className="card absolute inset-0 bg-base-300 shadow-xl transform -rotate-9 translate-x-1 translate-y-2 overflow-hidden"
-                    aria-hidden="true"
                     data-aos="fade-right"
                     data-aos-delay="200"
                   >
                     <figure className="h-full w-full">
                       <img
                         src={profileImages[currentIndices[2]]}
-                        alt="Background image 3"
+                        alt="bg3"
                         className="w-full h-full object-cover"
                       />
                     </figure>
@@ -169,14 +154,13 @@ function About() {
                 {profileImages.length > 1 && (
                   <div
                     className="card absolute inset-0 bg-base-200 shadow-xl transform rotate-12 -translate-x-1 overflow-hidden"
-                    aria-hidden="true"
                     data-aos="fade-up-right"
                     data-aos-delay="520"
                   >
                     <figure className="h-full w-full">
                       <img
                         src={profileImages[currentIndices[1]]}
-                        alt="Background image 2"
+                        alt="bg2"
                         className="w-full h-full object-cover"
                       />
                     </figure>
@@ -191,7 +175,7 @@ function About() {
                     <figure className="h-full w-full">
                       <img
                         src={profileImages[currentIndices[0]]}
-                        alt="Foto Mazda Nawallsyah"
+                        alt="main"
                         className="w-full h-full object-cover"
                       />
                     </figure>
@@ -251,9 +235,10 @@ function About() {
               >
                 {stats.map((stat, index) => (
                   <HashLink
-                    to={stat.link}
                     key={stat.label}
-                    smooth={stat.link.startsWith("#")}
+                    to={stat.link}
+                    smooth={stat.link.startsWith("/#")}
+                    onClick={() => handleStatClick(stat.label)}
                     data-aos="fade-up"
                     data-aos-delay={100 + index * 100}
                     className="card bg-base-100 shadow-md border border-base-300 p-4 text-center hover:shadow-lg transition-all duration-300 hover:bg-base-200 hover:scale-[1.03] transform hover:cursor-pointer no-underline group focus:outline-none focus-within:scale-102"

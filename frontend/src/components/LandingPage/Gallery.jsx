@@ -3,8 +3,8 @@ import { Icon } from "@iconify/react";
 import AOS from "aos";
 import { usePagination } from "../../hooks/usePagination";
 import { usePortfolioData } from "../../context/PortofolioDataContext";
-import SeoHelmet from "../SEOHelmet";
 import { transformCloudinaryUrl } from "../../utils/imageHelper";
+import { Helmet } from "react-helmet-async"; 
 
 const GallerySkeleton = ({ count = 3 }) => (
   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto hover:cursor-wait">
@@ -61,11 +61,7 @@ function Gallery() {
 
   const { currentItems, PaginationComponent } = usePagination(
     filteredProjects,
-    {
-      sm: 2,
-      md: 4,
-      lg: 6,
-    }
+    { sm: 2, md: 4, lg: 6 }
   );
 
   useEffect(() => {
@@ -77,13 +73,11 @@ function Gallery() {
     if (!loading) AOS.refresh();
   }, [loading]);
 
-  // ⚠️ FIX: perbaiki scroll offset agar berhenti tepat di title (bukan di search bar)
   useEffect(() => {
     const hash = window.location.hash;
     if (hash === "#galeri" && sectionRef.current) {
-      // 🟩 NEW: hitung offset berdasar header tinggi (lebih akurat untuk mobile)
       const header = document.querySelector("header");
-      const headerOffset = header ? header.offsetHeight + 12 : 80; // tambahkan sedikit jarak ekstra
+      const headerOffset = header ? header.offsetHeight + 12 : 80;
       const elementPosition =
         sectionRef.current.getBoundingClientRect().top + window.scrollY;
       const offsetPosition = elementPosition - headerOffset;
@@ -93,21 +87,33 @@ function Gallery() {
     }
   }, []);
 
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: currentItems.map((project, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      item: {
+        "@type": "CreativeWork",
+        name: project.title,
+        description: project.description,
+        image: project.imageUrl,
+        url: project.demoUrl !== "#" ? project.demoUrl : window.location.href,
+      },
+    })),
+  };
+
   return (
     <div
       ref={sectionRef}
       className="py-12 min-h-screen flex flex-col items-center justify-center text-base-content"
       id="galeri"
     >
-      <SeoHelmet
-        title="Galeri Proyek"
-        description="Kumpulan proyek dan karya Mazda Nawallsyah dalam bidang web development."
-        imageUrl={
-          projects?.[0]?.imageUrl ||
-          "https://res.cloudinary.com/dk0yjrhvx/image/upload/v1759605657/member_photos/jbsfiyuahppa3nrckdk4.webp"
-        }
-        url="/"
-      />
+      <Helmet>
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
+      </Helmet>
 
       <div className="container mx-auto px-4">
         <div className="text-center mb-12" data-aos="fade-down">
@@ -160,17 +166,25 @@ function Gallery() {
                   tabIndex={0}
                 >
                   <img
-                    src={transformCloudinaryUrl(project.imageUrl, 480, 480)}
-                    alt={project.title}
-                    width="320"
-                    height="320"
+                    src={transformCloudinaryUrl(project.imageUrl, 800, 800)}
+                    srcSet={`
+                      ${transformCloudinaryUrl(
+                        project.imageUrl,
+                        480,
+                        480
+                      )} 480w,
+                      ${transformCloudinaryUrl(project.imageUrl, 800, 800)} 800w
+                    `}
+                    sizes="(max-width: 640px) 480px, 800px"
+                    alt={`Preview proyek ${project.title}`} 
+                    width="800"
+                    height="800"
                     loading="lazy"
                     decoding="async"
                     fetchpriority="low"
                     className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105 group-focus-within:scale-105"
                   />
 
-                  {/* ⚠️ FIX: overlay sekarang menutupi penuh gambar di semua ukuran (touch + hover) */}
                   <div
                     className="absolute inset-0 bg-neutral bg-opacity-80 backdrop-blur-sm opacity-0 
                                group-hover:opacity-100 group-focus-within:opacity-100
@@ -180,7 +194,9 @@ function Gallery() {
                     <h3 className="text-xl font-bold font-display mb-2">
                       {project.title}
                     </h3>
-                    <p className="text-sm mb-4">{project.description}</p>
+                    <p className="text-sm mb-4 line-clamp-3">
+                      {project.description}
+                    </p>
                     <div className="flex flex-wrap justify-center gap-1 mb-4">
                       {project.tags?.split(",").map((tag) => (
                         <div key={tag} className="badge badge-accent text-xs">
@@ -188,7 +204,6 @@ function Gallery() {
                         </div>
                       ))}
                     </div>
-
                     <div className="card-actions justify-center">
                       {project.demoUrl && project.demoUrl !== "#" && (
                         <a
@@ -196,6 +211,7 @@ function Gallery() {
                           target="_blank"
                           rel="noreferrer"
                           className="btn btn-primary btn-sm"
+                          aria-label={`Kunjungi demo ${project.title}`}
                         >
                           <Icon icon="mdi:web" className="w-4 h-4 mr-1" />
                           Kunjungi
@@ -207,24 +223,11 @@ function Gallery() {
                           target="_blank"
                           rel="noreferrer"
                           className="btn btn-secondary btn-sm"
+                          aria-label={`Lihat source code ${project.title}`}
                         >
                           <Icon icon="mdi:github" className="w-4 h-4 mr-1" />
                           Source Code
                         </a>
-                      )}
-                      {!project.demoUrl && !project.sourceUrl && (
-                        <div
-                          className="tooltip"
-                          data-tip="Sedang dalam pengembangan"
-                        >
-                          <div className="btn btn-info btn-sm opacity-65 cursor-not-allowed">
-                            <Icon
-                              icon="mdi:web-clock"
-                              className="w-4 h-4 mr-1"
-                            />
-                            Ongoing
-                          </div>
-                        </div>
                       )}
                     </div>
                   </div>

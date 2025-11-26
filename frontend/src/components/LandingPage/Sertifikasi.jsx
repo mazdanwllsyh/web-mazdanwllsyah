@@ -3,7 +3,7 @@ import { Icon } from "@iconify/react";
 import AOS from "aos";
 import { Viewer, Worker } from "@react-pdf-viewer/core";
 import { useAppContext } from "../../context/AppContext.jsx";
-import SeoHelmet from "../SEOHelmet.jsx";
+import { Helmet } from "react-helmet-async";
 import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
 import { usePagination } from "../../hooks/usePagination";
 import { usePortfolioData } from "../../context/PortofolioDataContext.jsx";
@@ -30,7 +30,7 @@ function Sertifikasi() {
 
   const { sertifikatData, categories, isSertifikatLoading } =
     usePortfolioData();
-  const { themeMode } = useAppContext();
+  const { themeMode } = useAppContext(); 
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCert, setSelectedCert] = useState(null);
@@ -52,36 +52,25 @@ function Sertifikasi() {
     );
   }, [searchTerm, activeCategory, sertifikatData]);
 
-  const paginationConfig = {
-    sm: 3,
-    md: 4,
-    lg: 6,
-  };
+  const paginationConfig = { sm: 3, md: 4, lg: 6 };
 
   const { currentItems, PaginationComponent } = usePagination(
     filteredSertifikat,
     paginationConfig
   );
 
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
-  };
-
+  const handleSearchChange = (event) => setSearchTerm(event.target.value);
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
-
   const workerUrl = "workers/pdf.worker.min.js";
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1500);
+    const timer = setTimeout(() => setLoading(false), 1500);
     return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
     if (!loading) {
       AOS.refresh();
-      console.log("AOS refreshed in Sertifikasi");
     }
   }, [loading]);
 
@@ -92,17 +81,50 @@ function Sertifikasi() {
     }
   };
 
-  const handleCloseModal = () => {
-    setSelectedCert(null);
+  const handleCloseModal = () => setSelectedCert(null);
+
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Sertifikasi & Penghargaan",
+    description:
+      "Koleksi sertifikat profesional dan pencapaian akademis Mazda Nawallsyah",
+    itemListElement: sertifikatData.map((cert, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      item: {
+        "@type": "EducationalOccupationalCredential", 
+        name: cert.title,
+        credentialCategory: "Certificate",
+        recognizedBy: {
+          "@type": "Organization",
+          name: cert.issuer,
+        },
+        image: cert.imageUrl,
+        url: window.location.href, 
+      },
+    })),
   };
 
   return (
     <>
-      <SeoHelmet
-        title="Sertifikasi"
-        description="Lihat koleksi sertifikat profesional dan pencapaian akademis saya di bidang pengembangan web dan teknologi."
-        url="/sertifikasi"
-      />
+      <Helmet>
+        <title>Sertifikat yang Diperoleh | Mazda Nawallsyah</title>
+        <meta
+          name="description"
+          content="Lihat koleksi sertifikat profesional dan pencapaian akademis Mazda Nawallsyah di bidang pengembangan web, React, dan teknologi."
+        />
+        <meta property="og:title" content="Sertifikasi | Mazda Nawallsyah" />
+        <meta
+          property="og:description"
+          content="Lihat koleksi sertifikat profesional dan pencapaian akademis saya."
+        />
+
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
+      </Helmet>
+
       <div
         className="py-12 min-h-screen flex flex-col text-base-content"
         id="sertifikasi"
@@ -208,37 +230,45 @@ function Sertifikasi() {
 
       <dialog
         id="sertifikasi_modal"
-        className="modal modal-middle"
+        className="modal sm:modal-middle"
         onClose={handleCloseModal}
       >
-        <div className="modal-box w-11/12 max-w-4xl h-auto">
-          <form method="dialog" className="absolute right-4 top-4 z-10">
-            <button className="btn btn-sm btn-circle btn-ghost">✕</button>
-          </form>
-          {selectedCert && (
-            <h3 className="font-bold text-lg mb-4">{selectedCert.title}</h3>
-          )}
-          <div className="h-[75vh] overflow-y-auto">
+        <div className="modal-box w-full sm:w-11/12 max-w-4xl p-0 overflow-hidden bg-base-100 rounded-t-2xl sm:rounded-2xl relative">
+          <div className="flex justify-between items-center p-4 bg-base-200 sticky top-0 z-20 shadow-sm">
+            <h3 className="font-bold text-md sm:text-lg line-clamp-1 flex-1 mr-4">
+              {selectedCert?.title || "Detail Sertifikat"}
+            </h3>
+            <form method="dialog">
+              <button className="btn btn-sm btn-circle btn-ghost">✕</button>
+            </form>
+          </div>
+
+          <div className="w-full bg-base-300/10 flex items-center justify-center p-0 sm:p-4">
             {selectedCert && selectedCert.type === "image" && (
               <img
                 src={selectedCert.fileUrl}
                 alt={selectedCert.title}
-                className="w-full h-auto rounded-lg"
+                className="w-full h-auto max-h-[60vh] sm:max-h-[80vh] object-contain mx-auto rounded-none sm:rounded-lg"
               />
             )}
+
             {selectedCert && selectedCert.type === "pdf" && (
-              <Worker workerUrl={workerUrl}>
-                <div style={{ height: "100%", width: "100%" }}>
-                  <Viewer
-                    fileUrl={selectedCert.fileUrl}
-                    plugins={[defaultLayoutPluginInstance]}
-                    theme={themeMode}
-                  />
-                </div>
-              </Worker>
+              <div className="w-full h-[350px] sm:h-[75vh] bg-white">
+                <Worker workerUrl={workerUrl}>
+                  <div style={{ height: "100%", width: "100%" }}>
+                    <Viewer
+                      fileUrl={selectedCert.fileUrl}
+                      plugins={[defaultLayoutPluginInstance]}
+                      theme={themeMode}
+                      defaultScale={1} 
+                    />
+                  </div>
+                </Worker>
+              </div>
             )}
           </div>
         </div>
+
         <form method="dialog" className="modal-backdrop">
           <button>close</button>
         </form>
