@@ -9,7 +9,7 @@ const defaultImageUrl =
 const siteUrl = "https://mazdaweb.bejalen.com";
 
 const pageTitles = {
-  "/": "Utama",
+  "/": "Website Portofolio",
   "/tentang": "Tentang Saya",
   "/sertifikasi": "Sertifikat yang dimiliki",
   "/donasi": "Donasi Yuk",
@@ -45,8 +45,8 @@ function SeoHelmet({ title, description, imageUrl, url }) {
 
   const pageTitle =
     activeSection || title
-      ? `${activeSection || title} | ${siteData.brandNameShort} (Mas mas Ambarawa)`
-      : `${siteData.brandNameShort} - MERN Stack Developer USM`;
+      ? `${activeSection || title} | ${siteData.brandNameShort} (Newbie Front-End Developer)`
+      : `${siteData.brandNameShort} - MERN Stack Developer Enthusiast`;
 
   const dynamicDescription = useMemo(() => {
     if (description) return description;
@@ -61,7 +61,7 @@ function SeoHelmet({ title, description, imageUrl, url }) {
       baseDesc = firstSentence ? firstSentence + "." : `Portofolio ${siteData.brandName}.`;
     }
 
-    return `${baseDesc} Mahasiswa Teknik Informatika USM (NIM G.211.21.0082). Dikenal sebagai Milord de Rafford / Mazda Bejalen.`;
+    return `${baseDesc} Fresh Graduate S1 - Teknik Informatika USM. Dikenal sebagai Mazda Nawallsyah or Milord de Rafford a.k.a Mazda Bejalen.`;
   }, [description, siteData, pathname]);
 
   const pageImage = imageUrl || defaultImageUrl;
@@ -69,14 +69,15 @@ function SeoHelmet({ title, description, imageUrl, url }) {
   const keywordsList = [
     "Mazda Nawallsyah",
     "Nawallsyah",
-    "G.211.21.0082",      
-    "G211210082",         
-    "Milord de Rafford",  
-    "Mas mas Ambarawa",   
+    "MERN Stack Enthusiast",
+    "G.211.21.0082",
+    "G211210082",
+    "Milord de Rafford",
+    "Mas mas Ambarawa",
     "Mazda Bejalen",
-    "MERN USM TI Mazda",
-    "Frontend Developer USM",
-    "Universitas Semarang",
+    "MERN Mazda",
+    "Frontend Developer",
+    "Fresh Graduate Universitas Semarang",
     "Teknik Informatika USM"
   ].join(", ");
 
@@ -85,7 +86,7 @@ function SeoHelmet({ title, description, imageUrl, url }) {
     "@type": "Person",
     "name": siteData.brandNameShort,
     "alternateName": ["Nawallsyah", "Milord de Rafford", "Mas mas Ambarawa", "Mazda Bejalen"],
-    "identifier": "G.211.21.0082", 
+    "identifier": "G.211.21.0082",
     "jobTitle": siteData.jobTitle,
     "alumniOf": {
       "@type": "CollegeOrUniversity",
