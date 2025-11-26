@@ -170,11 +170,9 @@ function EditGallery() {
   };
 
   const handleProjectSubmit = async (e) => {
-    // <-- jadi async
     e.preventDefault();
     setIsSaving(true);
 
-    // Buat FormData
     const formData = new FormData();
     formData.append("title", projectForm.title);
     formData.append("description", projectForm.description);
@@ -183,7 +181,6 @@ function EditGallery() {
     formData.append("tags", projectForm.tags);
 
     if (imageFile) {
-      // "thumbnail" harus cocok dgn router backend
       formData.append("thumbnail", imageFile);
     }
 
@@ -321,9 +318,9 @@ function EditGallery() {
                           proj.tags.split(",").map((tag) => (
                             <div
                               key={tag}
-                              className="badge badge-accent text-xs"
+                              className="badge badge-accent text-xs h-auto py-1 whitespace-normal text-center"
                             >
-                              {tag}
+                              {tag.trim()} 
                             </div>
                           ))}
                       </div>
@@ -449,7 +446,7 @@ function EditGallery() {
                 <button
                   type="submit"
                   className="btn btn-primary"
-                  disabled={isSaving} 
+                  disabled={isSaving}
                 >
                   {isSaving ? (
                     <span className="loading loading-spinner loading-xs"></span>

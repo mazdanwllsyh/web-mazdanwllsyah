@@ -56,7 +56,7 @@ function Header() {
                 smooth
                 className={`font-base px-3 py-2 flex items-center gap-1 relative rounded-md hover:bg-transparent
                            after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full
-                           after:origin-bottom-left after:scale-x-0 after:bg-neutral
+                           after:origin-bottom-left after:scale-x-0 after:bg-secondary
                            after:transition-transform after:duration-400 after:ease-out
                            hover:after:scale-x-100`}
               >

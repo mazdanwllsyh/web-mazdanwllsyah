@@ -9,10 +9,10 @@ const defaultImageUrl =
 const siteUrl = "https://mazdaweb.bejalen.com";
 
 const pageTitles = {
-  "/": "Beranda",
+  "/": "Utama",
   "/tentang": "Tentang Saya",
-  "/sertifikasi": "Sertifikasi",
-  "/donasi": "Donasi",
+  "/sertifikasi": "Sertifikat yang dimiliki",
+  "/donasi": "Donasi Yuk",
 };
 
 const sectionTitles = {
@@ -34,8 +34,7 @@ function SeoHelmet({ title, description, imageUrl, url }) {
   useEffect(() => {
     if (hash && sectionTitles[hash]) {
       setActiveSection(sectionTitles[hash]);
-    }
-    else if (pageTitles[pathname]) {
+    } else if (pageTitles[pathname]) {
       setActiveSection(pageTitles[pathname]);
     } else {
       setActiveSection("");
@@ -46,65 +45,81 @@ function SeoHelmet({ title, description, imageUrl, url }) {
 
   const pageTitle =
     activeSection || title
-      ? `${activeSection || title} | ${siteData.brandNameShort}`
-      : `${siteData.brandNameShort} - ${siteData.jobTitle}`;
+      ? `${activeSection || title} | ${siteData.brandNameShort} (Mas mas Ambarawa)`
+      : `${siteData.brandNameShort} - MERN Stack Developer USM`;
 
   const dynamicDescription = useMemo(() => {
     if (description) return description;
 
     const fullAbout = siteData?.aboutParagraph || "";
 
+    let baseDesc = "";
     if (pathname === "/tentang") {
-      return fullAbout.substring(0, 300); 
+      baseDesc = fullAbout.substring(0, 250);
+    } else {
+      const firstSentence = fullAbout.split(".")[0];
+      baseDesc = firstSentence ? firstSentence + "." : `Portofolio ${siteData.brandName}.`;
     }
 
-    const firstSentence = fullAbout.split(".")[0];
-    const shortDesc = firstSentence
-      ? firstSentence + "."
-      : `Portofolio ${siteData.brandName}.`;
-
-    return `${shortDesc} ${
-      siteData.jobTitle
-    } berbasis di ${siteData.location.replace("Powered by ", "")}.`;
+    return `${baseDesc} Mahasiswa Teknik Informatika USM (NIM G.211.21.0082). Dikenal sebagai Milord de Rafford / Mazda Bejalen.`;
   }, [description, siteData, pathname]);
 
   const pageImage = imageUrl || defaultImageUrl;
+
+  const keywordsList = [
+    "Mazda Nawallsyah",
+    "Nawallsyah",
+    "G.211.21.0082",      
+    "G211210082",         
+    "Milord de Rafford",  
+    "Mas mas Ambarawa",   
+    "Mazda Bejalen",
+    "MERN USM TI Mazda",
+    "Frontend Developer USM",
+    "Universitas Semarang",
+    "Teknik Informatika USM"
+  ].join(", ");
+
+  const schemaPerson = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": siteData.brandNameShort,
+    "alternateName": ["Nawallsyah", "Milord de Rafford", "Mas mas Ambarawa", "Mazda Bejalen"],
+    "identifier": "G.211.21.0082", 
+    "jobTitle": siteData.jobTitle,
+    "alumniOf": {
+      "@type": "CollegeOrUniversity",
+      "name": "Universitas Semarang (USM)"
+    },
+    "url": siteUrl,
+    "description": dynamicDescription
+  };
 
   return (
     <Helmet>
       <title>{pageTitle}</title>
       <meta name="description" content={dynamicDescription} />
 
+      <meta name="keywords" content={keywordsList} />
+
       <link rel="canonical" href={canonicalUrl} />
       <meta name="robots" content="index, follow" />
 
       {/* Open Graph */}
-      <meta property="og:type" content="website" />
+      <meta property="og:type" content="profile" />
       <meta property="og:title" content={pageTitle} />
       <meta property="og:description" content={dynamicDescription} />
       <meta property="og:image" content={pageImage} />
       <meta property="og:url" content={canonicalUrl} />
       <meta property="og:site_name" content={siteData.brandNameShort} />
 
-      {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={pageTitle} />
       <meta name="twitter:description" content={dynamicDescription} />
       <meta name="twitter:image" content={pageImage} />
 
-      {/* Schema WebSite */}
       <script type="application/ld+json">
-        {JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "WebSite",
-          name: siteData.brandNameShort,
-          url: siteUrl,
-          description: dynamicDescription,
-          author: {
-            "@type": "Person",
-            name: siteData.brandNameShort,
-          },
-        })}
+        {JSON.stringify(schemaPerson)}
       </script>
     </Helmet>
   );

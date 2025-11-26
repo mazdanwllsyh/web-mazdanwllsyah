@@ -8,133 +8,178 @@
       (function () {
         try {
           const storedTheme = localStorage.getItem("theme");
-          if (storedTheme) {
-            document.documentElement.setAttribute("data-theme", storedTheme);
-            return;
-          }
-
           const osPrefersDark = window.matchMedia(
             "(prefers-color-scheme: dark)"
           ).matches;
 
-          const defaultTheme = osPrefersDark ? "synthwave" : "emerald";
-          document.documentElement.setAttribute("data-theme", defaultTheme);
+          let initialTheme = "emerald";
+
+          if (storedTheme) {
+            initialTheme = storedTheme;
+          } else if (osPrefersDark) {
+            initialTheme = "night";
+          }
+
+          document.documentElement.setAttribute("data-theme", initialTheme);
         } catch (e) {
-          document.documentElement.setAttribute("data-theme", "light");
+          console.log("Theme detection failed", e);
         }
       })();
     </script>
 
     <title>Mazda Nawallsyah - Portfolio Front-End Dev</title>
-    <meta
-      name="description"
-      content="Portofolio pribadi Mazda Nawallsyah, seorang Front-End Web Developer yang berfokus pada React, Node.js, dan Tailwind CSS."
-    />
-    <meta
-      name="keywords"
-      content="Mazda Nawallsyah, Nawallsyah, G211210082, Frontend Developer, Ambarawa, React, Tailwind, Milord de Rafford, Mas Mas Ambarawa, Mazda Keren, Mazda Bejalen"
-    />
-    <meta name="author" content="Mazda Nawallsyah" />
-    <meta name="robots" content="index, follow" />
-    <meta
-      name="google-site-verification"
-      content="xC078DXDZSS51W4HFcb-md_5jfB-gEW-NRdh5v_mdag"
-    />
-
-    <link rel="canonical" href="https://mazdaweb.bejalen.com/" />
-
-    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin />
-    <link rel="dns-prefetch" href="https://res.cloudinary.com" />
-    <link rel="preconnect" href="https://api.iconify.design" crossorigin />
-    <link rel="dns-prefetch" href="https://api.iconify.design" />
-    <link
-      rel="preconnect"
-      href="https://be-web-mazdanwllsyah.vercel.app"
-      crossorigin
-    />
-
-    <link
-      rel="preload"
-      as="font"
-      type="font/woff2"
-      crossorigin
-      href="/fonts/SFUIText-Regular.woff2"
-    />
-    <link
-      rel="preload"
-      as="font"
-      type="font/woff2"
-      crossorigin
-      href="/fonts/SFUIDisplay-Medium.woff2"
-    />
-    <link
-      rel="preload"
-      as="font"
-      type="font/woff2"
-      crossorigin
-      href="/fonts/SFUIDisplay-Bold.woff2"
-    />
-
-    <link rel="manifest" href="/manifest.json" />
-    <meta name="theme-color" content="#37cdbe" />
     <link
       rel="icon"
       type="image/png"
       href="https://res.cloudinary.com/dr7olcn4r/image/upload/v1761388118/croppedsebelumgembuldanmenjadijawir_cdep6a.png"
     />
-    <link
-      rel="apple-touch-icon"
-      href="https://res.cloudinary.com/dr7olcn4r/image/upload/v1761989348/portfolio_profile/portfolio_profile/MazdaN_Profile_Image_1761989345137.webp"
-    />
 
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://mazdaweb.bejalen.com/" />
-    <meta property="og:title" content="Mazda Nawallsyah - Portfolio Web" />
-    <meta
-      property="og:description"
-      content="Portofolio pribadi Mazda Nawallsyah, seorang Newbie Front-End Web Developer."
-    />
-    <meta
-      property="og:image"
-      content="https://res.cloudinary.com/dr7olcn4r/image/upload/v1761989348/portfolio_profile/portfolio_profile/MazdaN_Profile_Image_1761989345137.webp"
-    />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        overflow-x: hidden;
+      }
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://mazdaweb.bejalen.com/" />
-    <meta name="twitter:title" content="Mazda Nawallsyah - Portfolio Web" />
-    <meta
-      name="twitter:description"
-      content="Portofolio pribadi Mazda Nawallsyah, seorang Newbie Front-End Web Developer."
-    />
-    <meta
-      name="twitter:image"
-      content="https://res.cloudinary.com/dr7olcn4r/image/upload/v1761989565/portfolio_profile/portfolio_profile/MazdaN_Profile_Image_1761989561920.webp"
-    />
+      :root {
+        --bg-loading: #ffffff;
+        --text-loading: #333333;
+        --spinner-color: #10b981; 
+      }
 
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg-loading: #0f1729; 
+          --text-loading: #cbd5e1;
+          --spinner-color: #38bdf8; 
+        }
+      }
+
+      /* ---------------------------------------------------------
+         Background = base-100 tema
+         Spinner = primary color tema
+      --------------------------------------------------------- */
+
+      /* --- GROUP: LIGHT THEMES --- */
+      html[data-theme="emerald"] .loading-container {
+        background-color: #ffffff !important;
+        color: #333333 !important;
+        --spinner-override: #66cc8a;
+      }
+
+      html[data-theme="garden"] .loading-container {
+        background-color: #e9e7e7 !important; 
+        color: #1f2937 !important;
+        --spinner-override: #5c7f67; 
+      }
+
+      html[data-theme="light"] .loading-container {
+        background-color: #ffffff !important;
+        color: #1f2937 !important;
+        --spinner-override: #570df8; 
+      }
+
+      html[data-theme="corporate"] .loading-container {
+        background-color: #ffffff !important;
+        color: #1f2937 !important;
+        --spinner-override: #4b6bfb; 
+      }
+
+      /* --- GROUP: DARK THEMES --- */
+      html[data-theme="synthwave"] .loading-container {
+        background-color: #0a002f !important; 
+        color: #f9f9f9 !important;
+        --spinner-override: #e779c1; 
+      }
+
+      html[data-theme="night"] .loading-container {
+        background-color: #0f1729 !important; 
+        color: #cbd5e1 !important;
+        --spinner-override: #38bdf8; 
+      }
+
+      html[data-theme="dark"] .loading-container {
+        background-color: #1d232a !important; 
+        color: #a6adbb !important;
+        --spinner-override: #7480ff; 
+      }
+
+      html[data-theme="business"] .loading-container {
+        background-color: #212121 !important; 
+        color: #a6adbb !important;
+        --spinner-override: #1c4f82; 
+      }
+
+      html[data-theme="dim"] .loading-container {
+        background-color: #2a303c !important; 
+        color: #a6adbb !important;
+        --spinner-override: #9fe88d; 
+      }
+
+      html[data-theme="black"] .loading-container {
+        background-color: #000000 !important; 
+        color: #a6adbb !important;
+        --spinner-override: #333333; 
+      }
+
+      html[data-theme="abyss"] .loading-container {
+        background-color: #050505 !important; 
+        color: #cbd5e1 !important;
+        --spinner-override: #d926a9; 
+      }
+
+      .loading-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        width: 100vw;
+        font-family: system-ui, -apple-system, sans-serif;
+
+        background-color: var(--bg-loading);
+        color: var(--text-loading);
+        transition: background-color 0.2s ease;
+      }
+
+      .loading-spinner {
+        height: 3rem;
+        width: 3rem;
+        border-radius: 50%;
+        background-color: var(--spinner-override, var(--spinner-color));
+        animation: pulse 0.9s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        box-shadow: 0 0 15px var(--spinner-override, var(--spinner-color));
+      }
+
+      .loading-text {
+        margin-top: 1.5rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        opacity: 0.8;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.4;
+          transform: scale(0.85);
+        }
+      }
+    </style>
   </head>
+
   <body>
     <div id="root">
-      <div
-        style="
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          min-height: 100vh;
-          font-family: system-ui, sans-serif;
-        "
-      >
-        <span
-          style="
-            height: 2.2rem;
-            width: 2.2rem;
-            animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-            border-radius: 50%;
-            background-color: currentColor;
-          "
-        ></span>
-        <p style="margin-top: 1rem; font-weight: 600">Memuat...</p>
+      <div class="loading-container">
+        <span class="loading-spinner" aria-label="Loading"></span>
+        <p class="loading-text">Memuat Data...</p>
       </div>
     </div>
 
@@ -142,25 +187,20 @@
       <div
         style="
           display: flex;
-          flex-direction: column;
-          align-items: center;
+          height: 100vh;
           justify-content: center;
-          min-height: 100vh;
-          font-family: system-ui, sans-serif;
-          text-align: center;
-          padding: 1rem;
+          align-items: center;
+          background: #111;
+          color: #fff;
         "
       >
-        <h1>JavaScript Diperlukan</h1>
+        <h1>JavaScript Diperlukan!</h1>
         <p>
-          Website portofolio ini dibuat menggunakan ReactJS.
-          <br />
-          Anda harus mengaktifkan JavaScript di browser Anda untuk melihatnya,
-          Terimakasih atas pengertiannya.
+          Mohon aktifkan JavaScript pada web browser anda untuk melihat
+          portofolio Mazda Nawallsyah.
         </p>
       </div>
     </noscript>
-
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
