@@ -88,6 +88,7 @@ function SeoHelmet({ title, description, imageUrl, url }) {
     "alternateName": ["Nawallsyah", "Milord de Rafford", "Mas mas Ambarawa", "Mazda Bejalen"],
     "identifier": "G.211.21.0082",
     "jobTitle": siteData.jobTitle,
+    "image": pageImage,
     "alumniOf": {
       "@type": "CollegeOrUniversity",
       "name": "Universitas Semarang (USM)"
