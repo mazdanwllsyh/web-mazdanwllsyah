@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Icon } from "@iconify/react";
-import { usePortfolioData } from "../../context/PortofolioDataContext";
 import { useCustomToast } from "../../hooks/useCustomToast";
 import useCustomSwals from "../../hooks/useCustomSwals";
 import { usePagination } from "../../hooks/usePagination";
-import { useAppContext } from "../../context/AppContext.jsx";
+import { usePortfolioStore, categories } from "../../stores/portfolioStore"; 
+import { useSiteStore } from "../../stores/siteStore";
 import { Viewer, Worker } from "@react-pdf-viewer/core";
 import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
 
@@ -50,16 +50,15 @@ function EditSertifikat() {
     import("@react-pdf-viewer/default-layout/lib/styles/index.css");
   }, []);
 
-  const {
-    sertifikatData,
-    isSertifikatLoading,
-    categories,
-    addSertifikat,
-    updateSertifikat,
-    deleteSertifikat,
-  } = usePortfolioData();
+  const sertifikatData = usePortfolioStore((state) => state.sertifikatData);
+  const isSertifikatLoading = usePortfolioStore((state) => state.isSertifikatLoading);
+  const fetchSertifikat = usePortfolioStore((state) => state.fetchSertifikat);
+  const addSertifikat = usePortfolioStore((state) => state.addSertifikat);
+  const updateSertifikat = usePortfolioStore((state) => state.updateSertifikat);
+  const deleteSertifikat = usePortfolioStore((state) => state.deleteSertifikat);
 
-  const { themeMode } = useAppContext();
+  const themeMode = useSiteStore((state) => state.getThemeMode());
+  
   const { error: showErrorToast } = useCustomToast();
   const { showConfirmSwal, showSuccessSwal } = useCustomSwals();
 

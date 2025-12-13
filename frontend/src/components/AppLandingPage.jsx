@@ -11,9 +11,8 @@ import Transition from "./Transition";
 import Header from "../components/LandingPage/Header";
 import Footer from "../components/LandingPage/Footer";
 import ProtectedRoute from "../routes/ProtectedRoute";
-import { useAppContext } from "../context/AppContext";
-import { useUser } from "../context/UserContext";
 import { useSiteStore } from "../stores/siteStore";
+import { useAuth } from "../hooks/useAuth";
 import AOS from "aos";
 
 const Beranda = lazy(() => import("../components/LandingPage/Beranda"));
@@ -39,7 +38,7 @@ function NotFoundRedirect() {
 }
 
 const PublicOnlyWrapper = () => {
-  const { user, isUserLoading } = useUser();
+  const { user, isUserLoading } = useAuth();
 
   if (isUserLoading) {
     return <Transition isLoading={true} />;
@@ -57,15 +56,16 @@ function AppLandingPage() {
   const [isLoading, setIsLoading] = useState(true);
   const location = useLocation();
 
-  const { isSiteDataLoading } = useAppContext();
-  const { isUserLoading } = useUser();
+  const isSiteDataLoading = useSiteStore((state) => state.isSiteDataLoading);
+  const fetchSiteData = useSiteStore((state) => state.fetchSiteData);
+  const { isUserLoading, checkUserSession } = useAuth();
 
-  const { fetchSiteData } = useSiteStore();
   const aosInitCalled = useRef(false);
 
   useEffect(() => {
     fetchSiteData();
-  }, [fetchSiteData]);
+    checkUserSession(); 
+  }, []);
 
   useEffect(() => {
     const hash = location.hash;

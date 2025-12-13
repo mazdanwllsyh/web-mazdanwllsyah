@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
-import { useAppContext } from "../../context/AppContext";
+import { useSiteStore } from "../../stores/siteStore";
 import { useCustomToast } from "../../hooks/useCustomToast";
 import useCustomSwals from "../../hooks/useCustomSwals";
 
@@ -59,19 +59,17 @@ const FloatingLabelTextarea = ({
 );
 
 function DataSaya() {
-  const {
-    siteData,
-    updateSiteData,
-    isSiteDataLoading,
-    uploadProfileImage,
-    updateProfileImage,
-    deleteProfileImage,
-  } = useAppContext();
+  const siteData = useSiteStore((state) => state.siteData);
+  const updateSiteData = useSiteStore((state) => state.updateSiteData);
+  const isSiteDataLoading = useSiteStore((state) => state.isSiteDataLoading);
+  const uploadProfileImage = useSiteStore((state) => state.uploadProfileImage);
+  const updateProfileImage = useSiteStore((state) => state.updateProfileImage);
+  const deleteProfileImage = useSiteStore((state) => state.deleteProfileImage);
 
   const { success: customToast, error: errorToast } = useCustomToast();
   const { showConfirmSwal, showSuccessSwal } = useCustomSwals();
 
-  const [formData, setFormData] = useState(siteData);
+  const [formData, setFormData] = useState(siteData || {});
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
 
@@ -85,10 +83,10 @@ function DataSaya() {
   const [imagePreview, setImagePreview] = useState("");
 
   useEffect(() => {
-    if (!isSaving) {
+    if (!isSaving && siteData) { 
       setFormData(siteData);
     }
-  }, [siteData]);
+  }, [siteData, isSaving]);
 
   useEffect(() => {
     const currentPreview = imagePreview;
@@ -220,7 +218,7 @@ function DataSaya() {
       return;
     }
 
-    setIsUpdating(index); // Set loading untuk baris ini
+    setIsUpdating(index);
 
     try {
       const uploadData = new FormData();

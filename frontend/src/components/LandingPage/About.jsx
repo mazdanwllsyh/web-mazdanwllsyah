@@ -2,16 +2,35 @@ import React, { useState, useEffect, useMemo } from "react";
 import { HashLink } from "react-router-hash-link";
 import { Icon } from "@iconify/react";
 import SeoHelmet from "../SEOHelmet";
-import { useAppContext } from "../../context/AppContext";
-import { usePortfolioData } from "../../context/PortofolioDataContext";
+import { useSiteStore } from "../../stores/siteStore";
+import { usePortfolioStore } from "../../stores/portfolioStore";
 import AOS from "aos";
 
 function About() {
   const [loading, setLoading] = useState(true);
-  const { siteData } = useAppContext();
-  const { historyData, projects, sertifikatData } = usePortfolioData();
+
+  const fetchHistoryData = usePortfolioStore((state) => state.fetchHistoryData);
+  const fetchProjects = usePortfolioStore((state) => state.fetchProjects);
+  const fetchSertifikat = usePortfolioStore((state) => state.fetchSertifikat);
+
+  const siteData = useSiteStore((state) => state.siteData);
+  const historyData = usePortfolioStore((state) => state.historyData);
+  const projects = usePortfolioStore((state) => state.projects);
+  const sertifikatData = usePortfolioStore((state) => state.sertifikatData);
+
   const profileImages = siteData?.profileImages || [];
   const [currentIndices, setCurrentIndices] = useState([0, 1, 2]);
+
+  useEffect(() => {
+    const isHistoryEmpty = (!historyData.education || historyData.education.length === 0) &&
+      (!historyData.experience || historyData.experience.length === 0);
+    if (isHistoryEmpty) fetchHistoryData();
+
+    if (!projects || projects.length === 0) fetchProjects();
+
+    if (!sertifikatData || sertifikatData.length === 0) fetchSertifikat();
+
+  }, [fetchHistoryData, fetchProjects, fetchSertifikat, historyData, projects, sertifikatData]);
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 1500);
@@ -79,18 +98,21 @@ function About() {
         value: `${historyData.experience?.length || 0}`,
         label: "Pengalaman",
         link: "/#histori",
+        tooltip: "Lihat riwayat pengalaman saya" 
       },
       {
         icon: "mdi:flask",
         value: `${projects?.length || 0}`,
         label: "Proyek",
         link: "/#galeri",
+        tooltip: "Jelajahi galeri proyek saya" 
       },
       {
         icon: "mdi:certificate",
         value: `${sertifikatData?.length || 0}`,
         label: "Sertifikat",
         link: "/sertifikasi",
+        tooltip: "Cek koleksi sertifikat & lisensi" 
       },
     ];
   }, [historyData, projects, sertifikatData]);
@@ -116,9 +138,8 @@ function About() {
               <TextSkeleton />
             ) : (
               <div
-                className={`transition-opacity duration-500 ${
-                  loading ? "opacity-0" : "opacity-100"
-                }`}
+                className={`transition-opacity duration-500 ${loading ? "opacity-0" : "opacity-100"
+                  }`}
               >
                 <h2 className="text-4xl font-bold font-display mb-4">
                   Tentang Saya
@@ -132,9 +153,8 @@ function About() {
               <PhotoSkeleton />
             ) : (
               <div
-                className={`relative w-64 h-80 md:w-80 md:h-96 transition-opacity duration-500 ${
-                  loading ? "opacity-0" : "opacity-100"
-                }`}
+                className={`relative w-64 h-80 md:w-80 md:h-96 transition-opacity duration-500 ${loading ? "opacity-0" : "opacity-100"
+                  }`}
               >
                 {profileImages.length > 2 && (
                   <div
@@ -221,43 +241,30 @@ function About() {
             )}
           </div>
 
-          <div
-            className="w-full order-5 lg:order-none lg:col-start-2 max-w-lg"
-            data-aos="fade-left"
-            data-aos-delay="200"
-          >
-            {loading ? (
-              <StatsSkeleton />
-            ) : (
-              <div
-                className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6"
-                tabIndex={0}
-              >
+          <div className="w-full order-5 lg:order-none lg:col-start-2 max-w-lg" data-aos="fade-left" data-aos-delay="200">
+            {loading ? <StatsSkeleton /> : (
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6" tabIndex={0}>
                 {stats.map((stat, index) => (
-                  <HashLink
+                  <div
                     key={stat.label}
-                    to={stat.link}
-                    smooth={stat.link.startsWith("/#")}
-                    onClick={() => handleStatClick(stat.label)}
-                    data-aos="fade-up"
-                    data-aos-delay={100 + index * 100}
-                    className="card bg-base-100 shadow-md border border-base-300 p-4 text-center hover:shadow-lg transition-all duration-300 hover:bg-base-200 hover:scale-[1.03] transform hover:cursor-pointer no-underline group focus:outline-none focus-within:scale-102"
+                    className="tooltip tooltip-bottom w-full"
+                    data-tip={stat.tooltip}
                   >
-                    <div
-                      className={`transition-opacity duration-500 ${
-                        loading ? "opacity-0" : "opacity-100"
-                      }`}
+                    <HashLink
+                      to={stat.link}
+                      smooth={stat.link.startsWith("/#")}
+                      onClick={() => handleStatClick(stat.label)}
+                      data-aos="fade-up"
+                      data-aos-delay={100 + index * 100}
+                      className="card bg-base-100 shadow-md border border-base-300 p-4 text-center hover:shadow-lg transition-all duration-300 hover:bg-base-200 hover:scale-[1.03] transform hover:cursor-pointer no-underline group focus:outline-none focus-within:scale-102 w-full h-full block"
                     >
-                      <Icon
-                        icon={stat.icon}
-                        className="w-8 h-8 text-primary mx-auto mb-2"
-                      />
-                      <div className="text-2xl font-bold font-display">
-                        {stat.value}
+                      <div className={`transition-opacity duration-500 ${loading ? "opacity-0" : "opacity-100"}`}>
+                        <Icon icon={stat.icon} className="w-8 h-8 text-primary mx-auto mb-2" />
+                        <div className="text-2xl font-bold font-display">{stat.value}</div>
+                        <div className="text-base-content/70">{stat.label}</div>
                       </div>
-                      <div className="text-base-content/70">{stat.label}</div>
-                    </div>
-                  </HashLink>
+                    </HashLink>
+                  </div>
                 ))}
               </div>
             )}

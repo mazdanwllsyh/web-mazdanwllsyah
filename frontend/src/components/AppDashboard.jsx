@@ -3,7 +3,7 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import Sidebar, { menuItems } from "../components/Dashboard/Sidebar";
 import Transition from "./Transition";
-import { useUser } from "../context/UserContext";
+import { useAuth } from "../hooks/useAuth";
 
 const DashboardBeranda = lazy(() =>
   import("../components/Dashboard/DashboardBeranda")
@@ -27,9 +27,8 @@ const PageTitle = ({ title }) => {
 
 function AppDashboard() {
   const [isExpanded, setIsExpanded] = useState(true);
-
   const location = useLocation();
-  const { handleSignOut } = useUser();
+  const { handleSignOut } = useAuth();
 
   const expandedWidth = "w-60";
   const collapsedWidth = "lg:w-20";

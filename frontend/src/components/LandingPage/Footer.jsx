@@ -1,6 +1,6 @@
 import React from "react";
 import { Icon } from "@iconify/react";
-import { useAppContext } from "../../context/AppContext";
+import { useSiteStore } from "../../stores/siteStore";
 import { Link } from "react-router-dom";
 
 const socialLinkConfig = [
@@ -37,7 +37,7 @@ const socialLinkConfig = [
 ];
 
 function Footer() {
-  const { siteData } = useAppContext();
+  const siteData = useSiteStore((state) => state.siteData);
   const currentYear = new Date().getFullYear();
 
   const availableLinks = siteData.contactLinks;

@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useAppContext } from "../context/AppContext.jsx";
+import { useSiteStore } from "../stores/siteStore";
 import SeoHelmet from "./SEOHelmet";
 
-const fallbackImageUrl =
-  "https://res.cloudinary.com/dk0yjrhvx/image/upload/v1759605657/member_photos/jbsfiyuahppa3nrckdk4.webp";
+const fallbackImageUrl = "https://res.cloudinary.com/dk0yjrhvx/image/upload/v1759605657/member_photos/jbsfiyuahppa3nrckdk4.webp";
 
 const transformCloudinaryUrl = (url, width, height) => {
   if (!url || !url.includes("res.cloudinary.com")) return url;
@@ -11,60 +10,57 @@ const transformCloudinaryUrl = (url, width, height) => {
   return url.replace("/upload/", `/${transform}/`);
 };
 
-const getThemeColor = (varName, fallback) => {
-  if (typeof window === "undefined") return fallback;
-  const hslValue = getComputedStyle(document.documentElement)
-    .getPropertyValue(varName)
-    .trim();
-  return hslValue ? `hsl(${hslValue})` : fallback;
-};
-
 function Transition({ isLoading }) {
-  const { themeMode, siteData, isSiteDataLoading } = useAppContext();
+  const siteData = useSiteStore((state) => state.siteData);
+  const isSiteDataLoading = useSiteStore((state) => state.isSiteDataLoading);
+
   const [currentImageUrl, setCurrentImageUrl] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
+
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     if (isLoading) {
       setIsVisible(true);
-      const images = siteData?.profileImages;
-      if (isSiteDataLoading) return setCurrentImageUrl(null);
+      setProgress(0); 
 
-      const chosen =
-        images?.length > 0
-          ? transformCloudinaryUrl(images[0], 512, 512)
-          : transformCloudinaryUrl(fallbackImageUrl, 512, 512);
+      const interval = setInterval(() => {
+        setProgress((prev) => {
+          if (prev >= 90) return prev; 
+          return prev + 10;
+        });
+      }, 150);
+
+      const images = siteData?.profileImages;
+      const chosen = images?.length > 0
+        ? transformCloudinaryUrl(images[0], 512, 512)
+        : transformCloudinaryUrl(fallbackImageUrl, 512, 512);
 
       const preload = new Image();
       preload.src = chosen;
-      preload.onload = () => setCurrentImageUrl(chosen);
+      preload.onload = () => {
+        setCurrentImageUrl(chosen);
+      };
+
+      return () => clearInterval(interval);
+
     } else {
-      setTimeout(() => setIsVisible(false), 300);
+      setProgress(100);
+      setTimeout(() => setIsVisible(false), 500);
     }
   }, [isLoading, siteData, isSiteDataLoading]);
 
-  const bgColor = getThemeColor(
-    "--b1",
-    themeMode === "light" ? "#F0F0F0FF" : "#0C0B0EFF"
-  );
-
-  <SeoHelmet
-    title="Memuat Website Porto Mazda Nawallsyah..."
-    description="Menyiapkan pengalaman mengunjungi portofolio Mazda Nawallsyah."
-    imageUrl={
-      currentImageUrl ||
-      "https://res.cloudinary.com/dk0yjrhvx/image/upload/v1759605657/member_photos/jbsfiyuahppa3nrckdk4.webp"
-    }
-    url="/"
-  />;
-
   return (
     <div
-      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center transition-all duration-500 ${
-        isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
-      }`}
-      style={{ backgroundColor: bgColor }}
+      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center transition-all duration-500 bg-base-100 ${isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
     >
+      <SeoHelmet
+        title="Memuat Website..."
+        imageUrl={currentImageUrl || fallbackImageUrl}
+        url="/"
+      />
+
       {!currentImageUrl ? (
         <div className="animate-pulse my-4">
           <div className="skeleton w-48 h-48 md:w-64 md:h-64 rounded-full shadow-lg"></div>
@@ -73,16 +69,19 @@ function Transition({ isLoading }) {
         <div className="my-4">
           <img
             src={currentImageUrl}
-            alt="Mazda Nawallsyah Loading"
-            fetchPriority="high"
+            alt="Loading..."
             width="256"
             height="256"
-            decoding="async"
             className="w-48 h-48 md:w-64 md:h-64 rounded-full object-cover shadow-lg transition-transform duration-700 ease-in-out animate-[pulse_2s_infinite]"
           />
         </div>
       )}
-      <span className="loading loading-dots loading-lg mt-8"></span>
+
+      <progress
+        className="progress progress-primary w-56 mt-8 h-2"
+        value={progress}
+        max="100"
+      ></progress>
     </div>
   );
 }

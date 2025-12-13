@@ -1,16 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import { toast } from "react-hot-toast";
-import { useAppContext } from "../../context/AppContext";
+import { useSiteStore } from "../../stores/siteStore"; 
+import { useAuth } from "../../hooks/useAuth";
 
 function Kontak() {
-  const { siteData } = useAppContext();
+  const siteData = useSiteStore((state) => state.siteData);
+  const { user } = useAuth();
   const [nama, setNama] = useState("");
   const [emailForm, setEmailForm] = useState("");
   const [pesan, setPesan] = useState("");
   const [selectedMethod, setSelectedMethod] = useState(null);
 
+  useEffect(() => {
+    if (user) {
+      setNama(user.fullName || "");
+      setEmailForm(user.email || "");
+    }
+  }, [user]);
+
   const handleSendMessage = () => {
+
+    const links = siteData?.contactLinks || {};
+
     if (selectedMethod === "telegram") {
       const url = `https://t.me/${siteData.contactLinks.telegram}`;
       window.open(url, "_blank", "noopener,noreferrer");

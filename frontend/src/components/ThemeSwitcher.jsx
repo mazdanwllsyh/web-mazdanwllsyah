@@ -1,45 +1,33 @@
-import React, { useEffect, useRef } from "react";
-import { useAppContext } from "../context/AppContext";
+import React from "react";
+import { useSiteStore } from "../stores/siteStore";
 import { useCustomToast } from "../hooks/useCustomToast";
 
 function ThemeSwitcher() {
-  const { theme, toggleTheme, themeMode } = useAppContext();
-  const customToast = useCustomToast();
+  const toggleTheme = useSiteStore((state) => state.toggleTheme);
+  const theme = useSiteStore((state) => state.theme); 
 
-  const prevThemeRef = useRef(theme);
+  const { success } = useCustomToast();
+  const darkThemes = ["synthwave", "dark", "black", "business", "night", "dim", "abyss"];
+  const isDarkMode = darkThemes.includes(theme);
 
-  useEffect(() => {
-    if (prevThemeRef.current !== theme) {
-      customToast.success(`Tema berubah ke ${theme}!`);
+  const handleToggle = (e) => {
+    const newTheme = toggleTheme();
 
-      prevThemeRef.current = theme;
-    }
-  }, [theme, customToast]); 
-
-  const handleToggle = () => {
-    toggleTheme();
+    success(`Tema ganti ke: ${newTheme}`, { position: "top-right" });
   };
 
   return (
     <label className="toggle text-base-content">
       <input
         type="checkbox"
+        className="theme-controller"
         onChange={handleToggle}
-        checked={themeMode === "dark"}
+        checked={isDarkMode} 
       />
 
-      <svg
-        aria-label="sun"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-      >
-        <g
-          strokeLinejoin="round"
-          strokeLinecap="round"
-          strokeWidth="2"
-          fill="none"
-          stroke="currentColor"
-        >
+      {/* SUN ICON */}
+      <svg aria-label="sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" fill="none" stroke="currentColor">
           <circle cx="12" cy="12" r="4"></circle>
           <path d="M12 2v2"></path>
           <path d="M12 20v2"></path>
@@ -52,18 +40,9 @@ function ThemeSwitcher() {
         </g>
       </svg>
 
-      <svg
-        aria-label="moon"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-      >
-        <g
-          strokeLinejoin="round"
-          strokeLinecap="round"
-          strokeWidth="2"
-          fill="none"
-          stroke="currentColor"
-        >
+      {/* MOON ICON */}
+      <svg aria-label="moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" fill="none" stroke="currentColor">
           <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
         </g>
       </svg>

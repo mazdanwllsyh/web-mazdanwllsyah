@@ -1,20 +1,31 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Icon } from "@iconify/react";
 import AOS from "aos";
-import { Helmet } from "react-helmet-async"; 
-import { usePortfolioData } from "../../context/PortofolioDataContext"; 
-import { transformCloudinaryUrl } from "../../utils/imageHelper.js"; 
-import { useAppContext } from "../../context/AppContext"; 
+import { Helmet } from "react-helmet-async";
+import { usePortfolioStore } from "../../stores/portfolioStore";
+import { useSiteStore } from "../../stores/siteStore";
+import { transformCloudinaryUrl } from "../../utils/imageHelper.js";
 
 function History() {
-  const { historyData, isHistoryLoading } = usePortfolioData();
-  const { siteData } = useAppContext();
+  const fetchHistoryData = usePortfolioStore((state) => state.fetchHistoryData);
+  const historyData = usePortfolioStore((state) => state.historyData);
+  const isHistoryLoading = usePortfolioStore((state) => state.isHistoryLoading);
+  const siteData = useSiteStore((state) => state.siteData);
 
   const [activeTab, setActiveTab] = useState(() => {
     return localStorage.getItem("activeHistoryTab") || "pendidikan";
   });
 
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const isEducationEmpty = !historyData.education || historyData.education.length === 0;
+    const isExperienceEmpty = !historyData.experience || historyData.experience.length === 0;
+
+    if (isEducationEmpty && isExperienceEmpty) {
+      fetchHistoryData();
+    }
+  }, [fetchHistoryData, historyData.education, historyData.experience]);
 
   useEffect(() => {
     const handleTabChange = () => {
@@ -42,11 +53,13 @@ function History() {
     return () => clearTimeout(timer);
   }, [activeTab]);
 
-  const activeData =
-    activeTab === "pendidikan" ? historyData.education : historyData.experience;
+  const activeData = activeTab === "pendidikan"
+    ? (historyData.education || [])
+    : (historyData.experience || []);
 
   const sortedData = useMemo(() => {
     const getEndYear = (yearsString) => {
+      if(!yearsString) return 0;
       const parts = yearsString.split(" - ");
       const endPart = parts[1] ? parts[1].trim() : "0";
       if (endPart.toLowerCase() === "sekarang") return 9999;
@@ -91,11 +104,10 @@ function History() {
             <div className="skeleton w-6 h-6 rounded-full shrink-0"></div>
           </div>
           <div
-            className={`mb-10 ${
-              index % 2 === 0
-                ? "timeline-start md:text-end"
-                : "timeline-end md:text-start"
-            }`}
+            className={`mb-10 ${index % 2 === 0
+              ? "timeline-start md:text-end"
+              : "timeline-end md:text-start"
+              }`}
           >
             <div className="card w-full md:w-[18rem] bg-base-100 shadow p-6">
               <div className="skeleton h-4 w-1/2 mb-2"></div>
@@ -133,9 +145,8 @@ function History() {
           data-aos-delay="100"
         >
           <button
-            className={`tab tab-lg tab-bordered bg-base-200 border-primary mx-2 rounded-lg ${
-              activeTab === "pendidikan" ? "tab-active" : ""
-            }`}
+            className={`tab tab-lg tab-bordered bg-base-200 border-primary mx-2 rounded-lg ${activeTab === "pendidikan" ? "tab-active" : ""
+              }`}
             onClick={() => {
               setActiveTab("pendidikan");
               localStorage.setItem("activeHistoryTab", "pendidikan");
@@ -145,9 +156,8 @@ function History() {
             Pendidikan
           </button>
           <button
-            className={`tab tab-lg tab-bordered bg-base-200 border-primary mx-2 rounded-lg ${
-              activeTab === "pengalaman" ? "tab-active" : ""
-            }`}
+            className={`tab tab-lg tab-bordered bg-base-200 border-primary mx-2 rounded-lg ${activeTab === "pengalaman" ? "tab-active" : ""
+              }`}
             onClick={() => {
               setActiveTab("pengalaman");
               localStorage.setItem("activeHistoryTab", "pengalaman");
@@ -180,11 +190,10 @@ function History() {
                 <div
                   data-aos={index % 2 === 0 ? "fade-left" : "fade-right"}
                   data-aos-delay="200"
-                  className={`mb-10 flex items-start gap-4 ${
-                    index % 2 === 0
-                      ? "timeline-start md:text-end flex-row-reverse md:flex-row-reverse"
-                      : "timeline-end md:text-start flex-row md:flex-row"
-                  }`}
+                  className={`mb-10 flex items-start gap-4 ${index % 2 === 0
+                    ? "timeline-start md:text-end flex-row-reverse md:flex-row-reverse"
+                    : "timeline-end md:text-start flex-row md:flex-row"
+                    }`}
                 >
                   {item.logoUrl ? (
                     <div className="avatar hidden lg:block">
@@ -203,11 +212,10 @@ function History() {
                   )}
 
                   <div
-                    className={`mb-3 group ${
-                      index % 2 === 0
-                        ? "timeline-start md:text-end"
-                        : "timeline-end md:text-start"
-                    }`}
+                    className={`mb-3 group ${index % 2 === 0
+                      ? "timeline-start md:text-end"
+                      : "timeline-end md:text-start"
+                      }`}
                   >
                     <div
                       tabIndex={0}

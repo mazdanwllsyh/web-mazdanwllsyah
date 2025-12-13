@@ -1,12 +1,12 @@
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import { useUser } from "../context/UserContext"; 
-import Transition from "../components/Transition"; 
+import { useAuth } from "../hooks/useAuth"; 
+import Transition from "../components/Transition";
 
 function AdminRoute() {
-  const { user, isLoading } = useUser();
+  const { user, isUserLoading } = useAuth();
 
-  if (isLoading) {
+  if (isUserLoading) {
     return <Transition isLoading={true} />;
   }
 

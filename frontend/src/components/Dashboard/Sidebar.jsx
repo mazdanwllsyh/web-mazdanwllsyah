@@ -1,8 +1,8 @@
 import React from "react";
 import { Icon } from "@iconify/react";
 import { NavLink, Link } from "react-router-dom";
-import { useAppContext } from "../../context/AppContext";
-import { useUser } from "../../context/UserContext";
+import { useSiteStore } from "../../stores/siteStore";
+import { useAuth } from "../../hooks/useAuth";
 import ThemeSwitcher from "../ThemeSwitcher";
 
 export const menuItems = [
@@ -35,22 +35,20 @@ export const menuItems = [
 ];
 
 function Sidebar({ isExpanded, setIsExpanded }) {
-  const { siteData } = useAppContext();
-  const { handleSignOut, user } = useUser();
+  const siteData = useSiteStore((state) => state.siteData); 
+  const { handleSignOut, user } = useAuth();
   const getNavLinkClass = ({ isActive }) =>
-    `flex items-center justify-center p-3 my-1 rounded-lg transition-colors duration-200 ${
-      isActive
-        ? "bg-accent text-accent-content hover:bg-accent-focus"
-        : "bg-primary text-primary-content hover:bg-primary-focus"
+    `flex items-center justify-center p-3 my-1 rounded-lg transition-colors duration-200 ${isActive
+      ? "bg-accent text-accent-content hover:bg-accent-focus"
+      : "bg-primary text-primary-content hover:bg-primary-focus"
     }`;
 
   return (
     <div className="flex bg-base-200 h-full flex-col justify-between">
       <div>
         <div
-          className={`flex items-center p-4 ${
-            isExpanded ? "justify-between" : "justify-center"
-          }`}
+          className={`flex items-center p-4 ${isExpanded ? "justify-between" : "justify-center"
+            }`}
         >
           {isExpanded && (
             <a
@@ -96,9 +94,8 @@ function Sidebar({ isExpanded, setIsExpanded }) {
         {user && (
           <Link
             to="/profil"
-            className={`flex items-center gap-3 p-2 rounded-lg transition-colors duration-200 hover:bg-base-300 my-2 ${
-              isExpanded ? "w-full" : "w-auto justify-center"
-            }`}
+            className={`flex items-center gap-3 p-2 rounded-lg transition-colors duration-200 hover:bg-base-300 my-2 ${isExpanded ? "w-full" : "w-auto justify-center"
+              }`}
             title={isExpanded ? "Ke Halaman Profil" : user.fullName}
           >
             <div className="avatar">
@@ -127,9 +124,8 @@ function Sidebar({ isExpanded, setIsExpanded }) {
 
         <button
           onClick={handleSignOut}
-          className={`btn w-full ${
-            isExpanded ? "btn-error" : "btn-error btn-square"
-          }`}
+          className={`btn w-full ${isExpanded ? "btn-error" : "btn-error btn-square"
+            }`}
         >
           <Icon icon="mdi:logout" className="h-6 w-6" />
           {isExpanded && <span className="ml-2">Logout</span>}

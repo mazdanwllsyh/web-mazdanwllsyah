@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { Icon } from "@iconify/react";
-import { usePortfolioData } from "../../context/PortofolioDataContext";
+import { usePortfolioStore } from "../../stores/portfolioStore";
 import { useCustomToast } from "../../hooks/useCustomToast";
 
 const FloatingLabelInput = ({
@@ -34,7 +34,6 @@ const FloatingLabelInput = ({
   </div>
 );
 
-// Helper level skill (5 level)
 const skillLevels = [
   { value: "Dasar", label: "1 - Dasar" },
   { value: "Pemula", label: "2 - Pemula" },
@@ -44,14 +43,20 @@ const skillLevels = [
 ];
 
 function EditSkills() {
-  const {
-    skillsData,
-    addSoftSkill,
-    isSkillsLoading,
-    deleteSoftSkill,
-    updateHardSkills,
-  } = usePortfolioData();
+  const skillsData = usePortfolioStore((state) => state.skillsData);
+  const isSkillsLoading = usePortfolioStore((state) => state.isSkillsLoading);
+  const fetchSkillsData = usePortfolioStore((state) => state.fetchSkillsData);
+  const addSoftSkill = usePortfolioStore((state) => state.addSoftSkill);
+  const deleteSoftSkill = usePortfolioStore((state) => state.deleteSoftSkill);
+  const updateHardSkills = usePortfolioStore((state) => state.updateHardSkills);
+
   const { success: customToast, error: errorToast } = useCustomToast();
+
+  useEffect(() => {
+    if (!skillsData.hardSkills || skillsData.hardSkills.length === 0) {
+      fetchSkillsData();
+    }
+  }, [fetchSkillsData, skillsData.hardSkills]);
 
   const [isSavingSoftSkill, setIsSavingSoftSkill] = useState(false);
   const [isSavingHardSkill, setIsSavingHardSkill] = useState(false);
@@ -90,6 +95,10 @@ function EditSkills() {
   );
 
   const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    if (skillsData.hardSkills) setLocalHardSkills(skillsData.hardSkills);
+  }, [skillsData.hardSkills]);
 
   const masterSkillList = skillsData.masterHardSkills || [];
 

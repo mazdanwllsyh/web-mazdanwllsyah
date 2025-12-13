@@ -2,11 +2,11 @@ import React, { useState, useEffect, useMemo } from "react";
 import { Icon } from "@iconify/react";
 import AOS from "aos";
 import { Viewer, Worker } from "@react-pdf-viewer/core";
-import { useAppContext } from "../../context/AppContext.jsx";
 import { Helmet } from "react-helmet-async";
 import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
 import { usePagination } from "../../hooks/usePagination";
-import { usePortfolioData } from "../../context/PortofolioDataContext.jsx";
+import { useSiteStore } from "../../stores/siteStore";
+import { usePortfolioStore } from "../../stores/portfolioStore";
 import { transformCloudinaryUrl } from "../../utils/imageHelper.js";
 
 const SertifikasiSkeleton = ({ count = 3 }) => (
@@ -23,14 +23,23 @@ const SertifikasiSkeleton = ({ count = 3 }) => (
 );
 
 function Sertifikasi() {
+  const fetchSertifikat = usePortfolioStore((state) => state.fetchSertifikat);
+  const sertifikatData = usePortfolioStore((state) => state.sertifikatData);
+  const isSertifikatLoading = usePortfolioStore((state) => state.isSertifikatLoading);
+
   useEffect(() => {
     import("@react-pdf-viewer/core/lib/styles/index.css");
     import("@react-pdf-viewer/default-layout/lib/styles/index.css");
   }, []);
 
-  const { sertifikatData, categories, isSertifikatLoading } =
-    usePortfolioData();
-  const { themeMode } = useAppContext(); 
+  useEffect(() => {
+    if (!sertifikatData || sertifikatData.length === 0) {
+      fetchSertifikat();
+    }
+  }, [fetchSertifikat, sertifikatData.length]);
+
+  const themeMode = useSiteStore((state) => state.getThemeMode());
+  const categories = ["Semua", "Universitas", "Online Course", "Bootcamp", "Nasional", "Internasional"];
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCert, setSelectedCert] = useState(null);
@@ -93,7 +102,7 @@ function Sertifikasi() {
       "@type": "ListItem",
       position: index + 1,
       item: {
-        "@type": "EducationalOccupationalCredential", 
+        "@type": "EducationalOccupationalCredential",
         name: cert.title,
         credentialCategory: "Certificate",
         recognizedBy: {
@@ -101,7 +110,7 @@ function Sertifikasi() {
           name: cert.issuer,
         },
         image: cert.imageUrl,
-        url: window.location.href, 
+        url: window.location.href,
       },
     })),
   };
@@ -260,7 +269,7 @@ function Sertifikasi() {
                       fileUrl={selectedCert.fileUrl}
                       plugins={[defaultLayoutPluginInstance]}
                       theme={themeMode}
-                      defaultScale={1} 
+                      defaultScale={1}
                     />
                   </div>
                 </Worker>

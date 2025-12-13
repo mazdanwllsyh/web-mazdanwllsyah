@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
-import { useAppContext } from "../context/AppContext";
+import { useSiteStore } from "../stores/siteStore";
 import { useLocation } from "react-router-dom";
 
 const defaultImageUrl =
@@ -24,7 +24,7 @@ const sectionTitles = {
 };
 
 function SeoHelmet({ title, description, imageUrl, url }) {
-  const { siteData } = useAppContext();
+  const siteData = useSiteStore((state) => state.siteData);
   const location = useLocation();
 
   const [activeSection, setActiveSection] = useState("");

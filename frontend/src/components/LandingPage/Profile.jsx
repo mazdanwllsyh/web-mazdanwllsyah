@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react";
-import { useUser } from "../../context/UserContext";
 import SeoHelmet from "../SEOHelmet";
-import { useAppContext } from "../../context/AppContext";
+import { useAuth } from "../../hooks/useAuth"; // GANTI: Pake useAuth
+import { useSiteStore } from "../../stores/siteStore";
 import { useCustomToast } from "../../hooks/useCustomToast";
 import useCustomSwals from "../../hooks/useCustomSwals";
 import instance from "../../utils/axios";
@@ -32,7 +32,6 @@ const ProfileSkeleton = () => {
               <div className="skeleton h-10 w-full mt-4"></div>
             </div>
           </div>
-          {/* Kolom Kanan Skeleton */}
           <div className="lg:col-span-8">
             <div className="card bg-base-100 shadow-md border border-base-200">
               <div className="card-body">
@@ -55,8 +54,8 @@ const ProfileSkeleton = () => {
 };
 
 function Profile() {
-  const { siteData } = useAppContext();
-  const { user, isUserLoading, handleSignOut, updateUser } = useUser();
+  const siteData = useSiteStore((state) => state.siteData);
+  const { user, isUserLoading, handleSignOut, updateUser } = useAuth();
   const customToast = useCustomToast();
   const { showSuccessSwal, showErrorSwal, showInfoSwal } = useCustomSwals();
   const navigate = useNavigate();
@@ -78,7 +77,6 @@ function Profile() {
   const [newPassword, setNewPassword] = useState("");
 
   useEffect(() => {
-    // HAPUS simulasi loading 'setTimeout'
     if (user) {
       setProfileData({
         fullName: user.fullName || "",
@@ -86,12 +84,10 @@ function Profile() {
         phone: user.phone || "",
         gender: user.gender || "",
       });
-      // HAPUS setLoading(false)
       AOS.refresh();
     }
   }, [user]);
 
-  // Handler (logika tetap sama, HAPUS 'address')
   const handleInputChange = (e) => {
     let { name, value } = e.target;
     if (name === "phone") {
@@ -150,15 +146,10 @@ function Profile() {
         formData.append("password", newPassword);
       }
 
-      const response = await instance.put("/users/profile", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await instance.put("/users/profile", formData, { headers: { "Content-Type": "multipart/form-data" } });
 
-      updateUser(response.data.user);
-
-      showSuccessSwal("Berhasil!", "Profil Anda telah diperbarui.");
+      updateUser(response.data.user); 
+      showSuccessSwal("Berhasil!", "Profil diperbarui.");
 
       setIsEditing(false);
       setImageFile(null);
@@ -330,8 +321,8 @@ function Profile() {
                       name="fullName"
                       placeholder=" "
                       className={`input input-bordered w-full pt-4 peer text-base ${!isEditing
-                          ? "disabled:bg-base-100 disabled:text-base-content/70 disabled:border-base-300"
-                          : ""
+                        ? "disabled:bg-base-100 disabled:text-base-content/70 disabled:border-base-300"
+                        : ""
                         }`}
                       value={profileData.fullName}
                       onChange={handleInputChange}
@@ -390,8 +381,8 @@ function Profile() {
                         placeholder=" "
                         autoComplete="tel"
                         className={`input input-bordered w-full pt-4 peer text-base ${!isEditing
-                            ? "disabled:bg-base-100 disabled:text-base-content/70 disabled:border-base-300"
-                            : ""
+                          ? "disabled:bg-base-100 disabled:text-base-content/70 disabled:border-base-300"
+                          : ""
                           }`}
                         value={profileData.phone}
                         onChange={handleInputChange}
@@ -416,8 +407,8 @@ function Profile() {
                     <select
                       name="gender"
                       className={`select select-bordered w-full text-base text-center ${!isEditing
-                          ? "disabled:bg-base-100 disabled:text-base-content/70 disabled:border-base-300"
-                          : ""
+                        ? "disabled:bg-base-100 disabled:text-base-content/70 disabled:border-base-300"
+                        : ""
                         }`}
                       value={profileData.gender || ""}
                       onChange={handleInputChange}

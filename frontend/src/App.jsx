@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Suspense, lazy } from "react";
 import { Routes, Route } from "react-router-dom";
 import Transition from "./components/Transition";
-
+import GlobalModal from "./components/GlobalModal";
 import AdminRoute from "./routes/AdminRoute";
 
 const AppLandingPage = lazy(() => import("./components/AppLandingPage"));
@@ -19,6 +19,7 @@ function App() {
 
   return (
     <div>
+      <GlobalModal />
       <Transition isLoading={isPreloading} />
       <main
         className={`transition-opacity duration-500 ${

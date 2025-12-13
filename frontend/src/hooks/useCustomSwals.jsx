@@ -1,41 +1,48 @@
 import Swal from "sweetalert2";
-import { useAppContext } from "../context/AppContext.jsx";
 
-const getThemeColor = (varName, fallback) => {
-  if (typeof window === "undefined") return fallback;
-
-  const hslValue = getComputedStyle(document.documentElement)
-    .getPropertyValue(varName)
-    .trim();
-
-  if (hslValue) {
-    return `hsl(${hslValue})`;
+const swalCustomStyle = `
+  div:where(.swal2-container) div:where(.swal2-popup) {
+    background-color: hsl(var(--b1)) !important; 
+    color: hsl(var(--bc)) !important;
+    border: 2px solid hsl(var(--p)); /* Border warna Primary */
+    border-radius: 1rem;
   }
-  return fallback;
-};
+  
+  div:where(.swal2-container) .swal2-title {
+    color: hsl(var(--bc)) !important;
+    font-family: 'SF UI Display', sans-serif;
+  }
+
+  div:where(.swal2-container) .swal2-html-container {
+    color: hsl(var(--bc) / 0.8) !important;
+  }
+
+  /* .swal2-icon.swal2-success { border-color: hsl(var(--su)); color: hsl(var(--su)); } */
+  /* .swal2-icon.swal2-error { border-color: hsl(var(--er)); color: hsl(var(--er)); } */
+`;
+
+if (typeof document !== 'undefined' && !document.getElementById('swal-theme-style')) {
+  const style = document.createElement('style');
+  style.id = 'swal-theme-style';
+  style.innerHTML = swalCustomStyle;
+  document.head.appendChild(style);
+}
 
 const useCustomSwals = () => {
-  const { themeMode } = useAppContext(); 
 
-  const swalBg = getThemeColor(
-    "--b1", 
-    themeMode === "light" ? "#FDFDFDFF" : "#1f2937" 
-  );
-  const swalColor = getThemeColor(
-    "--bc", 
-    themeMode === "light" ? "#1f2937" : "#ffffff" 
-  );
-
-  const borderCustomClass = { popup: "swal2-popup-bordered" };
   const baseSwalConfig = {
     buttonsStyling: false,
-    customClass: { ...borderCustomClass },
-    background: swalBg,
-    color: swalColor,
+    customClass: {
+      popup: "swal2-popup-custom shadow-2xl",
+      confirmButton: "btn btn-primary min-w-[100px]",
+      cancelButton: "btn btn-ghost min-w-[80px] ml-2",
+      denyButton: "btn btn-error ml-2",
+    },
+    backdrop: `rgba(0,0,0,0.6)`,
   };
 
   const buildSwalConfig = (specificConfig = {}, buttonClasses = {}) => {
-    const config = {
+    return {
       ...baseSwalConfig,
       ...specificConfig,
       customClass: {
@@ -43,8 +50,6 @@ const useCustomSwals = () => {
         ...buttonClasses,
       },
     };
-
-    return config;
   };
 
   const showConfirmSwal = async (title, text) => {
@@ -54,12 +59,12 @@ const useCustomSwals = () => {
         text: text,
         icon: "warning",
         showCancelButton: true,
-        confirmButtonText: "Iya, Lanjutkan!",
+        confirmButtonText: "Ya, Lanjutkan!",
         cancelButtonText: "Batal",
+        reverseButtons: true,
       },
       {
-        confirmButton: "btn btn-error",
-        cancelButton: "btn btn-info ml-2",
+        confirmButton: "btn btn-error text-white", 
       }
     );
     const result = await Swal.fire(config);
@@ -68,72 +73,29 @@ const useCustomSwals = () => {
 
   const showSuccessSwal = (title, text) => {
     const config = buildSwalConfig(
-      {
-        title: title,
-        text: text,
-        icon: "success",
-      },
-      {
-        confirmButton: "btn btn-success",
-      }
+      { title, text, icon: "success" },
+      { confirmButton: "btn btn-success text-white" } 
     );
     return Swal.fire(config);
   };
 
   const showErrorSwal = (title, text) => {
     const config = buildSwalConfig(
-      {
-        title: title,
-        text: text,
-        icon: "error",
-      },
-      {
-        confirmButton: "btn btn-error",
-      }
+      { title, text, icon: "error" },
+      { confirmButton: "btn btn-error text-white" } 
     );
     return Swal.fire(config);
   };
 
   const showInfoSwal = (title, text) => {
     const config = buildSwalConfig(
-      {
-        title: title,
-        text: text,
-        icon: "info",
-      },
-      {
-        confirmButton: "btn btn-info",
-      }
+      { title, text, icon: "info" },
+      { confirmButton: "btn btn-info text-white" } 
     );
     return Swal.fire(config);
   };
 
-  const showQuestionSwal = async (title, text) => {
-    const config = buildSwalConfig(
-      {
-        title: title,
-        text: text,
-        icon: "question",
-        showCancelButton: true,
-        confirmButtonText: "Iya",
-        cancelButtonText: "Tidak",
-      },
-      {
-        confirmButton: "btn btn-primary",
-        cancelButton: "btn btn-error ml-2",
-      }
-    );
-    const result = await Swal.fire(config);
-    return result.isConfirmed;
-  };
-
-  return {
-    showConfirmSwal,
-    showSuccessSwal,
-    showErrorSwal,
-    showInfoSwal,
-    showQuestionSwal,
-  };
+  return { showConfirmSwal, showSuccessSwal, showErrorSwal, showInfoSwal };
 };
 
 export default useCustomSwals;

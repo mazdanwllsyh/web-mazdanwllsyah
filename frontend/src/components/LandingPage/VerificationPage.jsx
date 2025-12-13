@@ -2,21 +2,20 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import SeoHelmet from "../SEOHelmet";
-import { useAppContext } from "../../context/AppContext";
-import { useUser } from "../../context/UserContext"; // Impor useUser
+import { useAuth } from "../../hooks/useAuth";
+import { useSiteStore } from "../../stores/siteStore";
 import useCustomSwals from "../../hooks/useCustomSwals";
 import instance from "../../utils/axios"; // Impor instance
 
 function VerificationPage() {
-  const { siteData } = useAppContext();
+  const siteData = useSiteStore((state) => state.siteData); 
+  const { login } = useAuth();
+
   const location = useLocation();
   const navigate = useNavigate();
   const { showErrorSwal, showSuccessSwal } = useCustomSwals();
-  const { login } = useUser(); // Ambil fungsi login
 
-  // Email didapat dari 'state' saat navigate dari RegisterPage
   const [email, setEmail] = useState(location.state?.email || "");
-  // State baru untuk kode 6 digit
   const [code, setCode] = useState("");
 
   const [isVerifying, setIsVerifying] = useState(false);

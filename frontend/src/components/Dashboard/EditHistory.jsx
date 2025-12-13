@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { Icon } from "@iconify/react";
-import { usePortfolioData } from "../../context/PortofolioDataContext";
+import { usePortfolioStore } from "../../stores/portfolioStore";
 import { useCustomToast } from "../../hooks/useCustomToast";
 import useCustomSwals from "../../hooks/useCustomSwals";
 
@@ -29,9 +29,8 @@ const FloatingLabelInput = ({
     />
     <label
       htmlFor={id}
-      className={`absolute left-3 top-1 text-xs text-base-content/70 transition-all duration-200 ease-in-out peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-focus:top-1 peer-focus:-translate-y-0 peer-focus:text-xs peer-focus:text-primary pointer-events-none z-10 ${
-        disabled ? "font-base-100" : ""
-      }`}
+      className={`absolute left-3 top-1 text-xs text-base-content/70 transition-all duration-200 ease-in-out peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-focus:top-1 peer-focus:-translate-y-0 peer-focus:text-xs peer-focus:text-primary pointer-events-none z-10 ${disabled ? "font-base-100" : ""
+        }`}
     >
       {label}
     </label>
@@ -47,17 +46,23 @@ const skillLevels = [
 ];
 
 function EditHistory() {
-  const {
-    historyData,
-    addHistoryItem,
-    updateHistoryItem,
-    deleteHistoryItem,
-    isHistoryLoading,
-  } = usePortfolioData();
+  const historyData = usePortfolioStore((state) => state.historyData);
+  const isHistoryLoading = usePortfolioStore((state) => state.isHistoryLoading);
+  const fetchHistoryData = usePortfolioStore((state) => state.fetchHistoryData);
+  const addHistoryItem = usePortfolioStore((state) => state.addHistoryItem);
+  const updateHistoryItem = usePortfolioStore((state) => state.updateHistoryItem);
+  const deleteHistoryItem = usePortfolioStore((state) => state.deleteHistoryItem);
+
   const { success: customToast, error: errorToast } = useCustomToast();
   const { showConfirmSwal } = useCustomSwals();
 
-  // State untuk form
+  useEffect(() => {
+    if ((!historyData.education || historyData.education.length === 0) && 
+        (!historyData.experience || historyData.experience.length === 0)) {
+        fetchHistoryData();
+    }
+  }, [fetchHistoryData, historyData.education, historyData.experience]);
+
   const [activeTab, setActiveTab] = useState("education");
   const [editingItemId, setEditingItemId] = useState(null);
   const [institution, setInstitution] = useState("");
@@ -166,8 +171,7 @@ function EditHistory() {
       } else {
         await addHistoryItem(formData);
         customToast(
-          `${
-            activeTab === "education" ? "Pendidikan" : "Pengalaman"
+          `${activeTab === "education" ? "Pendidikan" : "Pengalaman"
           } berhasil ditambahkan!`
         );
       }
@@ -316,22 +320,20 @@ function EditHistory() {
 
         <div className="tabs my-2">
           <a
-            className={`tab tab-lifted h-12 flex-1 transition-all ${
-              activeTab === "education"
+            className={`tab tab-lifted h-12 flex-1 transition-all ${activeTab === "education"
                 ? "tab-active bg-primary text-primary-content font-semibold rounded-md"
                 : "text-base-content hover:bg-base-200 rounded-md border border-base-300"
-            }`}
+              }`}
             onClick={() => setActiveTab("education")}
           >
             <Icon icon="mdi:school" className="mr-2" />
             Pendidikan
           </a>
           <a
-            className={`tab tab-lifted h-12 flex-1 transition-all ${
-              activeTab === "experience"
+            className={`tab tab-lifted h-12 flex-1 transition-all ${activeTab === "experience"
                 ? "tab-active bg-primary text-primary-content font-semibold rounded-md"
                 : "text-base-content hover:bg-base-200 rounded-md border border-base-300"
-            }`}
+              }`}
             onClick={() => setActiveTab("experience")}
           >
             <Icon icon="mdi:briefcase" className="mr-2" />
@@ -447,8 +449,8 @@ function EditHistory() {
               {isSaving
                 ? "Menyimpan..."
                 : editingItemId
-                ? "Simpan Perubahan"
-                : "Tambahkan"}
+                  ? "Simpan Perubahan"
+                  : "Tambahkan"}
             </button>
 
             {editingItemId && (

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Icon } from "@iconify/react";
 import AOS from "aos";
 import { usePagination } from "../../hooks/usePagination";
-import { usePortfolioData } from "../../context/PortofolioDataContext";
+import { usePortfolioStore } from "../../stores/portfolioStore";
 import { transformCloudinaryUrl } from "../../utils/imageHelper";
 import { Helmet } from "react-helmet-async";
 
@@ -38,8 +38,15 @@ const shuffleArray = (array) => {
 };
 
 function Gallery() {
-  const { projects, isProjectsLoading } = usePortfolioData();
+  const projects = usePortfolioStore((state) => state.projects);
+  const isProjectsLoading = usePortfolioStore((state) => state.isProjectsLoading);
+  const fetchProjects = usePortfolioStore((state) => state.fetchProjects);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+      if(projects.length === 0) fetchProjects();
+  }, [fetchProjects, projects.length]);
+
   const [searchTerm, setSearchTerm] = useState("");
   const sectionRef = useRef(null);
 
@@ -169,10 +176,10 @@ function Gallery() {
                     src={transformCloudinaryUrl(project.imageUrl, 800, 800)}
                     srcSet={`
                       ${transformCloudinaryUrl(
-                        project.imageUrl,
-                        480,
-                        480
-                      )} 480w,
+                      project.imageUrl,
+                      480,
+                      480
+                    )} 480w,
                       ${transformCloudinaryUrl(project.imageUrl, 800, 800)} 800w
                     `}
                     sizes="(max-width: 640px) 480px, 800px"

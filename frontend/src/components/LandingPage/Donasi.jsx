@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import SeoHelmet from "../SEOHelmet";
-import { useAppContext } from "../../context/AppContext";
+import { useSiteStore } from "../../stores/siteStore";
 import AOS from "aos";
 
 const gopayQrUrl =
@@ -19,7 +19,7 @@ const SecureImage = ({ src, alt, className = "" }) => (
 );
 
 function Donasi() {
-  const { siteData } = useAppContext();
+  const siteData = useSiteStore((state) => state.siteData); 
   const [selectedMethod, setSelectedMethod] = useState(null);
 
   const handleSelectMethod = (method) => {

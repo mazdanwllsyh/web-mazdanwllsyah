@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Icon } from "@iconify/react";
-import { useAppContext } from "../../context/AppContext";
+import { useSiteStore } from "../../stores/siteStore";
 import { Link } from "react-router-dom";
 import { TypeAnimation } from "react-type-animation";
 import SeoHelmet from "../SEOHelmet";
@@ -41,7 +41,7 @@ const socialLinkConfig = [
 ];
 
 function Hero() {
-  const { siteData } = useAppContext();
+  const siteData = useSiteStore((state) => state.siteData);
 
   const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -135,11 +135,10 @@ function Hero() {
                 loading="eager"
                 width="288"
                 height="288"
-                className={`w-[288px] h-[288px] object-cover transition-all duration-300 ease-in-out cursor-pointer ${
-                  imageLoaded
+                className={`w-[288px] h-[288px] object-cover transition-all duration-300 ease-in-out cursor-pointer ${imageLoaded
                     ? "opacity-100 group-hover:scale-115"
                     : "opacity-0"
-                }`}
+                  }`}
                 onLoad={() => setImageLoaded(true)}
                 onError={(e) => {
                   console.warn("Hero - gagal load gambar:", heroImage);
@@ -202,9 +201,8 @@ function Hero() {
           </div>
 
           <div
-            className={`transition-opacity duration-500 ${
-              imageLoaded ? "opacity-100" : "opacity-0"
-            } min-h-[350px]`}
+            className={`transition-opacity duration-500 ${imageLoaded ? "opacity-100" : "opacity-0"
+              } min-h-[350px]`}
             data-aos="zoom-out"
           >
             {!imageLoaded ? (

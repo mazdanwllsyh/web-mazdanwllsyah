@@ -1,8 +1,8 @@
-import React from "react";
+import React,  { useEffect, } from "react";
 import { Link } from "react-router-dom";
 import { Icon } from "@iconify/react";
-import { useUser } from "../../context/UserContext";
-import { usePortfolioData } from "../../context/PortofolioDataContext";
+import { useAuth } from "../../hooks/useAuth";
+import { usePortfolioStore } from "../../stores/portfolioStore";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -34,24 +34,35 @@ const QuickLinkSkeleton = () => (
 );
 
 function DashboardBeranda() {
-  const { user } = useUser();
+  const { user } = useAuth();
   const userName = user ? user.fullName.split(" ")[0] : "Editor";
 
-  const {
-    projects,
-    sertifikatData,
-    historyData,
-    skillsData,
-    isProjectsLoading,
-    isSertifikatLoading,
-    isHistoryLoading,
-    isSkillsLoading,
-  } = usePortfolioData();
+  const projects = usePortfolioStore((state) => state.projects);
+  const sertifikatData = usePortfolioStore((state) => state.sertifikatData);
+  const historyData = usePortfolioStore((state) => state.historyData);
+  const skillsData = usePortfolioStore((state) => state.skillsData);
+
+  const isProjectsLoading = usePortfolioStore((state) => state.isProjectsLoading);
+  const isSertifikatLoading = usePortfolioStore((state) => state.isSertifikatLoading);
+  const isHistoryLoading = usePortfolioStore((state) => state.isHistoryLoading);
+  const isSkillsLoading = usePortfolioStore((state) => state.isSkillsLoading);
+
+  const fetchProjects = usePortfolioStore((state) => state.fetchProjects);
+  const fetchSertifikat = usePortfolioStore((state) => state.fetchSertifikat);
+  const fetchHistoryData = usePortfolioStore((state) => state.fetchHistoryData);
+  const fetchSkillsData = usePortfolioStore((state) => state.fetchSkillsData);
+
+  useEffect(() => {
+    if (projects.length === 0) fetchProjects();
+    if (sertifikatData.length === 0) fetchSertifikat();
+    if ((!historyData.education || historyData.education.length === 0) && (!historyData.experience || historyData.experience.length === 0)) fetchHistoryData();
+    if (skillsData.hardSkills.length === 0) fetchSkillsData();
+  }, [fetchProjects, fetchSertifikat, fetchHistoryData, fetchSkillsData, projects.length, sertifikatData.length]);
 
   const quickLinks = [
     {
       name: "Data Saya",
-      path: "/dashboard/sitedata", //
+      path: "/dashboard/sitedata",
       icon: "mdi:database-edit-outline",
       count: null,
       loading: isHistoryLoading,

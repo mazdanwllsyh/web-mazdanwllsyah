@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
-import { usePortfolioData } from "../../context/PortofolioDataContext";
+import { usePortfolioStore } from "../../stores/portfolioStore";
 import AOS from "aos";
 
 const SkillsSkeleton = () => (
-  // Diubah menjadi flex-col untuk mencerminkan layout baru
   <div className="flex flex-col items-center gap-8 md:gap-12 max-w-4xl mx-auto hover:cursor-wait">
-    {/* Skeleton Kolom Kanan (Soft Skills) - SEKARANG DI ATAS */}
     <div className="card bg-base-200 shadow-xl p-4 w-full">
       <div className="skeleton h-6 w-1/3 mb-4 mx-auto"></div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6">
@@ -40,11 +38,19 @@ const SkillsSkeleton = () => (
 );
 
 function Skills() {
-  const { skillsData, isSkillsLoading } = usePortfolioData();
+  const fetchSkillsData = usePortfolioStore((state) => state.fetchSkillsData); 
+  const skillsData = usePortfolioStore((state) => state.skillsData);
+  const isSkillsLoading = usePortfolioStore((state) => state.isSkillsLoading);
   const [loading, setLoading] = useState(true);
 
   const displayedHardSkills = skillsData.hardSkills || [];
   const displayedSoftSkills = skillsData.softSkills || [];
+
+  useEffect(() => {
+    if (displayedHardSkills.length === 0 && displayedSoftSkills.length === 0) {
+        fetchSkillsData();
+    }
+  }, [fetchSkillsData, displayedHardSkills.length, displayedSoftSkills.length]);
 
   useEffect(() => {
     const timer = setTimeout(() => {

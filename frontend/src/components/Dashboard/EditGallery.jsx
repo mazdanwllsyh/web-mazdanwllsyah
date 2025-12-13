@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Icon } from "@iconify/react";
-import { usePortfolioData } from "../../context/PortofolioDataContext";
+import { usePortfolioStore } from "../../stores/portfolioStore";
 import { useCustomToast } from "../../hooks/useCustomToast";
 import useCustomSwals from "../../hooks/useCustomSwals";
 import { usePagination } from "../../hooks/usePagination";
@@ -58,7 +58,6 @@ const FloatingLabelTextarea = ({
     </label>
   </div>
 );
-// --- Batas Floating Label ---
 
 const initialProjectForm = {
   title: "",
@@ -70,17 +69,19 @@ const initialProjectForm = {
 };
 
 function EditGallery() {
-  const {
-    projects,
-    addProject,
-    updateProject,
-    isProjectsLoading,
-    deleteProject,
-  } = usePortfolioData();
+  const projects = usePortfolioStore((state) => state.projects);
+  const isProjectsLoading = usePortfolioStore((state) => state.isProjectsLoading);
+  const fetchProjects = usePortfolioStore((state) => state.fetchProjects);
+  const addProject = usePortfolioStore((state) => state.addProject);
+  const updateProject = usePortfolioStore((state) => state.updateProject);
+  const deleteProject = usePortfolioStore((state) => state.deleteProject);
 
-  // Implementasi Hooks (Poin 4)
   const { error: errorToast } = useCustomToast();
   const { showConfirmSwal, showSuccessSwal } = useCustomSwals();
+
+  useEffect(() => {
+    if (projects.length === 0) fetchProjects();
+  }, [fetchProjects, projects.length]);
 
   const [projectForm, setProjectForm] = useState(initialProjectForm);
   const [editingProjectIndex, setEditingProjectIndex] = useState(null);

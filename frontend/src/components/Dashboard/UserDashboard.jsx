@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { Icon } from "@iconify/react";
-import { useUser } from "../../context/UserContext";
+import { useAuth } from "../../hooks/useAuth";
 import { usePagination } from "../../hooks/usePagination";
 import useCustomSwals from "../../hooks/useCustomSwals";
 import { useCustomToast } from "../../hooks/useCustomToast";
@@ -48,7 +48,7 @@ const FloatingLabelInput = ({
 );
 
 const SuperAdminGate = ({ children }) => {
-  const { user } = useUser();
+  const { user } = useAuth();
 
   if (user.role !== "superAdmin") {
     return (
@@ -75,9 +75,10 @@ function UserDashboard() {
   const { showConfirmSwal, showSuccessSwal } = useCustomSwals();
   const { error: errorToast } = useCustomToast();
 
+  const { user } = useAuth();
+
   const [showPassword, setShowPassword] = useState(false);
   const toggleShowPassword = () => setShowPassword((prev) => !prev);
-  const { user } = useUser();
 
   const [newAdminForm, setNewAdminForm] = useState({
     fullName: "",

@@ -1,17 +1,15 @@
-// src/components/LandingPage/Header.jsx
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 import ThemeSwitcher from "../ThemeSwitcher";
 import { Icon } from "@iconify/react";
-import { useAppContext } from "../../context/AppContext";
-import { useUser } from "../../context/UserContext";
+import { useAuth } from "../../hooks/useAuth";
+import { useSiteStore } from "../../stores/siteStore";
 
 function Header() {
-  const { siteData } = useAppContext();
+  const siteData = useSiteStore((state) => state.siteData);
   const [isScrolled, setIsScrolled] = useState(false);
-
-  const { user, handleSignOut } = useUser();
+  const { user, handleSignOut } = useAuth();
 
   const isAdmin = user && (user.role === "admin" || user.role === "superAdmin");
 
@@ -34,18 +32,17 @@ function Header() {
 
   return (
     <nav
-      className={`fixed top-0 z-50 w-full transition-shadow duration-300 ease-in-out bg-base-100/70 backdrop-blur-md ${
-        isScrolled ? "shadow-md" : "border-b-1 border-base-300 shadow-none"
-      }`}
+      className={`fixed top-0 z-50 w-full transition-shadow duration-300 ease-in-out bg-base-100/70 backdrop-blur-md ${isScrolled ? "shadow-md" : "border-b-1 border-base-300 shadow-none"
+        }`}
     >
       <div className="navbar container mx-auto md:px-6 lg:px-12">
         <div className="navbar-start">
-          <Link
-            to="/"
-            className="btn btn-ghost text-xl font-display normal-case px-0 hover:bg-transparent"
+          <a
+            href="/"
+            className="text-xl font-display font-bold normal-case px-0 hover:bg-transparent"
           >
             {siteData.brandName}
-          </Link>
+          </a>
         </div>
         <div className="navbar-center hidden lg:flex">
           <div className="flex items-center space-x-2">

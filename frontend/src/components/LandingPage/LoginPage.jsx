@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import SeoHelmet from "../SEOHelmet";
-import { useUser } from "../../context/UserContext";
-import { useAppContext } from "../../context/AppContext";
+import { useAuth } from "../../hooks/useAuth"; 
+import { useSiteStore } from "../../stores/siteStore";
 import useCustomSwals from "../../hooks/useCustomSwals";
 import instance from "../../utils/axios";
 
@@ -38,8 +38,8 @@ const FloatingLabelInput = ({
 );
 
 function LoginPage() {
-  const { siteData } = useAppContext();
-  const { login } = useUser();
+  const siteData = useSiteStore((state) => state.siteData); 
+  const { login } = useAuth();
   const { showErrorSwal, showSuccessSwal } = useCustomSwals();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");

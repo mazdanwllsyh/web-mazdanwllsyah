@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import SeoHelmet from "../SEOHelmet";
-import { useAppContext } from "../../context/AppContext";
+import { useSiteStore } from "../../stores/siteStore";
 import useCustomSwals from "../../hooks/useCustomSwals";
 import instance from "../../utils/axios";
 
 function RegisterPage() {
-  const { siteData } = useAppContext();
+  const siteData = useSiteStore((state) => state.siteData);
   const { showErrorSwal, showSuccessSwal } = useCustomSwals();
   const [showPasswords, setShowPasswords] = useState(false);
   const [fullName, setFullName] = useState("");
