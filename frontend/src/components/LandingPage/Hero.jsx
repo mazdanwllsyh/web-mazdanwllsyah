@@ -44,12 +44,15 @@ function Hero() {
     return firstSentence ? firstSentence + "." : "Deskripsi singkat tentang Saya.";
   }, [siteData?.aboutParagraph]);
 
+  const rawSequence = siteData?.typeAnimationSequenceString;
+  const isAnimationReady = rawSequence && rawSequence !== "..." && rawSequence.trim() !== "";
+
   const dynamicSequence = useMemo(() => {
-    const sequenceString = siteData?.typeAnimationSequenceString || "";
-    const items = sequenceString.split(",").map((s) => s.trim()).filter(Boolean);
-    if (items.length === 0) return ["Web Developer", 1500];
+    if (!isAnimationReady) return [];
+
+    const items = rawSequence.split(",").map((s) => s.trim()).filter(Boolean);
     return items.flatMap((item) => [item, 1500]);
-  }, [siteData?.typeAnimationSequenceString]);
+  }, [rawSequence, isAnimationReady]);
 
   const techIcons = [
     { icon: "logos:html-5", position: "top-[-1.5rem] left-1/2 -translate-x-1/2", },
@@ -133,7 +136,20 @@ function Hero() {
                 <h1 className="text-3xl md:text-4xl font-bold font-display">Mazda Nawallsyah</h1>
 
                 <div className="min-h-[32px] md:min-h-[40px] flex items-center justify-center lg:justify-start">
-                  <TypeAnimation sequence={dynamicSequence} wrapper="span" speed={28} className="text-2xl font-semibold" repeat={Infinity} />
+                  {isAnimationReady ? (
+                    <TypeAnimation
+                      key={rawSequence} 
+                      sequence={dynamicSequence}
+                      wrapper="span"
+                      speed={17}
+                      className="text-2xl font-semibold"
+                      repeat={Infinity}
+                    />
+                  ) : (
+                    <span className="text-2xl font-semibold text-base-content/50 animate-pulse">
+                      ...
+                    </span>
+                  )}
                 </div>
 
                 <div className="divider before:bg-base-content/20 after:bg-base-content/20 lg:hidden"></div>
