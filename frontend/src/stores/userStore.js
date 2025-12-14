@@ -6,7 +6,7 @@ export const useUserStore = create(
   persist(
     (set, get) => ({
       user: null,
-      isUserLoading: false, 
+      isUserLoading: true,
 
       login: (userData) => {
         set({ user: userData });
@@ -14,7 +14,7 @@ export const useUserStore = create(
 
       logout: () => {
         set({ user: null });
-        localStorage.removeItem("porto-user"); 
+        localStorage.removeItem("porto-user");
       },
 
       updateUser: (newProfileData) => {
@@ -24,12 +24,27 @@ export const useUserStore = create(
       },
 
       checkUserSession: async () => {
+        const storedJSON = localStorage.getItem("porto-user");
+
+        if (!storedJSON) {
+          set({ user: null, isUserLoading: false });
+          return;
+        }
+
         set({ isUserLoading: true });
         try {
           const response = await instance.get("/users/getuser");
           set({ user: response.data.user, isUserLoading: false });
         } catch (error) {
-          console.log("Info sesi: Sesi berakhir atau invalid.");
+          if (
+            error.response &&
+            (error.response.status === 401 || error.response.status === 403)
+          ) {
+            console.log("Sesi berakhir, menghapus data lokal.");
+          } else {
+            console.error("Gagal cek sesi:", error);
+          }
+
           get().logout();
           set({ isUserLoading: false });
         }
@@ -38,19 +53,19 @@ export const useUserStore = create(
       logoutApi: async () => {
         try {
           await instance.get("/users/logout");
-          get().logout(); 
-          return true; 
+          get().logout();
+          return true;
         } catch (err) {
           console.error("Gagal logout API:", err);
-          get().logout(); 
+          get().logout();
           throw err;
         }
       },
     }),
     {
-      name: "porto-user", 
+      name: "porto-user",
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ user: state.user }), 
+      partialize: (state) => ({ user: state.user }),
     }
   )
 );

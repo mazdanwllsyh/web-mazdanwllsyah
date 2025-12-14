@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Icon } from "@iconify/react";
 import { usePortfolioStore } from "../../stores/portfolioStore";
 import { useCustomToast } from "../../hooks/useCustomToast";
