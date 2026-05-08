@@ -25,7 +25,7 @@ function ThemeSwitcher() {
   }, [toggleTheme, success]);
 
   return (
-    <label className="toggle text-primary">
+    <label className="toggle text-accent">
       <input
         type="checkbox"
         className="theme-controller"

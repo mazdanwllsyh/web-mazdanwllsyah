@@ -1,13 +1,14 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import SeoHelmet from "../SEOHelmet";
-import { useAuth } from "../../hooks/useAuth"; // GANTI: Pake useAuth
+import { useAuth } from "../../hooks/useAuth";
 import { useSiteStore } from "../../stores/siteStore";
 import { useCustomToast } from "../../hooks/useCustomToast";
 import useCustomSwals from "../../hooks/useCustomSwals";
 import instance from "../../utils/axios";
 import AOS from "aos";
+import FloatingLabelInput, { FloatingLabelSelect } from "../FloatingLabelInput";
 
 const ProfileSkeleton = () => {
   return (
@@ -35,7 +36,7 @@ const ProfileSkeleton = () => {
           <div className="lg:col-span-8">
             <div className="card bg-base-100 shadow-md border border-base-200">
               <div className="card-body">
-                <div className="skeleton h-6 w-1/3 mb-2 w-full"></div>
+                <div className="skeleton h-6 w-1/3 mb-2"></div>
                 <div className="divider my-2"></div>
                 <div className="skeleton h-16 w-full mb-4"></div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -148,7 +149,7 @@ function Profile() {
 
       const response = await instance.put("/users/profile", formData, { headers: { "Content-Type": "multipart/form-data" } });
 
-      updateUser(response.data.user); 
+      updateUser(response.data.user);
       showSuccessSwal("Berhasil!", "Profil diperbarui.");
 
       setIsEditing(false);
@@ -298,7 +299,6 @@ function Profile() {
               )}
             </div>
 
-            {/* Kolom Kanan: Form Data Diri */}
             <div className="lg:col-span-8 order-2 lg:order-2">
               <div
                 className="card bg-base-100 shadow-md border border-base-200"
@@ -313,113 +313,63 @@ function Profile() {
                   </h2>
                   <div className="divider my-2"></div>
 
-                  {/* Floating Label: Nama Lengkap */}
-                  <div className="relative form-control mt-4">
-                    <input
-                      type="text"
+                  <div className="mt-4">
+                    <FloatingLabelInput
                       id="fullName"
                       name="fullName"
-                      placeholder=" "
-                      className={`input input-bordered w-full pt-4 peer text-base ${!isEditing
-                        ? "disabled:bg-base-100 disabled:text-base-content/70 disabled:border-base-300"
-                        : ""
-                        }`}
+                      label="Nama Lengkap"
                       value={profileData.fullName}
                       onChange={handleInputChange}
                       disabled={!isEditing}
                     />
-                    <label
-                      htmlFor="fullName"
-                      className="absolute left-3 top-1 text-xs text-base-content/70 transition-all duration-200 ease-in-out peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-focus:top-1 peer-focus:-translate-y-0 peer-focus:text-xs peer-focus:text-primary pointer-events-none z-10"
-                    >
-                      Nama Lengkap
-                    </label>
                   </div>
 
-                  {/* Grid Email & Telepon */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                    {/* Floating Label: Email (dengan ikon) */}
-                    <div className="relative form-control">
-                      <input
-                        type="text"
-                        id="email"
-                        name="email"
-                        placeholder=" "
-                        className="input input-bordered w-full pt-4 peer text-base pr-10 disabled:bg-base-100 disabled:text-base-content/70 disabled:border-base-300"
-                        value={
-                          isEditing && showEmail
-                            ? profileData.email
-                            : "••••••••"
-                        }
-                        disabled // Selalu disabled (readOnly look)
-                      />
-                      <label
-                        htmlFor="email"
-                        className="absolute left-3 top-1 text-xs text-base-content/70 transition-all duration-200 ease-in-out peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-focus:top-1 peer-focus:-translate-y-0 peer-focus:text-xs peer-focus:text-primary pointer-events-none z-10"
-                      >
-                        Email
-                      </label>
-                      {isEditing && (
-                        <button
-                          type="button"
-                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-base-content/50 hover:text-primary z-10"
-                          onClick={() => setShowEmail(!showEmail)}
-                        >
-                          <Icon
-                            icon={showEmail ? "mdi:eye-off" : "mdi:eye"}
-                            className="w-5 h-5"
-                          />
-                        </button>
-                      )}
-                    </div>
-                    {/* Floating Label: Nomor Telepon */}
-                    <div className="relative form-control">
-                      <input
-                        type="tel"
-                        id="phone"
-                        name="phone"
-                        placeholder=" "
-                        autoComplete="tel"
-                        className={`input input-bordered w-full pt-4 peer text-base ${!isEditing
-                          ? "disabled:bg-base-100 disabled:text-base-content/70 disabled:border-base-300"
-                          : ""
-                          }`}
-                        value={profileData.phone}
-                        onChange={handleInputChange}
-                        disabled={!isEditing}
-                      />
-                      <label
-                        htmlFor="phone"
-                        className="absolute left-3 top-1 text-xs text-base-content/70 transition-all duration-200 ease-in-out peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-focus:top-1 peer-focus:-translate-y-0 peer-focus:text-xs peer-focus:text-primary pointer-events-none z-10"
-                      >
-                        Nomor Telepon
-                      </label>
-                    </div>
+                    <FloatingLabelInput
+                      id="email"
+                      name="email"
+                      label="Email"
+                      type="text"
+                      value={isEditing && showEmail ? profileData.email : "•••••••••••••"}
+                      disabled={true}
+                      rightElement={
+                        isEditing ? (
+                          <button
+                            type="button"
+                            className="text-base-content/50 hover:text-primary transition-colors cursor-pointer"
+                            onClick={() => setShowEmail(!showEmail)}
+                          >
+                            <Icon icon={showEmail ? "mdi:eye-off" : "mdi:eye"} className="w-5 h-5" />
+                          </button>
+                        ) : null
+                      }
+                    />
+
+                    <FloatingLabelInput
+                      id="phone"
+                      name="phone"
+                      label="Nomor Telepon"
+                      type="tel"
+                      value={profileData.phone}
+                      onChange={handleInputChange}
+                      disabled={!isEditing}
+                    />
                   </div>
 
-                  {/* Jenis Kelamin (Select) */}
-                  <div className="form-control mt-4">
-                    <label className="label">
-                      <span className="label-text text-base-content/70">
-                        Jenis Kelamin:
-                      </span>
-                    </label>
-                    <select
+                  <div className="mt-4">
+                    <FloatingLabelSelect
+                      id="gender"
                       name="gender"
-                      className={`select select-bordered w-full text-base text-center ${!isEditing
-                        ? "disabled:bg-base-100 disabled:text-base-content/70 disabled:border-base-300"
-                        : ""
-                        }`}
+                      label="Jenis Kelamin"
                       value={profileData.gender || ""}
                       onChange={handleInputChange}
                       disabled={!isEditing}
+                      className="bg-base-100"
                     >
-                      <option value="" disabled>
-                        -- Pilih Jenis Kelamin --
-                      </option>
-                      <option value="Laki-laki">Laki-laki</option>
-                      <option value="Perempuan">Perempuan</option>
-                    </select>
+                      <option value="" disabled hidden className="bg-base-100 text-base-content">-- Pilih Jenis Kelamin --</option>
+                      <option value="Laki-laki" className="bg-base-100 text-base-content">Laki-laki</option>
+                      <option value="Perempuan" className="bg-base-100 text-base-content">Perempuan</option>
+                    </FloatingLabelSelect>
                   </div>
 
                   {isEditing ? (
@@ -428,69 +378,41 @@ function Profile() {
                         Ubah Password <strong>(Opsional)</strong>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {/* Floating Label: Sandi Lama */}
-                        <div className="relative form-control">
-                          <input
-                            type="password"
-                            id="oldPassword"
-                            placeholder=" "
-                            className="input input-bordered w-full pt-4 peer text-base"
-                            value={oldPassword}
-                            onChange={(e) => setOldPassword(e.target.value)}
-                          />
-                          <label
-                            htmlFor="oldPassword"
-                            className="absolute left-3 top-1 text-xs text-base-content/70 transition-all duration-200 ease-in-out peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-focus:top-1 peer-focus:-translate-y-0 peer-focus:text-xs peer-focus:text-primary pointer-events-none z-10"
-                          >
-                            Kata Sandi Lama
-                          </label>
-                        </div>
-                        {/* Floating Label: Sandi Baru (dengan ikon) */}
-                        <div className="relative form-control">
-                          <input
-                            type={showPassword ? "text" : "password"}
-                            id="newPassword"
-                            placeholder=" "
-                            className="input input-bordered w-full pr-10 pt-4 peer text-base"
-                            value={newPassword}
-                            onChange={(e) => setNewPassword(e.target.value)}
-                          />
-                          <label
-                            htmlFor="newPassword"
-                            className="absolute left-3 top-1 text-xs text-base-content/70 transition-all duration-200 ease-in-out peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-focus:top-1 peer-focus:-translate-y-0 peer-focus:text-xs peer-focus:text-primary pointer-events-none z-10"
-                          >
-                            Kata Sandi Baru
-                          </label>
-                          <button
-                            type="button"
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-base-content/50 hover:text-primary z-10"
-                            onClick={() => setShowPassword(!showPassword)}
-                          >
-                            <Icon
-                              icon={showPassword ? "mdi:eye-off" : "mdi:eye"}
-                              className="w-5 h-5"
-                            />
-                          </button>
-                        </div>
+                        <FloatingLabelInput
+                          id="oldPassword"
+                          label="Kata Sandi Lama"
+                          type="password"
+                          value={oldPassword}
+                          onChange={(e) => setOldPassword(e.target.value)}
+                        />
+
+                        <FloatingLabelInput
+                          id="newPassword"
+                          label="Kata Sandi Baru"
+                          type={showPassword ? "text" : "password"}
+                          value={newPassword}
+                          onChange={(e) => setNewPassword(e.target.value)}
+                          rightElement={
+                            <button
+                              type="button"
+                              className="text-base-content/50 hover:text-primary transition-colors cursor-pointer"
+                              onClick={() => setShowPassword(!showPassword)}
+                            >
+                              <Icon icon={showPassword ? "mdi:eye-off" : "mdi:eye"} className="w-5 h-5" />
+                            </button>
+                          }
+                        />
                       </div>
                     </>
                   ) : (
-                    // Password Dummy (Saat tidak editing)
-                    <div className="relative form-control mt-4">
-                      <input
-                        type="password"
+                    <div className="mt-4">
+                      <FloatingLabelInput
                         id="dummyPassword"
-                        placeholder=" "
-                        className="input input-bordered w-full pt-4 peer text-base disabled:bg-base-100 disabled:text-base-content/70 disabled:border-base-300"
+                        label="Password"
+                        type="password"
                         value="********"
-                        disabled
+                        disabled={true}
                       />
-                      <label
-                        htmlFor="dummyPassword"
-                        className="absolute left-3 top-1 text-xs text-base-content/70 transition-all duration-200 ease-in-out peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-focus:top-1 peer-focus:-translate-y-0 peer-focus:text-xs peer-focus:text-primary pointer-events-none z-10"
-                      >
-                        Password
-                      </label>
                     </div>
                   )}
 

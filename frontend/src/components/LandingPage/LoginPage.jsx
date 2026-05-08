@@ -2,43 +2,14 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import SeoHelmet from "../SEOHelmet";
-import { useAuth } from "../../hooks/useAuth"; 
+import { useAuth } from "../../hooks/useAuth";
 import { useSiteStore } from "../../stores/siteStore";
 import useCustomSwals from "../../hooks/useCustomSwals";
 import instance from "../../utils/axios";
-
-const FloatingLabelInput = ({
-  id,
-  label,
-  value,
-  onChange,
-  name,
-  type = "text",
-}) => (
-  <div className="relative form-control">
-    <input
-      type={type}
-      id={id}
-      name={name}
-      value={value || ""}
-      onChange={onChange}
-      placeholder=" "
-      className="input input-bordered w-full pt-4 peer text-base"
-    />
-    <label
-      htmlFor={id}
-      className="absolute left-3 top-1 text-xs text-base-content/70 transition-all duration-200 ease-in-out 
-                 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-sm 
-                 peer-focus:top-1 peer-focus:-translate-y-0 peer-focus:text-xs peer-focus:text-primary 
-                 pointer-events-none z-10"
-    >
-      {label}
-    </label>
-  </div>
-);
+import FloatingLabelInput from "../FloatingLabelInput";
 
 function LoginPage() {
-  const siteData = useSiteStore((state) => state.siteData); 
+  const siteData = useSiteStore((state) => state.siteData);
   const { login } = useAuth();
   const { showErrorSwal, showSuccessSwal } = useCustomSwals();
   const [showPassword, setShowPassword] = useState(false);
@@ -128,7 +99,12 @@ function LoginPage() {
   }, []);
 
   useEffect(() => {
+    let isMounted = true; 
+    let timeoutId; 
+
     const initializeGoogle = () => {
+      if (!isMounted) return;
+
       if (window.google && window.google.accounts) {
         window.google.accounts.id.initialize({
           client_id: import.meta.env.VITE_APP_GOOGLE_CLIENT_ID,
@@ -154,11 +130,17 @@ function LoginPage() {
           );
         }
       } else {
-        setTimeout(initializeGoogle, 500);
+        timeoutId = setTimeout(initializeGoogle, 500);
       }
     };
 
     initializeGoogle();
+
+    return () => {
+      isMounted = false; 
+      if (timeoutId) clearTimeout(timeoutId); 
+      cleanupGoogleOneTap(); 
+    };
   }, [location.pathname]);
 
   return (
@@ -191,7 +173,7 @@ function LoginPage() {
 
             <div className="divider my-0"></div>
 
-            <div className="relative form-control mt-2">
+            <div className="mt-2">
               <FloatingLabelInput
                 id="emailLogin"
                 label="Email"
@@ -199,10 +181,11 @@ function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 name="email"
+                required
               />
             </div>
 
-            <div className="relative form-control mt-4">
+            <div className="mt-4">
               <FloatingLabelInput
                 id="passwordLogin"
                 label="Password"
@@ -210,20 +193,18 @@ function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 name="password"
-              />
-              <button
-                type="button"
-                onClick={togglePasswordVisibility}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-base-content/50 hover:text-primary z-10"
-                aria-label={
-                  showPassword ? "Sembunyikan password" : "Tampilkan password"
+                required
+                rightElement={
+                  <button
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                    className="text-base-content/50 hover:text-primary transition-colors cursor-pointer"
+                    aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
+                  >
+                    <Icon icon={showPassword ? "mdi:eye-off" : "mdi:eye"} className="w-5 h-5" />
+                  </button>
                 }
-              >
-                <Icon
-                  icon={showPassword ? "mdi:eye-off" : "mdi:eye"}
-                  className="w-5 h-5"
-                />
-              </button>
+              />
             </div>
 
             <div className="form-control mt-6">

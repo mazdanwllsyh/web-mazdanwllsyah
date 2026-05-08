@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import { toast } from "react-hot-toast";
-import { useSiteStore } from "../../stores/siteStore"; 
+import { useSiteStore } from "../../stores/siteStore";
 import { useAuth } from "../../hooks/useAuth";
+import FloatingLabelInput, { FloatingLabelTextarea } from "../FloatingLabelInput";
 
 function Kontak() {
   const siteData = useSiteStore((state) => state.siteData);
@@ -20,7 +21,6 @@ function Kontak() {
   }, [user]);
 
   const handleSendMessage = () => {
-
     const links = siteData?.contactLinks || {};
 
     if (selectedMethod === "telegram") {
@@ -46,9 +46,8 @@ function Kontak() {
       return;
     }
     const subject = `Pesan dari ${nama || "Pengunjung"}`;
-    const body = `Nama: ${nama}\nEmail: ${
-      emailForm || "-"
-    }\n\nPesan:\n${pesan}`;
+    const body = `Nama: ${nama}\nEmail: ${emailForm || "-"
+      }\n\nPesan:\n${pesan}`;
     const encodedBody = encodeURIComponent(body);
     const encodedSubject = encodeURIComponent(subject);
     let url = "";
@@ -57,9 +56,8 @@ function Kontak() {
         url = `mailto:${siteData.contactLinks.email}?subject=${encodedSubject}&body=${encodedBody}`;
         break;
       case "whatsapp":
-        const waBody = `Halo Mazda,\n\nNama: ${nama || "-"}\nEmail: ${
-          emailForm || "-"
-        }\n\nPesan:\n${pesan}`;
+        const waBody = `Halo Mazda,\n\nNama: ${nama || "-"}\nEmail: ${emailForm || "-"
+          }\n\nPesan:\n${pesan}`;
         const encodedWaBody = encodeURIComponent(waBody);
         url = `https://wa.me/${siteData.contactLinks.whatsapp}?text=${encodedWaBody}`;
         break;
@@ -103,11 +101,10 @@ function Kontak() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mb-8">
             <div data-aos="fade-right" data-aos-delay="150">
               <div
-                className={`card shadow-sm p-6 flex flex-col items-center text-center space-y-2 border cursor-pointer transition-all duration-200 h-full ${
-                  selectedMethod === "email"
+                className={`card shadow-sm p-6 flex flex-col items-center text-center space-y-2 border cursor-pointer transition-all duration-200 h-full ${selectedMethod === "email"
                     ? "border-primary scale-105 bg-base-200"
                     : "border-base-300 bg-base-100"
-                }`}
+                  }`}
                 onClick={() => setSelectedMethod("email")}
               >
                 <Icon
@@ -117,7 +114,7 @@ function Kontak() {
                 <div>
                   <h3 className="font-bold font-display text-lg">Email</h3>
                   <p className="text-sm text-base-content/80 break-all">
-                    {siteData.contactLinks.email}
+                    {siteData.contactLinks?.email}
                   </p>
                 </div>
               </div>
@@ -125,18 +122,17 @@ function Kontak() {
 
             <div data-aos="fade-up" data-aos-delay="300">
               <div
-                className={`card shadow-sm p-6 flex flex-col items-center text-center space-y-2 border cursor-pointer transition-all duration-200 h-full ${
-                  selectedMethod === "whatsapp"
+                className={`card shadow-sm p-6 flex flex-col items-center text-center space-y-2 border cursor-pointer transition-all duration-200 h-full ${selectedMethod === "whatsapp"
                     ? "border-success scale-105 bg-base-200"
                     : "border-base-300 bg-base-100"
-                }`}
+                  }`}
                 onClick={() => setSelectedMethod("whatsapp")}
               >
                 <Icon icon="mdi:whatsapp" className="w-10 h-10 text-success" />
                 <div>
                   <h3 className="font-bold font-display text-lg">WhatsApp</h3>
                   <p className="text-sm text-base-content/80">
-                    {siteData.contactLinks.whatsapp}
+                    {siteData.contactLinks?.whatsapp}
                   </p>
                 </div>
               </div>
@@ -144,18 +140,17 @@ function Kontak() {
 
             <div data-aos="fade-left" data-aos-delay="590">
               <div
-                className={`card shadow-sm p-6 flex flex-col items-center text-center space-y-2 border cursor-pointer transition-all duration-200 h-full ${
-                  selectedMethod === "telegram"
+                className={`card shadow-sm p-6 flex flex-col items-center text-center space-y-2 border cursor-pointer transition-all duration-200 h-full ${selectedMethod === "telegram"
                     ? "border-info scale-105 bg-base-200"
                     : "border-base-300 bg-base-100"
-                }`}
+                  }`}
                 onClick={() => setSelectedMethod("telegram")}
               >
                 <Icon icon="mdi:telegram" className="w-10 h-10 text-info" />
                 <div>
                   <h3 className="font-bold font-display text-lg">Telegram</h3>
                   <p className="text-sm text-base-content/80">
-                    @{siteData.contactLinks.telegram}
+                    @{siteData.contactLinks?.telegram}
                   </p>
                 </div>
               </div>
@@ -171,91 +166,43 @@ function Kontak() {
               Tuliskan Pesan Anda
             </h3>
             <form className="space-y-4">
-              {/* Nama */}
-              <div className="relative form-control">
-                <input
-                  type="text"
-                  id="contactNama"
-                  placeholder=" "
-                  className={`input input-bordered w-full pt-4 peer text-base ${
-                    isFormDisabled ? "cursor-not-allowed opacity-75" : ""
-                  }`}
-                  value={nama}
-                  onChange={(e) => setNama(e.target.value)}
-                  disabled={isFormDisabled}
-                />
-                <label
-                  htmlFor="contactNama"
-                  className={`absolute left-3 top-1 text-xs transition-all duration-200 ease-in-out peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-focus:top-1 peer-focus:-translate-y-0 peer-focus:text-xs pointer-events-none z-10 ${
-                    isFormDisabled
-                      ? "text-base-content/40"
-                      : "text-base-content/70 peer-focus:text-primary"
-                  }`}
-                >
-                  Nama
-                </label>
-              </div>
-              {/* Email Form */}
-              <div className="relative form-control">
-                <input
-                  type="email"
-                  id="contactEmail"
-                  placeholder=" "
-                  className={`input input-bordered w-full pt-4 peer text-base ${
-                    isFormDisabled ? "cursor-not-allowed opacity-75" : ""
-                  }`}
-                  value={emailForm}
-                  onChange={(e) => setEmailForm(e.target.value)}
-                  disabled={isFormDisabled}
-                />
-                <label
-                  htmlFor="contactEmail"
-                  className={`absolute left-3 top-1 text-xs transition-all duration-200 ease-in-out peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-focus:top-1 peer-focus:-translate-y-0 peer-focus:text-xs pointer-events-none z-10 ${
-                    isFormDisabled
-                      ? "text-base-content/40"
-                      : "text-base-content/70 peer-focus:text-primary"
-                  }`}
-                >
-                  Email
-                </label>
-              </div>
-              {/* Pesan */}
-              <div className="relative form-control">
-                <textarea
-                  id="contactPesan"
-                  className={`textarea textarea-bordered w-full pt-4 peer text-base h-32 ${
-                    isFormDisabled ? "cursor-not-allowed opacity-75" : ""
-                  }`}
-                  placeholder=" "
-                  value={pesan}
-                  onChange={(e) => setPesan(e.target.value)}
-                  required={!isFormDisabled}
-                  disabled={isFormDisabled}
-                ></textarea>
-                <label
-                  htmlFor="contactPesan"
-                  className={`absolute left-3 top-1 text-xs transition-all duration-200 ease-in-out peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:top-1 peer-focus:-translate-y-0 peer-focus:text-xs pointer-events-none z-10 ${
-                    isFormDisabled
-                      ? "text-base-content/40"
-                      : "text-base-content/70 peer-focus:text-primary"
-                  }`}
-                >
-                  Pesan atau Kritik
-                </label>
-              </div>
+              <FloatingLabelInput
+                id="contactNama"
+                label="Nama"
+                value={nama}
+                onChange={(e) => setNama(e.target.value)}
+                disabled={isFormDisabled}
+              />
+
+              <FloatingLabelInput
+                id="contactEmail"
+                label="Email"
+                type="email"
+                value={emailForm}
+                onChange={(e) => setEmailForm(e.target.value)}
+                disabled={isFormDisabled}
+              />
+
+              <FloatingLabelTextarea
+                id="contactPesan"
+                label="Pesan atau Kritik"
+                value={pesan}
+                onChange={(e) => setPesan(e.target.value)}
+                disabled={isFormDisabled}
+                required={!isFormDisabled}
+              />
 
               <button
                 type="button"
                 onClick={handleSendMessage}
-                className={`btn w-full mt-4 ${
-                  !selectedMethod
+                className={`btn w-full mt-4 ${!selectedMethod
                     ? "btn-disabled"
                     : isFormDisabled
-                    ? "btn-primary" // Selalu btn-primary jika Telegram
-                    : isFormValid
-                    ? "btn-primary"
-                    : "btn-disabled"
-                }`}
+                      ? "btn-primary"
+                      : isFormValid
+                        ? "btn-primary"
+                        : "btn-disabled"
+                  }`}
                 disabled={!selectedMethod || (!isFormDisabled && !isFormValid)}
               >
                 {getButtonText()}

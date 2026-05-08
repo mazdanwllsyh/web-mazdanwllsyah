@@ -1,63 +1,10 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Icon } from "@iconify/react";
-import { usePortfolioStore } from "../../stores/portfolioStore";
+import { useProjectStore } from "../../stores/projectStore";
 import { useCustomToast } from "../../hooks/useCustomToast";
 import useCustomSwals from "../../hooks/useCustomSwals";
 import { usePagination } from "../../hooks/usePagination";
-
-const FloatingLabelInput = ({
-  id,
-  label,
-  value,
-  onChange,
-  name,
-  type = "text",
-}) => (
-  <div className="relative form-control">
-    <input
-      type={type}
-      id={id}
-      name={name}
-      value={value || ""}
-      onChange={onChange}
-      placeholder=" "
-      className="input input-bordered w-full pt-4 peer text-base"
-    />
-    <label
-      htmlFor={id}
-      className="absolute left-3 top-1 text-xs text-base-content/70 transition-all duration-200 ease-in-out peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-focus:top-1 peer-focus:-translate-y-0 peer-focus:text-xs peer-focus:text-primary pointer-events-none z-10"
-    >
-      {label}
-    </label>
-  </div>
-);
-
-const FloatingLabelTextarea = ({
-  id,
-  label,
-  value,
-  onChange,
-  name,
-  rows = 3,
-}) => (
-  <div className="relative form-control">
-    <textarea
-      id={id}
-      name={name}
-      value={value || ""}
-      onChange={onChange}
-      placeholder=" "
-      className="textarea textarea-bordered text-justify w-full pt-4 peer text-base"
-      rows={rows}
-    />
-    <label
-      htmlFor={id}
-      className="absolute left-3 top-1 text-xs text-base-content/70 transition-all duration-200 ease-in-out peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:top-1 peer-focus:-translate-y-0 peer-focus:text-xs peer-focus:text-primary pointer-events-none z-10"
-    >
-      {label}
-    </label>
-  </div>
-);
+import FloatingLabelInput, { FloatingLabelTextarea } from "../FloatingLabelInput";
 
 const initialProjectForm = {
   title: "",
@@ -69,12 +16,12 @@ const initialProjectForm = {
 };
 
 function EditGallery() {
-  const projects = usePortfolioStore((state) => state.projects);
-  const isProjectsLoading = usePortfolioStore((state) => state.isProjectsLoading);
-  const fetchProjects = usePortfolioStore((state) => state.fetchProjects);
-  const addProject = usePortfolioStore((state) => state.addProject);
-  const updateProject = usePortfolioStore((state) => state.updateProject);
-  const deleteProject = usePortfolioStore((state) => state.deleteProject);
+  const projects = useProjectStore((state) => state.projects);
+  const isProjectsLoading = useProjectStore((state) => state.isProjectsLoading);
+  const fetchProjects = useProjectStore((state) => state.fetchProjects);
+  const addProject = useProjectStore((state) => state.addProject);
+  const updateProject = useProjectStore((state) => state.updateProject);
+  const deleteProject = useProjectStore((state) => state.deleteProject);
 
   const { error: errorToast } = useCustomToast();
   const { showConfirmSwal, showSuccessSwal } = useCustomSwals();
@@ -87,7 +34,6 @@ function EditGallery() {
   const [editingProjectIndex, setEditingProjectIndex] = useState(null);
   const [editingProjectId, setEditingProjectId] = useState(null);
 
-  // State untuk upload file (Poin 2)
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
   const [isSaving, setIsSaving] = useState(false);
@@ -136,7 +82,7 @@ function EditGallery() {
 
     if (file) {
       if (!file.type.startsWith("image/")) {
-        showErrorToast("File harus berupa gambar!");
+        errorToast("File harus berupa gambar!");
         setImageFile(null);
         setImagePreview("");
         e.target.value = null;
@@ -244,7 +190,6 @@ function EditGallery() {
         <div className="divider my-2"></div>
 
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-4">
-          {/* Kiri: Tombol Tambah */}
           <div className="w-full md:w-auto">
             <button
               className="btn btn-primary w-full"
@@ -254,11 +199,9 @@ function EditGallery() {
               Tambah Proyek Baru
             </button>
           </div>
-          {/* Tengah: Pagination */}
           <div className="w-full md:w-auto flex justify-center order-last md:order-none">
             <PaginationComponent />
           </div>
-          {/* Kanan: Search Box */}
           <div className="w-full md:w-72">
             <input
               type="search"
@@ -270,7 +213,6 @@ function EditGallery() {
           </div>
         </div>
 
-        {/* Styling Table (Poin 1) */}
         <div className="space-y-4">
           <div className="overflow-x-auto border border-base-300 rounded-lg">
             <table className="table table-zebra table-hover w-full">
@@ -310,7 +252,7 @@ function EditGallery() {
                     <td className="px-4 py-2 border-l border-base-300 align-top">
                       <div className="font-bold">{proj.title}</div>
                       <div className="text-xs opacity-70 break-all">
-                        {proj.description.substring(0, 70)}...
+                        {proj.description?.substring(0, 70)}...
                       </div>
                     </td>
                     <td className="px-4 py-2 border-l border-base-300 align-top">
@@ -321,7 +263,7 @@ function EditGallery() {
                               key={tag}
                               className="badge badge-accent text-xs h-auto py-1 whitespace-normal text-center"
                             >
-                              {tag.trim()} 
+                              {tag.trim()}
                             </div>
                           ))}
                       </div>
@@ -361,7 +303,6 @@ function EditGallery() {
           </div>
         </div>
 
-        {/* --- MODAL PROYEK --- */}
         <dialog id="project_modal" className="modal modal-middle">
           <div className="modal-box w-11/12 max-w-2xl">
             <h3 className="font-bold text-lg font-display">
@@ -369,7 +310,6 @@ function EditGallery() {
             </h3>
 
             <form onSubmit={handleProjectSubmit} className="space-y-5 pt-4">
-              {/* Floating Label Inputs (Poin 3) */}
               <FloatingLabelInput
                 id="proj_title"
                 name="title"
@@ -384,10 +324,9 @@ function EditGallery() {
                 label="Deskripsi"
                 value={projectForm.description}
                 onChange={handleInputChange}
-                rows={4}
+                className="h-32"
               />
 
-              {/* File Upload (Poin 2) */}
               <div className="form-control w-full">
                 <label className="label">
                   <span className="label-text font-semibold">

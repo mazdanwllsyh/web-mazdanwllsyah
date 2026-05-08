@@ -1,583 +1,244 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Icon } from "@iconify/react";
 import { useSiteStore } from "../../stores/siteStore";
 import { useCustomToast } from "../../hooks/useCustomToast";
 import useCustomSwals from "../../hooks/useCustomSwals";
-
-const FloatingLabelInput = ({
-  id,
-  label,
-  value,
-  onChange,
-  name,
-  type = "text",
-}) => (
-  <div className="relative form-control">
-    <input
-      type={type}
-      id={id}
-      name={name}
-      value={value || ""}
-      onChange={onChange}
-      placeholder=" "
-      className="input input-bordered w-full pt-4 peer text-base"
-    />
-    <label
-      htmlFor={id}
-      className="absolute left-3 top-1 text-xs text-base-content/70 transition-all duration-200 ease-in-out peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-focus:top-1 peer-focus:-translate-y-0 peer-focus:text-xs peer-focus:text-primary pointer-events-none z-10"
-    >
-      {label}
-    </label>
-  </div>
-);
-
-const FloatingLabelTextarea = ({
-  id,
-  label,
-  value,
-  onChange,
-  name,
-  rows = 3,
-}) => (
-  <div className="relative form-control">
-    <textarea
-      id={id}
-      name={name}
-      value={value || ""}
-      onChange={onChange}
-      placeholder=" "
-      className="textarea textarea-bordered text-justify w-full pt-4 peer text-base"
-      rows={rows}
-    />
-    <label
-      htmlFor={id}
-      className="absolute left-3 top-1 text-xs text-base-content/70 transition-all duration-200 ease-in-out peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:top-1 peer-focus:-translate-y-0 peer-focus:text-xs peer-focus:text-primary pointer-events-none z-10"
-    >
-      {label}
-    </label>
-  </div>
-);
+import FloatingLabelInput, { FloatingLabelTextarea } from "../FloatingLabelInput";
 
 function DataSaya() {
   const siteData = useSiteStore((state) => state.siteData);
   const updateSiteData = useSiteStore((state) => state.updateSiteData);
-  const isSiteDataLoading = useSiteStore((state) => state.isSiteDataLoading);
   const uploadProfileImage = useSiteStore((state) => state.uploadProfileImage);
-  const updateProfileImage = useSiteStore((state) => state.updateProfileImage);
   const deleteProfileImage = useSiteStore((state) => state.deleteProfileImage);
 
-  const { success: customToast, error: errorToast } = useCustomToast();
+  const { success: successToast, error: errorToast } = useCustomToast();
   const { showConfirmSwal, showSuccessSwal } = useCustomSwals();
 
-  const [formData, setFormData] = useState(siteData || {});
-  const [isSaving, setIsSaving] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
-
-  const [editingImageIndex, setEditingImageIndex] = useState(null);
-  const [editImageFile, setEditImageFile] = useState(null);
+  const [formData, setFormData] = useState(siteData);
   const [isUpdating, setIsUpdating] = useState(null);
-
   const [isDeleting, setIsDeleting] = useState(null);
-
-  const [newImageFile, setNewImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState("");
-
-  useEffect(() => {
-    if (!isSaving && siteData) { 
-      setFormData(siteData);
-    }
-  }, [siteData, isSaving]);
+  const [isSaving, setIsSaving] = useState(false);
+  const [newTypeSeq, setNewTypeSeq] = useState("");
 
   useEffect(() => {
-    const currentPreview = imagePreview;
-    return () => {
-      if (currentPreview) {
-        URL.revokeObjectURL(currentPreview);
-        console.log("Revoked Object URL:", currentPreview);
-      }
-    };
-  }, [imagePreview]);
+    setFormData(siteData);
+  }, [siteData]);
 
-  const handleInputChange = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleContactChange = (e) => {
-    let { name, value } = e.target;
-    if (name === "whatsapp" && value.startsWith("0")) {
-      value = "62" + value.substring(1);
-    }
-    setFormData((prev) => ({
-      ...prev,
-      contactLinks: {
-        ...prev.contactLinks,
-        [name]: value,
-      },
-    }));
-  };
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (imagePreview) {
-      URL.revokeObjectURL(imagePreview);
-    }
-
-    if (file) {
-      if (!file.type.startsWith("image/")) {
-        errorToast("File harus berupa gambar!");
-        setNewImageFile(null);
-        setImagePreview("");
-        e.target.value = null;
-        return;
-      }
-      setNewImageFile(file);
-      const previewUrl = URL.createObjectURL(file);
-      setImagePreview(previewUrl);
-      console.log("Created Object URL:", previewUrl);
+    if (name.includes(".")) {
+      const [parent, child] = name.split(".");
+      setFormData((prev) => ({
+        ...prev,
+        [parent]: { ...prev[parent], [child]: value },
+      }));
     } else {
-      setNewImageFile(null);
-      setImagePreview("");
+      setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
-  const handleEditFileChange = (e, index) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (!file.type.startsWith("image/")) {
-        errorToast("File harus berupa gambar!");
-        e.target.value = null;
-        return;
-      }
-      setEditImageFile(file);
-      setEditingImageIndex(index);
-    } else {
-      setEditImageFile(null);
-    }
+  const typeSequences = useMemo(() =>
+    formData.typeAnimationSequenceString
+      ? formData.typeAnimationSequenceString.split(",").filter(s => s.trim() !== "")
+      : []
+    , [formData.typeAnimationSequenceString]);
+
+  const addTypeSeq = () => {
+    if (!newTypeSeq.trim()) return;
+    const updated = [...typeSequences, newTypeSeq.trim()].join(",");
+    setFormData(prev => ({ ...prev, typeAnimationSequenceString: updated }));
+    setNewTypeSeq("");
   };
 
-  const handleAddImageToList = async () => {
-    if (!newImageFile) {
-      errorToast("Pilih file gambar terlebih dahulu.");
-      return;
-    }
-    if (formData.profileImages.length >= 3) {
-      errorToast("Maksimal 3 gambar profil.");
-      return;
-    }
+  const removeTypeSeq = (index) => {
+    const updated = typeSequences.filter((_, i) => i !== index).join(",");
+    setFormData(prev => ({ ...prev, typeAnimationSequenceString: updated }));
+  };
 
-    setIsUploading(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSaving(true);
     try {
-      const uploadData = new FormData();
-      uploadData.append("profileImage", newImageFile);
-
-      await uploadProfileImage(uploadData);
-
-      showSuccessSwal("Gambar berhasil di-upload dan ditambahkan!");
-
-      setNewImageFile(null);
-      setImagePreview("");
-      const fileInput = document.getElementById("profileImageUpload");
-      if (fileInput) fileInput.value = null;
+      await updateSiteData(formData);
+      showSuccessSwal("Data Berhasil Disimpan!", "Informasi dasar dan tautan kontak telah diperbarui.");
     } catch (error) {
-      console.error("Gagal upload gambar:", error);
-      errorToast(
-        "Upload Gagal",
-        error.response?.data?.message || "Terjadi kesalahan server."
-      );
+      errorToast("Gagal memperbarui data.");
     } finally {
-      setIsUploading(false);
+      setIsSaving(false);
     }
   };
 
-  const handleDeleteImage = async (indexToDelete, imageUrl) => {
-    const isConfirmed = await showConfirmSwal(
-      "Hapus Gambar?",
-      "Gambar ini akan dihapus permanen dari server. Yakin?"
-    );
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setIsUpdating("uploading");
+    const imageFormData = new FormData();
+    imageFormData.append("profileImage", file);
+    try {
+      await uploadProfileImage(imageFormData);
+      successToast("Gambar profil berhasil ditambahkan!");
+    } catch (error) {
+      errorToast("Gagal upload gambar.");
+    } finally {
+      setIsUpdating(null);
+      e.target.value = "";
+    }
+  };
+
+  const handleDeleteImage = async (index, imageUrl) => {
+    const isConfirmed = await showConfirmSwal("Hapus Gambar?", "Gambar profil ini akan dihapus secara permanen.");
     if (isConfirmed) {
-      setIsDeleting(indexToDelete);
+      setIsDeleting(index);
       try {
         await deleteProfileImage(imageUrl);
-        customToast("Gambar berhasil dihapus.");
+        successToast("Gambar berhasil dihapus.");
       } catch (error) {
-        console.error("Gagal hapus gambar:", error);
-        errorToast(
-          "Hapus Gagal",
-          error.response?.data?.message || "Terjadi kesalahan server."
-        );
+        errorToast("Gagal menghapus gambar.");
       } finally {
         setIsDeleting(null);
       }
     }
   };
 
-  const handleSaveEdit = async (index, oldImageUrl) => {
-    if (!editImageFile) {
-      errorToast("Pilih file gambar baru terlebih dahulu.");
-      return;
-    }
-
-    setIsUpdating(index);
-
-    try {
-      const uploadData = new FormData();
-      uploadData.append("profileImage", editImageFile);
-      uploadData.append("oldImageUrl", oldImageUrl);
-
-      await updateProfileImage(uploadData);
-
-      customToast("Gambar berhasil diperbarui!");
-
-      setEditingImageIndex(null);
-      setEditImageFile(null);
-    } catch (error) {
-      console.error("Gagal update gambar:", error);
-      errorToast(
-        "Update Gagal",
-        error.response?.data?.message || "Terjadi kesalahan server."
-      );
-    } finally {
-      setIsUpdating(null);
-    }
-  };
-
-  const handleSave = async (e) => {
-    e.preventDefault();
-    setIsSaving(true);
-
-    try {
-      await updateSiteData(formData);
-      customToast("Data situs berhasil diperbarui!");
-    } catch (error) {
-      console.error("Gagal simpan data:", error);
-      errorToast(
-        "Simpan Gagal",
-        error.response?.data?.message || "Terjadi kesalahan server."
-      );
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  if (isSiteDataLoading) {
-    return (
-      <div className="card bg-base-100 shadow-md border border-base-200">
-        <div className="card-body flex items-center justify-center h-96">
-          <span className="loading loading-lg loading-bars"></span>
-          <p className="mt-4">Memuat data situs...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="card bg-base-100 shadow-md border border-base-200">
-      <form className="card-body" onSubmit={handleSave}>
-        <h2 className="card-title text-2xl font-display text-center justify-center">
-          Data Situs
-        </h2>
-        <div className="divider my-2"></div>
+    <div className="space-y-8 pb-10">
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
-          <FloatingLabelInput
-            id="brandName"
-            name="brandName"
-            label="Nama Brand (cth: webMazda.N)"
-            value={formData.brandName}
-            onChange={handleInputChange}
-          />
-          <FloatingLabelInput
-            id="brandNameShort"
-            name="brandNameShort"
-            label="Nama Pendek (cth: MazdaN)"
-            value={formData.brandNameShort}
-            onChange={handleInputChange}
-          />
-          <FloatingLabelInput
-            id="jobTitle"
-            name="jobTitle"
-            label="Pekerjaan (cth: Front-End Developer)"
-            value={formData.jobTitle}
-            onChange={handleInputChange}
-          />
-          <FloatingLabelInput
-            id="location"
-            name="location"
-            label="Lokasi (cth: Ambarawa, Kab. Semarang)"
-            value={formData.location}
-            onChange={handleInputChange}
-          />
-          <FloatingLabelInput
-            id="email"
-            name="email"
-            label="Email"
-            type="email"
-            value={formData.contactLinks.email}
-            onChange={handleContactChange}
-          />
-          <FloatingLabelInput
-            id="whatsapp"
-            name="whatsapp"
-            label="WhatsApp (cth: 628...)"
-            value={formData.contactLinks.whatsapp}
-            onChange={handleContactChange}
-            type="tel"
-          />
+        <div className="lg:col-span-8 grid grid-cols-1 gap-6">
+          <div className="card bg-base-100 border border-base-content/20 shadow-sm overflow-hidden">
+            <div className="card-body p-0">
+              <div className="p-6 border-b border-base-300 bg-base-200/50 flex items-center gap-3">
+                <div className="p-2 bg-primary/10 text-primary rounded-xl">
+                  <Icon icon="solar:user-id-bold-duotone" className="w-6 h-6" />
+                </div>
+                <h2 className="text-xl font-black font-display">Informasi Utama</h2>
+              </div>
 
-          <FloatingLabelInput
-            id="telegram"
-            name="telegram"
-            label="Telegram Kamu"
-            value={formData.contactLinks.telegram}
-            onChange={handleContactChange}
-          />
-          <FloatingLabelInput
-            id="instagram"
-            name="instagram"
-            label="Instagram Kamu"
-            value={formData.contactLinks.instagram}
-            onChange={handleContactChange}
-          />
-          <FloatingLabelInput
-            id="github"
-            name="github"
-            label="GitHub Kamu"
-            value={formData.contactLinks.github}
-            onChange={handleContactChange}
-          />
-          <FloatingLabelInput
-            id="linkedin"
-            name="linkedin"
-            label="LinkedIn Kamu"
-            value={formData.contactLinks.linkedin}
-            onChange={handleContactChange}
-          />
-          {/* <FloatingLabelInput
-            id="typeAnimationSequenceString"
-            name="typeAnimationSequenceString"
-            label="Teks Animasi Hero (pisah koma)" 
-            value={formData.typeAnimationSequenceString}
-            onChange={handleInputChange} 
-          /> */}
-        </div>
+              <div className="p-8 space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <FloatingLabelInput label="Nama Brand" name="brandName" value={formData.brandName} onChange={handleChange} required />
+                  <FloatingLabelInput label="Nama Lengkap / Pendek" name="brandNameShort" value={formData.brandNameShort} onChange={handleChange} required />
+                </div>
 
-        <div className="mt-4">
-          <FloatingLabelInput
-            id="typeAnimationSequenceString"
-            name="typeAnimationSequenceString"
-            label="Teks Animasi Hero (pisah koma)"
-            value={formData.typeAnimationSequenceString}
-            onChange={handleInputChange}
-          />
-        </div>
+                <FloatingLabelInput label="Jabatan Saat Ini" name="jobTitle" value={formData.jobTitle} onChange={handleChange} required />
 
-        <div className="divider mt-8 font-bold">
-          Pengaturan Tentang dan Gambar
-        </div>
-        <div className="my-2">
-          <FloatingLabelTextarea
-            id="aboutParagraph"
-            name="aboutParagraph"
-            label="Tentang Saya (Paragraf)"
-            value={formData.aboutParagraph}
-            onChange={handleInputChange}
-            rows={5} // Tinggikan sedikit
-          />
-        </div>
+                <div className="space-y-3">
+                  <div className="flex gap-2">
+                    <FloatingLabelInput
+                      label="Tambah Typing Sequence"
+                      value={newTypeSeq}
+                      onChange={(e) => setNewTypeSeq(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTypeSeq())}
+                    />
+                    <button type="button" onClick={addTypeSeq} className="btn btn-primary h-14 w-14 rounded-xl">
+                      <Icon icon="solar:add-circle-bold" className="w-6 h-6" />
+                    </button>
+                  </div>
+                  <div className="flex flex-wrap gap-2 p-3 border border-base-300 rounded-xl bg-base-200/30 min-h-14 items-center">
+                    {typeSequences.length > 0 ? (
+                      typeSequences.map((text, i) => (
+                        <div key={i} className="badge badge-lg py-4 px-4 bg-base-100 border-primary/30 gap-2 font-bold text-xs tracking-wider animate-in fade-in zoom-in duration-300">
+                          {text}
+                          <Icon icon="solar:close-circle-bold" className="w-4 h-4 cursor-pointer text-error hover:scale-110 transition-transform" onClick={() => removeTypeSeq(i)} />
+                        </div>
+                      ))
+                    ) : (
+                      <span className="text-xs italic opacity-40 ml-2">Belum ada sequence, ketik lalu tekan Enter atau klik ikon +</span>
+                    )}
+                  </div>
+                </div>
 
-        {/* --- Bagian Upload Gambar --- */}
-        <div className="form-control w-full">
-          <label className="label">
-            <span className="label-text font-semibold">
-              Upload Gambar Profil Baru (Maks. 3 Total)
-            </span>
-          </label>
-          <input
-            id="profileImageUpload" // ID untuk reset
-            type="file"
-            className="file-input file-input-bordered w-full"
-            onChange={handleFileChange}
-            accept="image/*" // Terima semua jenis gambar
-          />
-        </div>
+                <FloatingLabelTextarea label="Tentang Saya" name="aboutParagraph" value={formData.aboutParagraph} onChange={handleChange} rows={4} />
+              </div>
+            </div>
+          </div>
 
-        {/* --- Area Pratinjau Gambar Baru --- */}
-        {imagePreview && (
-          <div className="mt-4 p-4 border border-dashed border-base-300 rounded-lg flex flex-col items-center gap-4">
-            <p className="text-sm font-semibold text-center">
-              Pratinjau Gambar Baru:
-            </p>
-            <img
-              src={imagePreview}
-              alt="Pratinjau gambar baru"
-              className="w-48 h-48 rounded-lg object-cover shadow"
-            />
-            <button
-              type="button"
-              onClick={handleAddImageToList}
-              className="btn btn-md btn-secondary"
-              disabled={formData.profileImages.length >= 3 || isUploading}
-            >
-              {isUploading ? (
-                <span className="loading loading-dots loading-xs"></span>
-              ) : (
-                <Icon icon="mdi:plus-circle-outline" className="mr-1" />
-              )}
-              {isUploading ? "Mengupload..." : "Tambahkan ke Daftar"}
+          <div className="card bg-base-100 border border-base-content/20 shadow-sm">
+            <div className="card-body p-0">
+              <div className="p-6 border-b border-base-300 bg-base-200/50 flex items-center gap-3">
+                <div className="p-2 bg-secondary/10 text-secondary rounded-xl">
+                  <Icon icon="solar:link-round-angle-bold-duotone" className="w-6 h-6" />
+                </div>
+                <h2 className="text-xl font-black font-display">Tautan Sosial & Kontak</h2>
+              </div>
+              <div className="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <FloatingLabelInput label="Email" name="contactLinks.email" value={formData.contactLinks?.email} onChange={handleChange} />
+                <FloatingLabelInput label="WhatsApp" name="contactLinks.whatsapp" value={formData.contactLinks?.whatsapp} onChange={handleChange} />
+                <FloatingLabelInput label="Telegram" name="contactLinks.telegram" value={formData.contactLinks?.telegram} onChange={handleChange} />
+                <FloatingLabelInput label="LinkedIn" name="contactLinks.linkedin" value={formData.contactLinks?.linkedin} onChange={handleChange} />
+                <FloatingLabelInput label="Instagram" name="contactLinks.instagram" value={formData.contactLinks?.instagram} onChange={handleChange} />
+                <FloatingLabelInput label="GitHub" name="contactLinks.github" value={formData.contactLinks?.github} onChange={handleChange} />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-center pt-2">
+            <button type="submit" className="btn btn-primary btn-lg w-full md:w-80 rounded-2xl shadow-lg shadow-primary/20" disabled={isSaving}>
+              {isSaving ? <span className="loading loading-ring loading-md"></span> : <Icon icon="solar:diskette-bold-duotone" className="w-6 h-6" />}
+              {isSaving ? "Menyimpan..." : "Simpan Semua Data"}
             </button>
           </div>
-        )}
-
-        <div className="card-actions justify-center mt-2">
-          <button
-            type="submit"
-            className="btn btn-primary sm:w-45 md:w-lg"
-            disabled={isSaving}
-          >
-            {isSaving ? (
-              <span className="loading loading-spinner"></span>
-            ) : (
-              <Icon icon="mdi:content-save" className="mr-2" />
-            )}
-            Simpan Perubahan
-          </button>
         </div>
 
-        {/* --- Tabel Daftar Gambar --- */}
-        <div className="mt-6">
-          <h3 className="text-lg font-semibold mb-2">
-            Daftar Gambar Profil ({formData.profileImages.length}/3)
-          </h3>
-          <div className="overflow-x-auto border border-base-300 rounded-lg">
-            <table className="table table-zebra table-hover w-full">
-              <thead className="bg-neutral text-neutral-content text-center">
-                <tr>
-                  <th className="w-12 px-4 py-3">#</th>
-                  <th className="w-32 px-4 py-3 border-l border-base-300">
-                    Pratinjau
-                  </th>
-                  <th className="px-4 py-3 border-l border-base-300">
-                    URL Gambar
-                  </th>
-                  <th className="w-28 px-4 py-3 border-l border-base-300">
-                    Aksi
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {formData.profileImages.map((imageUrl, index) => (
-                  <tr
-                    key={index}
-                    className="border-b border-base-300 last:border-b-0 hover"
-                  >
-                    <th className="text-center px-4 py-2">{index + 1}</th>
-                    <td className="px-4 py-2 border-l border-base-300">
-                      {editingImageIndex === index ? (
-                        <div className="space-y-4">
-                          <label className="label-text text-xs text-base-content/70">
-                            Pilih file baru:
-                          </label>
-                          <input
-                            type="file"
-                            className="file-input file-input-bordered file-input-sm w-full"
-                            onChange={(e) => handleEditFileChange(e, index)}
-                            accept="image/*"
-                          />
-                        </div>
-                      ) : (
-                        <div className="avatar flex justify-center">
-                          <div className="w-48 rounded shadow">
-                            <img
-                              src={imageUrl}
-                              alt={`Gambar profil ${index + 1}`}
-                            />
-                          </div>
-                        </div>
-                      )}
-                    </td>
-                    <td className="text-xs break-all max-w-xs px-4 py-2 border-l border-base-300">
-                      {imageUrl}
-                    </td>
-                    <td className="text-center px-4 py-2 border-l border-base-300">
-                      {editingImageIndex === index ? (
-                        <div className="flex flex-col gap-2">
-                          <button
-                            type="button"
-                            className="btn btn-xs btn-success w-full"
-                            onClick={() => handleSaveEdit(index, imageUrl)}
-                            disabled={isUpdating === index || !editImageFile}
-                          >
-                            <Icon icon="mdi:content-save" className="mr-1" />
-                            {isUpdating === index ? (
-                              <span className="loading loading-spinner loading-xs"></span>
-                            ) : (
-                              "Simpan"
-                            )}
-                          </button>
-                          <button
-                            type="button"
-                            className="btn btn-xs btn-danger w-full"
-                            onClick={() => setEditingImageIndex(null)}
-                          >
-                            <Icon icon="mdi:cancel" className="mr-1" />
-                            Batal
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="flex flex-col gap-2">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setEditingImageIndex(index);
-                              setEditImageFile(null);
-                            }}
-                            className="btn btn-sm btn-warning w-full"
-                            disabled={
-                              isDeleting !== null || isUpdating !== null
-                            }
-                          >
-                            <Icon icon="mdi:pencil" className="mr-1" />
-                            Edit
-                          </button>
+        <div className="lg:col-span-4 space-y-6">
+          <div className="card bg-base-100 border border-base-content/20 shadow-sm sticky top-6">
+            <div className="card-body p-0">
+              <div className="p-6 border-b border-base-300 bg-base-200/50 flex items-center gap-3">
+                <div className="p-2 bg-accent/10 text-accent rounded-xl">
+                  <Icon icon="solar:gallery-bold-duotone" className="w-6 h-6" />
+                </div>
+                <h2 className="text-xl font-black font-display">Foto Profil</h2>
+              </div>
 
-                          <button
-                            type="button"
-                            onClick={() => handleDeleteImage(index, imageUrl)}
-                            className="btn btn-sm btn-error w-full"
-                            disabled={
-                              isDeleting !== null || isUpdating !== null
-                            }
-                          >
-                            {isDeleting === index ? (
-                              <span className="loading loading-spinner loading-xs"></span>
-                            ) : (
-                              <Icon
-                                icon="mdi:delete-outline"
-                                className="mr-1"
-                              />
-                            )}
-                            {isDeleting === index ? "..." : "Hapus"}
-                          </button>
+              <div className="p-6 space-y-6">
+                <div className="form-control">
+                  <label className="label cursor-pointer p-4 border-2 border-dashed border-base-300 rounded-2xl hover:border-primary hover:bg-primary/5 transition-all group">
+                    <div className="flex flex-col items-center w-full gap-2">
+                      <Icon icon="solar:cloud-upload-bold-duotone" className="w-10 h-10 text-base-content/20 group-hover:text-primary transition-colors" />
+                      <span className="text-xs font-bold text-base-content/40 group-hover:text-base-content">Klik untuk Upload Gambar</span>
+                    </div>
+                    <input type="file" className="hidden" onChange={handleImageUpload} disabled={isUpdating !== null} accept="image/*" />
+                  </label>
+                </div>
+
+                <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+                  {formData.profileImages.map((imageUrl, index) => (
+                    <div key={index} className="group relative rounded-2xl border border-base-300 overflow-hidden bg-base-200/50 p-2 flex items-center gap-4 hover:border-error/30 transition-all">
+                      <div className="avatar">
+                        <div className="w-16 h-16 rounded-xl ring ring-base-300 ring-offset-base-100 ring-offset-2">
+                          <img src={imageUrl} alt={`Profile ${index}`} className="object-cover" />
                         </div>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-                {formData.profileImages.length === 0 && (
-                  <tr className="border-b border-base-300 last:border-b-0">
-                    <td
-                      colSpan="4"
-                      className="text-center text-base-content/60 italic py-4"
-                    >
-                      Belum ada gambar profil.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[10px] font-mono opacity-40 truncate">{imageUrl}</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteImage(index, imageUrl)}
+                        className="btn btn-square btn-error btn-sm opacity-0 group-hover:opacity-100 transition-opacity"
+                        disabled={isDeleting !== null}
+                      >
+                        {isDeleting === index ? <span className="loading loading-spinner loading-xs"></span> : <Icon icon="solar:trash-bin-trash-bold" />}
+                      </button>
+                    </div>
+                  ))}
+
+                  {formData.profileImages.length === 0 && (
+                    <div className="text-center py-10 opacity-30 italic text-sm">Belum ada gambar profil.</div>
+                  )}
+                </div>
+
+                <div className="p-4 bg-info/10 text-info rounded-xl flex items-start gap-3">
+                  <Icon icon="solar:info-circle-bold" className="w-5 h-5 shrink-0" />
+                  <p className="text-[10px] leading-relaxed font-medium">
+                    Gambar ini akan muncul secara bergantian di bagian <strong>About</strong> dan <strong>Hero Section</strong> sebagai slideshow dinamis.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+
       </form>
     </div>
   );

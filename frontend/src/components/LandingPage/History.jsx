@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Icon } from "@iconify/react";
 import AOS from "aos";
-import { Helmet } from "react-helmet-async";
 import { usePortfolioStore } from "../../stores/portfolioStore";
 import { useSiteStore } from "../../stores/siteStore";
 import { transformCloudinaryUrl } from "../../utils/imageHelper.js";
@@ -125,11 +124,9 @@ function History() {
       className="bg-base-100 min-h-screen flex flex-col items-center justify-center"
       id="histori"
     >
-      <Helmet>
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}
         </script>
-      </Helmet>
 
       <div className="container mx-auto px-4">
         <div className="text-center mb-12" data-aos="fade-up">

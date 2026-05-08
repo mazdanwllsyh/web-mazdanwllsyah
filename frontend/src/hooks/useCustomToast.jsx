@@ -3,14 +3,12 @@ import { Icon } from "@iconify/react";
 import { useCallback, useMemo } from "react";
 
 export function useCustomToast() {
-  const getAnimationClass = (visible) => visible ? "animate-enter" : "animate-leave";
-
   const showSuccessToast = useCallback((message, options = {}) => {
     toast.custom((t) => (
       <div
         className={`alert shadow-xl max-w-md flex flex-row items-center gap-3 
-        bg-primary text-primary-content border-none rounded-2xl
-        ${getAnimationClass(t.visible)}`}
+        bg-success text-success-content border-none rounded-2xl transition-all duration-300 ease-out origin-bottom
+        ${t.visible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-4 scale-95"}`}
       >
         <Icon icon="solar:check-circle-bold" className="text-3xl" />
         <div>
@@ -25,8 +23,8 @@ export function useCustomToast() {
     toast.custom((t) => (
       <div
         className={`alert shadow-xl max-w-md flex flex-row items-start gap-3 
-        bg-primary text-primary-content border-none rounded-2xl
-        ${getAnimationClass(t.visible)}`}
+        bg-error text-error-content border-none rounded-2xl transition-all duration-300 ease-out origin-bottom
+        ${t.visible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-4 scale-95"}`}
       >
         <Icon icon="solar:danger-circle-bold" className="text-3xl mt-0.5" />
         <div>
@@ -41,21 +39,18 @@ export function useCustomToast() {
     toast.custom((t) => (
       <div
         className={`alert shadow-xl max-w-md flex flex-row items-center gap-3 
-        bg-primary text-primary-content border-none rounded-2xl
-        ${getAnimationClass(t.visible)}`}
+        bg-info text-info-content border-none rounded-2xl transition-all duration-300 ease-out origin-bottom
+        ${t.visible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-4 scale-95"}`}
       >
         <Icon icon="solar:info-circle-bold" className="text-3xl" />
-        <span className="font-medium">{message}</span>
+        <span className="font-semibold">{message}</span>
       </div>
     ), { duration: 3000, ...options });
   }, []);
 
-  return useMemo(
-    () => ({
-      success: showSuccessToast,
-      error: showErrorToast,
-      info: showInfoToast,
-    }),
-    [showSuccessToast, showErrorToast, showInfoToast]
-  );
+  return useMemo(() => ({
+    success: showSuccessToast,
+    error: showErrorToast,
+    info: showInfoToast,
+  }), [showSuccessToast, showErrorToast, showInfoToast]);
 }

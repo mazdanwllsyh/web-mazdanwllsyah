@@ -2,322 +2,138 @@ import React, { useState, useMemo, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import { usePortfolioStore } from "../../stores/portfolioStore";
 import { useCustomToast } from "../../hooks/useCustomToast";
-
-const FloatingLabelInput = ({
-  id,
-  label,
-  value,
-  onChange,
-  name,
-  type = "text",
-  onKeyPress,
-  minLength,
-}) => (
-  <div className="relative form-control">
-    <input
-      type={type}
-      id={id}
-      name={name}
-      value={value || ""}
-      onChange={onChange}
-      onKeyPress={onKeyPress}
-      minLength={minLength}
-      placeholder=" "
-      className="input input-bordered w-full pt-4 peer text-base"
-    />
-    <label
-      htmlFor={id}
-      className="absolute left-3 top-1 text-xs text-base-content/70 transition-all duration-200 ease-in-out peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-focus:top-1 peer-focus:-translate-y-0 peer-focus:text-xs peer-focus:text-primary pointer-events-none z-10"
-    >
-      {label}
-    </label>
-  </div>
-);
+import FloatingLabelInput from "../FloatingLabelInput";
 
 const skillLevels = [
-  { value: "Dasar", label: "1 - Dasar" },
-  { value: "Pemula", label: "2 - Pemula" },
-  { value: "Menengah", label: "3 - Menengah" },
-  { value: "Mahir", label: "4 - Mahir" },
-  { value: "Pakar", label: "5 - Pakar" },
+  { value: "Dasar", label: "Dasar (Beginner)" },
+  { value: "Menengah", label: "Menengah (Intermediate)" },
+  { value: "Mahir", label: "Mahir (Advanced)" },
 ];
 
 function EditSkills() {
-  const skillsData = usePortfolioStore((state) => state.skillsData);
-  const isSkillsLoading = usePortfolioStore((state) => state.isSkillsLoading);
   const fetchSkillsData = usePortfolioStore((state) => state.fetchSkillsData);
+  const skillsData = usePortfolioStore((state) => state.skillsData);
+  const updateHardSkills = usePortfolioStore((state) => state.updateHardSkills);
   const addSoftSkill = usePortfolioStore((state) => state.addSoftSkill);
   const deleteSoftSkill = usePortfolioStore((state) => state.deleteSoftSkill);
-  const updateHardSkills = usePortfolioStore((state) => state.updateHardSkills);
+  const isSkillsLoading = usePortfolioStore((state) => state.isSkillsLoading);
 
-  const { success: customToast, error: errorToast } = useCustomToast();
-
-  useEffect(() => {
-    if (!skillsData.hardSkills || skillsData.hardSkills.length === 0) {
-      fetchSkillsData();
-    }
-  }, [fetchSkillsData, skillsData.hardSkills]);
-
-  const [isSavingSoftSkill, setIsSavingSoftSkill] = useState(false);
-  const [isSavingHardSkill, setIsSavingHardSkill] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(null);
+  const { success: successToast, error: errorToast } = useCustomToast();
 
   const [newSoftSkill, setNewSoftSkill] = useState("");
-
-  const handleAddSoftSkill = async () => {
-    if (!newSoftSkill.trim()) return;
-    setIsSavingSoftSkill(true);
-    try {
-      await addSoftSkill(newSoftSkill.trim());
-      setNewSoftSkill("");
-      customToast("Soft skill ditambahkan!");
-    } catch (error) {
-      errorToast("Gagal", error.response?.data?.message || "Error server");
-    } finally {
-      setIsSavingSoftSkill(false);
-    }
-  };
-
-  const handleDeleteSoftSkill = async (index) => {
-    setIsDeleting(index);
-    try {
-      await deleteSoftSkill(index);
-      customToast("Soft skill dihapus.");
-    } catch (error) {
-      errorToast("Gagal", error.response?.data?.message || "Error server");
-    } finally {
-      setIsDeleting(null);
-    }
-  };
-
-  const [localHardSkills, setLocalHardSkills] = useState(
-    skillsData.hardSkills || []
-  );
-
-  const [searchTerm, setSearchTerm] = useState("");
+  const [localHardSkills, setLocalHardSkills] = useState([]);
+  const [isSavingHard, setIsSavingHard] = useState(false);
 
   useEffect(() => {
-    if (skillsData.hardSkills) setLocalHardSkills(skillsData.hardSkills);
-  }, [skillsData.hardSkills]);
-
-  const masterSkillList = skillsData.masterHardSkills || [];
-
-  const skillTableData = useMemo(() => {
-    const filteredMasterList = masterSkillList.filter((skill) =>
-      skill.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-    return filteredMasterList.map((masterSkill) => {
-      const userSkill = localHardSkills.find(
-        (s) => s.name === masterSkill.name
-      );
-      return {
-        ...masterSkill,
-        level: userSkill ? userSkill.level : "Dasar",
-        isDisplayed: !!userSkill,
-      };
-    });
-  }, [masterSkillList, localHardSkills, searchTerm]);
-
-  const handleDisplayChange = (skillName, isChecked) => {
-    if (isChecked) {
-      const skillToAdd = masterSkillList.find((s) => s.name === skillName);
-      setLocalHardSkills((prev) => [
-        ...prev,
-        { ...skillToAdd, level: "Dasar" },
-      ]);
-    } else {
-      setLocalHardSkills((prev) => prev.filter((s) => s.name !== skillName));
+    if (!skillsData.hardSkills.length && !skillsData.softSkills.length) {
+      fetchSkillsData();
     }
+  }, [fetchSkillsData, skillsData]);
+
+  useEffect(() => {
+    if (skillsData.hardSkills.length > 0) {
+      const merged = skillsData.masterHardSkills.map(master => {
+        const userSkill = skillsData.hardSkills.find(h => h.name === master.name);
+        return userSkill ? { ...master, ...userSkill } : { ...master, level: "Dasar", isDisplayed: false };
+      });
+      setLocalHardSkills(merged);
+    }
+  }, [skillsData.hardSkills, skillsData.masterHardSkills]);
+
+  const handleLevelChange = (name, level) => {
+    setLocalHardSkills(prev => prev.map(s => s.name === name ? { ...s, level } : s));
   };
 
-  const handleLevelChange = (skillName, newLevel) => {
-    setLocalHardSkills((prev) =>
-      prev.map((skill) =>
-        skill.name === skillName ? { ...skill, level: newLevel } : skill
-      )
-    );
+  const handleDisplayChange = (name, isDisplayed) => {
+    setLocalHardSkills(prev => prev.map(s => s.name === name ? { ...s, isDisplayed } : s));
   };
 
   const handleSaveHardSkills = async () => {
-    setIsSavingHardSkill(true);
+    setIsSavingHard(true);
+    const toSave = localHardSkills.filter(s => s.isDisplayed).map(({ name, level, isDisplayed }) => ({ name, level, isDisplayed }));
     try {
-      await updateHardSkills(localHardSkills);
-      customToast("Hard skills berhasil diperbarui!");
-    } catch (error) {
-      errorToast("Gagal", error.response?.data?.message || "Error server");
+      await updateHardSkills(toSave);
+      successToast("Hard Skills disimpan!");
+    } catch (e) {
+      errorToast("Gagal menyimpan.");
     } finally {
-      setIsSavingHardSkill(false);
+      setIsSavingHard(false);
     }
   };
 
-  if (isSkillsLoading) {
-    return (
-      <div className="card bg-base-100 shadow-md border border-base-200">
-        <div className="card-body flex items-center justify-center h-96">
-          <span className="loading loading-lg loading-bars"></span>
-          <p className="mt-4">Memuat data skills ...</p>
-        </div>
-      </div>
-    );
-  }
+  const handleAddSoftSkill = async () => {
+    if (!newSoftSkill.trim()) return;
+    try {
+      await addSoftSkill(newSoftSkill);
+      setNewSoftSkill("");
+      successToast("Soft Skill ditambah!");
+    } catch (e) { errorToast("Gagal."); }
+  };
+
+  if (isSkillsLoading) return <div className="text-center py-10"><span className="loading loading-spinner loading-lg"></span></div>;
 
   return (
-    <div className="space-y-8">
-      <div className="card bg-base-100 shadow-md border border-base-200">
-        <div className="card-body">
-          <h2 className="card-title text-2xl font-display justify-center">
-            Edit Soft Skills
-          </h2>
-          <div className="divider"></div>
-
-          <div className="overflow-x-auto my-4 border border-base-300 rounded-lg">
-            <table className="table table-zebra w-full table-hover">
-              <thead className="bg-neutral text-neutral-content text-sm border-b-2 border-base-300">
-                <tr>
-                  <th className="px-4 py-3 text-center">Nama Soft Skill</th>
-                  <th className="text-center px-4 py-3 border-l border-base-300 w-28 text-center">
-                    Aksi
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {skillsData.softSkills.map((skill, index) => (
-                  <tr
-                    key={index}
-                    className="border-b border-base-300 last:border-b-0 hover"
-                  >
-                    <td className="px-4 py-2">{skill}</td>
-                    <td className="text-center px-4 py-2 border-l border-base-300">
-                      <button
-                        onClick={() => handleDeleteSoftSkill(index)}
-                        className="btn btn-xs btn-error btn-outline"
-                        disabled={isDeleting === index}
-                      >
-                        {isDeleting === index ? (
-                          <span className="loading loading-spinner loading-xs"></span>
-                        ) : (
-                          "Hapus"
-                        )}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="divider">Input Soft Skill kamu</div>
-          <div className="form-control flex-row gap-2 justify-center">
-            <FloatingLabelInput
-              id="softSkill"
-              name="softSkill"
-              label="Contoh: Komunikasi Efektif"
-              value={newSoftSkill}
-              onChange={(e) => setNewSoftSkill(e.target.value)}
-              onKeyPress={(e) => e.key === "Enter" && handleAddSoftSkill()}
-              minLength={5}
-            />
-            <button
-              onClick={handleAddSoftSkill}
-              className="btn btn-primary md:w-55 lg:w-full my-4"
-            >
-              Tambah
-            </button>
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="lg:col-span-4 space-y-6">
+        <div className="card bg-base-100 border border-base-300 shadow-sm">
+          <div className="card-body">
+            <h2 className="card-title font-display"><Icon icon="mdi:brain" className="text-primary" /> Soft Skills</h2>
+            <div className="divider my-2"></div>
+            <div className="flex gap-2">
+              <FloatingLabelInput label="Tambah Soft Skill" value={newSoftSkill} onChange={(e) => setNewSoftSkill(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleAddSoftSkill()} />
+              <button className="btn btn-primary" onClick={handleAddSoftSkill}><Icon icon="mdi:plus" /></button>
+            </div>
+            <div className="flex flex-wrap gap-2 mt-4">
+              {skillsData.softSkills.map((skill, i) => (
+                <div key={i} className="badge badge-lg badge-neutral gap-2 py-4">
+                  {skill}
+                  <Icon icon="mdi:close-circle" className="cursor-pointer hover:text-error" onClick={() => deleteSoftSkill(i)} />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* --- Card 2: Edit Hard Skills --- */}
-      <div className="card bg-base-100 shadow-md border border-base-200">
-        <div className="card-body">
-          <h2 className="card-title text-2xl font-display justify-center">
-            Edit Hard Skills
-          </h2>
-          <div className="divider"></div>
-
-          <div className="flex justify-end mb-4">
-            <div className="w-full max-w-xs">
-              <input
-                type="search"
-                placeholder="Cari teknologi..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="input input-bordered w-full"
-              />
-            </div>
-          </div>
-
-          <div className="overflow-x-auto border border-base-300 rounded-lg">
-            <table className="table table-zebra w-full table-hover">
-              <thead className="bg-neutral text-neutral-content text-center text-sm border-b-2 border-base-300">
-                <tr>
-                  <th className="px-4 py-3">Ikon</th>
-                  <th className="px-4 py-3 border-l border-base-300">
-                    Teknologi
-                  </th>
-                  <th className="px-4 py-3 border-l border-base-300">
-                    Kemampuan (Level)
-                  </th>
-                  <th className="text-center px-4 py-3 border-l border-base-300">
-                    Tampilkan
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {skillTableData.map((skill) => (
-                  <tr
-                    key={skill.id}
-                    className="border-b border-base-300 last:border-b-0 hover"
-                  >
-                    <td className="px-4 py-2 border-l border-base-300">
-                      <div className="flex justify-center">
-                        <Icon icon={skill.icon} className="w-8 h-8" />
-                      </div>
-                    </td>
-                    <td className="px-4 text-center py-2 border-l border-base-300">
-                      {skill.name}
-                    </td>
-                    <td className="px-4 py-2 border-l border-base-300 justify-center items-center flex">
-                      <select
-                        className="select select-bordered select-sm w-full max-w-xs"
-                        value={skill.level}
-                        onChange={(e) =>
-                          handleLevelChange(skill.name, e.target.value)
-                        }
-                        disabled={!skill.isDisplayed}
-                      >
-                        {skillLevels.map((level) => (
-                          <option key={level.value} value={level.value}>
-                            {level.label}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-                    <td className="text-center px-4 py-2 border-l border-base-300">
-                      <input
-                        type="checkbox"
-                        className="checkbox checkbox-primary"
-                        checked={skill.isDisplayed}
-                        onChange={(e) =>
-                          handleDisplayChange(skill.name, e.target.checked)
-                        }
-                      />
-                    </td>
+      <div className="lg:col-span-8">
+        <div className="card bg-base-100 border border-base-300 shadow-sm">
+          <div className="card-body">
+            <h2 className="card-title font-display"><Icon icon="mdi:code-tags" className="text-primary" /> Master Hard Skills</h2>
+            <div className="divider my-2"></div>
+            <div className="overflow-x-auto border border-base-300 rounded-xl">
+              <table className="table table-zebra table-sm">
+                <thead className="bg-base-200">
+                  <tr>
+                    <th className="w-12">#</th>
+                    <th>Skill</th>
+                    <th className="w-40">Level</th>
+                    <th className="w-20 text-center">Tampil</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="card-actions justify-end mt-6">
-            <button
-              onClick={handleSaveHardSkills}
-              className="btn btn-primary"
-              disabled={isSavingHardSkill}
-            >
-              <Icon icon="mdi:content-save" /> Simpan Perubahan Hard Skills
-            </button>
+                </thead>
+                <tbody>
+                  {localHardSkills.map((skill, index) => (
+                    <tr key={skill.name}>
+                      <td>{index + 1}</td>
+                      <td className="flex items-center gap-2"><Icon icon={skill.icon} className="w-5 h-5" /> {skill.name}</td>
+                      <td>
+                        <select className="select select-bordered select-xs w-full" value={skill.level} onChange={(e) => handleLevelChange(skill.name, e.target.value)} disabled={!skill.isDisplayed}>
+                          {skillLevels.map(l => <option key={l.value} value={l.value}>{l.label}</option>)}
+                        </select>
+                      </td>
+                      <td className="text-center">
+                        <input type="checkbox" className="checkbox checkbox-primary checkbox-xs" checked={skill.isDisplayed} onChange={(e) => handleDisplayChange(skill.name, e.target.checked)} />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="card-actions justify-end mt-4">
+              <button className="btn btn-primary" onClick={handleSaveHardSkills} disabled={isSavingHard}>
+                {isSavingHard ? <span className="loading loading-spinner loading-xs"></span> : <Icon icon="mdi:content-save" />}
+                Simpan Hard Skills
+              </button>
+            </div>
           </div>
         </div>
       </div>

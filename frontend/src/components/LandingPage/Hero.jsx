@@ -159,7 +159,7 @@ function Hero() {
                   {displayParagraph}
                 </p>
 
-                <Link tabIndex={0} to="/tentang" className="btn bg-base-300 font-display border border-neutral border-2 shadow-lg group rounded-2xl" data-aos="fade-down" data-aos-delay="400">
+                <Link tabIndex={0} to="/tentang" className="btn bg-base-300 font-display border-neutral border-2 shadow-lg group rounded-2xl" data-aos="fade-down" data-aos-delay="400">
                   Tentang Saya?
                   <Icon icon="streamline-flex:finger-snapping" className="w-6 h-6 ml-1 group-hover:scale-85 transition-transform" focusable="false" />
                 </Link>

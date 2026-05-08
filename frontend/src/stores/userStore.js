@@ -36,15 +36,6 @@ export const useUserStore = create(
           const response = await instance.get("/users/getuser");
           set({ user: response.data.user, isUserLoading: false });
         } catch (error) {
-          if (
-            error.response &&
-            (error.response.status === 401 || error.response.status === 403)
-          ) {
-            console.log("Sesi berakhir, menghapus data lokal.");
-          } else {
-            console.error("Gagal cek sesi:", error);
-          }
-
           get().logout();
           set({ isUserLoading: false });
         }
@@ -56,7 +47,6 @@ export const useUserStore = create(
           get().logout();
           return true;
         } catch (err) {
-          console.error("Gagal logout API:", err);
           get().logout();
           throw err;
         }
@@ -66,6 +56,6 @@ export const useUserStore = create(
       name: "porto-user",
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({ user: state.user }),
-    }
-  )
+    },
+  ),
 );

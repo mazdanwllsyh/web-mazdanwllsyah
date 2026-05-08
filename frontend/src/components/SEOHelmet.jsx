@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { Helmet } from "react-helmet-async";
 import { useSiteStore } from "../stores/siteStore";
 import { useLocation } from "react-router-dom";
 
@@ -98,7 +97,7 @@ function SeoHelmet({ title, description, imageUrl, url }) {
   };
 
   return (
-    <Helmet>
+    <>
       <title>{pageTitle}</title>
       <meta name="description" content={dynamicDescription} />
 
@@ -123,7 +122,7 @@ function SeoHelmet({ title, description, imageUrl, url }) {
       <script type="application/ld+json">
         {JSON.stringify(schemaPerson)}
       </script>
-    </Helmet>
+    </>
   );
 }
 

@@ -1,30 +1,22 @@
-import React,  { useEffect, } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import { useAuth } from "../../hooks/useAuth";
 import { usePortfolioStore } from "../../stores/portfolioStore";
-import { Bar } from "react-chartjs-2";
+import { useProjectStore } from "../../stores/projectStore";
 import {
-  Chart as ChartJS,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
   Tooltip,
-  Legend,
-  Title,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-} from "chart.js";
-
-ChartJS.register(
-  Tooltip,
-  Legend,
-  Title,
-  BarElement,
-  CategoryScale,
-  LinearScale
-);
+  ResponsiveContainer,
+  Cell
+} from "recharts";
 
 const QuickLinkSkeleton = () => (
-  <div className="card bg-base-200 shadow-lg">
+  <div className="card bg-base-200 shadow-lg border border-base-300">
     <div className="card-body">
       <div className="skeleton h-10 w-10 opacity-70"></div>
       <div className="skeleton h-8 w-1/4 self-end"></div>
@@ -37,160 +29,85 @@ function DashboardBeranda() {
   const { user } = useAuth();
   const userName = user ? user.fullName.split(" ")[0] : "Editor";
 
-  const projects = usePortfolioStore((state) => state.projects);
+  const projects = useProjectStore((state) => state.projects);
+  const isProjectsLoading = useProjectStore((state) => state.isProjectsLoading);
+  const fetchProjects = useProjectStore((state) => state.fetchProjects);
+
   const sertifikatData = usePortfolioStore((state) => state.sertifikatData);
   const historyData = usePortfolioStore((state) => state.historyData);
   const skillsData = usePortfolioStore((state) => state.skillsData);
 
-  const isProjectsLoading = usePortfolioStore((state) => state.isProjectsLoading);
   const isSertifikatLoading = usePortfolioStore((state) => state.isSertifikatLoading);
   const isHistoryLoading = usePortfolioStore((state) => state.isHistoryLoading);
   const isSkillsLoading = usePortfolioStore((state) => state.isSkillsLoading);
 
-  const fetchProjects = usePortfolioStore((state) => state.fetchProjects);
   const fetchSertifikat = usePortfolioStore((state) => state.fetchSertifikat);
   const fetchHistoryData = usePortfolioStore((state) => state.fetchHistoryData);
   const fetchSkillsData = usePortfolioStore((state) => state.fetchSkillsData);
 
+  const [theme, setTheme] = useState(document.documentElement.getAttribute("data-theme") || "emerald");
+
   useEffect(() => {
     if (projects.length === 0) fetchProjects();
     if (sertifikatData.length === 0) fetchSertifikat();
-    if ((!historyData.education || historyData.education.length === 0) && (!historyData.experience || historyData.experience.length === 0)) fetchHistoryData();
+    if (!historyData.education?.length && !historyData.experience?.length) fetchHistoryData();
     if (skillsData.hardSkills.length === 0) fetchSkillsData();
+
+    const observer = new MutationObserver(() => {
+      setTheme(document.documentElement.getAttribute("data-theme"));
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    return () => observer.disconnect();
   }, [fetchProjects, fetchSertifikat, fetchHistoryData, fetchSkillsData, projects.length, sertifikatData.length]);
 
+  const allLoading = isProjectsLoading || isSertifikatLoading || isHistoryLoading || isSkillsLoading;
+
   const quickLinks = [
-    {
-      name: "Data Saya",
-      path: "/dashboard/sitedata",
-      icon: "mdi:database-edit-outline",
-      count: null,
-      loading: isHistoryLoading,
-      bg: "bg-primary",
-    },
-    {
-      name: "Edit Galeri",
-      path: "/dashboard/galeriedit",
-      icon: "mdi:image-multiple-outline",
-      count: projects.length,
-      loading: isProjectsLoading,
-      bg: "bg-success",
-    },
-    {
-      name: "Edit Sertifikat",
-      path: "/dashboard/sertifikatsaya",
-      icon: "ph:certificate",
-      count: sertifikatData.length,
-      loading: isSertifikatLoading,
-      bg: "bg-warning",
-    },
-    {
-      name: "Edit History",
-      path: "/dashboard/configuration",
-      icon: "mdi:timeline-text-outline",
-      count: historyData.education.length + historyData.experience.length,
-      loading: isHistoryLoading,
-      bg: "bg-info",
-    },
+    { name: "Data Saya", path: "/dashboard/sitedata", icon: "mdi:database-edit-outline", count: null, colorClass: "primary" },
+    { name: "Edit Galeri", path: "/dashboard/galeriedit", icon: "mdi:image-multiple-outline", count: projects.length, colorClass: "success" },
+    { name: "Edit Sertifikat", path: "/dashboard/sertifikatsaya", icon: "ph:certificate", count: sertifikatData.length, colorClass: "warning" },
+    { name: "Edit History", path: "/dashboard/configuration", icon: "mdi:timeline-text-outline", count: (historyData.education?.length || 0) + (historyData.experience?.length || 0), colorClass: "info" },
   ];
 
-  const chartData = {
-    labels: ["Proyek", "Sertifikat", "History", "Hard Skills"],
-    datasets: [
-      {
-        label: "Total Konten",
-        data: [
-          projects.length,
-          sertifikatData.length,
-          historyData.education.length + historyData.experience.length,
-          skillsData.hardSkills.length,
-        ],
-        backgroundColor: [
-          "rgba(52, 211, 153, 0.6)",
-          "rgba(250, 204, 21, 0.6)",
-          "rgba(59, 130, 246, 0.6)",
-          "rgba(244, 63, 94, 0.6)",
-        ],
-        borderColor: [
-          "rgba(52, 211, 153, 1)",
-          "rgba(250, 204, 21, 1)",
-          "rgba(59, 130, 246, 1)",
-          "rgba(244, 63, 94, 1)",
-        ],
-        borderWidth: 1.5,
-      },
-    ],
+  // Helper Warna Chart (Hanya pake Variable CSS, Recharts lebih suka ini)
+  const chartData = [
+    { name: "Proyek", total: projects.length, color: "var(--p)" },
+    { name: "Sertifikat", total: sertifikatData.length, color: "var(--s)" },
+    { name: "History", total: (historyData.education?.length || 0) + (historyData.experience?.length || 0), color: "var(--a)" },
+    { name: "Skills", total: skillsData.hardSkills.length, color: "var(--n)" },
+  ];
+
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-base-100/90 backdrop-blur-md text-base-content p-4 border border-base-300 shadow-2xl rounded-2xl">
+          <p className="font-black text-sm">{`${payload[0].payload.name} : ${payload[0].value}`}</p>
+        </div>
+      );
+    }
+    return null;
   };
-
-  const customFontStack = `"SF UI Text", system-ui, -apple-system, sans-serif`;
-
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        display: false,
-      },
-      title: {
-        display: true,
-        text: "Ringkasan Konten Website",
-        color: "hsl(var(--bc))",
-        font: {
-          size: 16,
-          family: customFontStack,
-        },
-      },
-      tooltip: {
-        titleFont: { family: customFontStack },
-        bodyFont: { family: customFontStack },
-      },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        ticks: {
-          color: "hsl(var(--bc))",
-          font: { family: customFontStack },
-          stepSize: 1,
-        },
-        grid: {
-          color: "hsl(var(--b3))",
-        },
-      },
-      x: {
-        ticks: {
-          color: "hsl(var(--bc))",
-          font: { family: customFontStack },
-        },
-        grid: {
-          display: false,
-        },
-      },
-    },
-  };
-
-  const allLoading =
-    isProjectsLoading ||
-    isSertifikatLoading ||
-    isHistoryLoading ||
-    isSkillsLoading;
 
   return (
-    <div className="space-y-6">
-      <div className="hidden lg:block p-8 bg-base-100 border border-primary rounded-lg shadow-md max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold font-display">
-          Selamat Datang di Dashboard, {userName}!
-        </h1>
-        <p className="mt-2 text-lg">
-          Gunakan sidebar di sebelah kiri atau link cepat di bawah untuk
-          mengedit konten.
-        </p>
+    <div className="space-y-10 pb-10">
+      {/* Header dengan Glow Efek */}
+      <div className="hidden lg:block p-12 bg-base-100 border border-base-300 rounded-[2.5rem] shadow-sm relative overflow-hidden">
+        <div className="absolute -right-10 -top-10 w-40 h-40 bg-primary/10 rounded-full blur-3xl"></div>
+        <div className="relative z-10">
+          <h1 className="text-5xl font-black font-display tracking-tight text-base-content">
+            Selamat Datang, <span className="text-primary">{userName}!</span>
+          </h1>
+          <p className="mt-4 text-xl text-base-content/50 font-medium max-w-2xl">
+            Pantau perkembangan portofoliomu. Semuanya terkendali dalam satu dasbor.
+          </p>
+        </div>
       </div>
 
-      <div className="space-y-6">
-        <div className="space-y-4">
-          <h2 className="text-2xl font-display font-bold">Akses Cepat</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="space-y-10">
+        {/* Quick Links Section */}
+        <div className="space-y-6">
+          <h2 className="text-xl font-black uppercase tracking-[0.2em] text-base-content/40 ml-2">Navigasi Cepat</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {quickLinks.map((link) =>
               allLoading ? (
                 <QuickLinkSkeleton key={link.path} />
@@ -198,16 +115,29 @@ function DashboardBeranda() {
                 <Link
                   key={link.path}
                   to={link.path}
-                  className={`card ${link.bg} text-primary-content shadow-md transform transition-transform duration-300 hover:shadow-lg`}
+                  className="group relative card bg-base-100 border border-base-300 shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-500 rounded-3xl overflow-hidden"
                 >
-                  <div className="card-body">
-                    <div className="flex justify-between items-start">
-                      <Icon icon={link.icon} className="w-10 h-10 opacity-80" />
+                  {/* LINGKARAN LUCU (Top Right Effect ala SIMRS) */}
+                  <div className={`absolute -top-6 -right-6 w-20 h-20 bg-${link.colorClass}/10 rounded-full transition-all duration-700 group-hover:scale-[3] group-hover:opacity-20`}></div>
+
+                  <div className="card-body p-8 relative z-10">
+                    <div className="flex justify-between items-center">
+                      <div className={`text-${link.colorClass} transition-transform duration-500 group-hover:scale-110`}>
+                        <Icon icon={link.icon} className="w-10 h-10" />
+                      </div>
                       {link.count !== null && (
-                        <span className="text-5xl font-bold">{link.count}</span>
+                        <span className="text-4xl font-black opacity-20 group-hover:opacity-100 transition-opacity duration-500">
+                          {link.count}
+                        </span>
                       )}
                     </div>
-                    <h3 className="card-title mt-4">{link.name}</h3>
+                    <div className="mt-8">
+                      <h3 className="text-xs font-black uppercase tracking-widest text-base-content/60 group-hover:text-base-content transition-colors">
+                        {link.name}
+                      </h3>
+                      {/* Border Hover Dinamis */}
+                      <div className={`h-1.5 w-8 bg-${link.colorClass} mt-3 rounded-full transition-all duration-500 group-hover:w-full`}></div>
+                    </div>
                   </div>
                 </Link>
               )
@@ -215,18 +145,53 @@ function DashboardBeranda() {
           </div>
         </div>
 
-        <div className="hidden lg:block">
-          <h2 className="text-2xl font-display font-bold mb-4">
-            Ringkasan Konten
-          </h2>
-          <div className="card bg-base-100 shadow-md border border-base-300">
-            <div className="card-body h-[400px]">
+        {/* Chart Section */}
+        <div className="hidden lg:block space-y-6">
+          <h2 className="text-xl font-black uppercase tracking-[0.2em] text-base-content/40 ml-2">Analitik Data</h2>
+          <div className="card bg-base-100 shadow-xl border border-base-300 rounded-[2.5rem] overflow-hidden">
+            <div className="card-body h-[450px] p-10">
               {allLoading ? (
-                <div className="flex justify-center items-center h-64">
-                  <span className="loading loading-spinner loading-lg"></span>
+                <div className="flex justify-center items-center h-full">
+                  <span className="loading loading-infinity loading-lg text-primary"></span>
                 </div>
               ) : (
-                <Bar data={chartData} options={chartOptions} />
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      vertical={false}
+                      stroke="currentColor"
+                      className="opacity-10"
+                    />
+                    <XAxis
+                      dataKey="name"
+                      axisLine={false}
+                      tickLine={false}
+                      /* FIX: Pake currentColor biar ngikutin mode Dark/Light otomatis */
+                      tick={{ fill: 'currentColor', fontSize: 13, fontWeight: 700, opacity: 0.6 }}
+                      dy={15}
+                    />
+                    <YAxis
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fill: 'currentColor', fontSize: 12, opacity: 0.4 }}
+                    />
+                    <Tooltip
+                      content={<CustomTooltip />}
+                      cursor={{ fill: 'currentColor', opacity: 0.05 }}
+                    />
+                    <Bar
+                      dataKey="total"
+                      radius={[15, 15, 5, 5]}
+                      barSize={60}
+                      animationDuration={2000}
+                    >
+                      {chartData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={`hsl(var(${entry.color}))`} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
               )}
             </div>
           </div>

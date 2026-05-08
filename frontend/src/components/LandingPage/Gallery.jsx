@@ -2,9 +2,8 @@ import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Icon } from "@iconify/react";
 import AOS from "aos";
 import { usePagination } from "../../hooks/usePagination";
-import { usePortfolioStore } from "../../stores/portfolioStore";
+import { useProjectStore } from "../../stores/projectStore";
 import { transformCloudinaryUrl } from "../../utils/imageHelper";
-import { Helmet } from "react-helmet-async";
 
 const GallerySkeleton = ({ count = 3 }) => (
   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto hover:cursor-wait">
@@ -38,13 +37,13 @@ const shuffleArray = (array) => {
 };
 
 function Gallery() {
-  const projects = usePortfolioStore((state) => state.projects);
-  const isProjectsLoading = usePortfolioStore((state) => state.isProjectsLoading);
-  const fetchProjects = usePortfolioStore((state) => state.fetchProjects);
+  const projects = useProjectStore((state) => state.projects);
+  const isProjectsLoading = useProjectStore((state) => state.isProjectsLoading);
+  const fetchProjects = useProjectStore((state) => state.fetchProjects);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-      if(projects.length === 0) fetchProjects();
+    if (projects.length === 0) fetchProjects();
   }, [fetchProjects, projects.length]);
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -116,11 +115,9 @@ function Gallery() {
       className="py-12 min-h-screen flex flex-col items-center justify-center text-base-content"
       id="galeri"
     >
-      <Helmet>
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}
         </script>
-      </Helmet>
 
       <div className="container mx-auto px-4">
         <div className="text-center mb-12" data-aos="fade-down">
@@ -188,7 +185,7 @@ function Gallery() {
                     height="800"
                     loading="lazy"
                     decoding="async"
-                    fetchpriority="low"
+                    fetchPriority="low"
                     className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105 group-focus-within:scale-105"
                   />
 

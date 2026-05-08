@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo } from "react";
 import { Icon } from "@iconify/react";
 import AOS from "aos";
 import { Viewer, Worker } from "@react-pdf-viewer/core";
-import { Helmet } from "react-helmet-async";
 import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
 import { usePagination } from "../../hooks/usePagination";
 import { useSiteStore } from "../../stores/siteStore";
@@ -117,7 +116,7 @@ function Sertifikasi() {
 
   return (
     <>
-      <Helmet>
+      <>
         <title>Sertifikat yang Diperoleh | Mazda Nawallsyah</title>
         <meta
           name="description"
@@ -132,7 +131,7 @@ function Sertifikasi() {
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}
         </script>
-      </Helmet>
+      </>
 
       <div
         className="py-12 min-h-screen flex flex-col text-base-content"

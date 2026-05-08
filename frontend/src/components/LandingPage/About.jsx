@@ -3,6 +3,7 @@ import { HashLink } from "react-router-hash-link";
 import { Icon } from "@iconify/react";
 import SeoHelmet from "../SEOHelmet";
 import { useSiteStore } from "../../stores/siteStore";
+import { useProjectStore } from "../../stores/projectStore";
 import { usePortfolioStore } from "../../stores/portfolioStore";
 import AOS from "aos";
 
@@ -10,13 +11,15 @@ function About() {
   const [loading, setLoading] = useState(true);
 
   const fetchHistoryData = usePortfolioStore((state) => state.fetchHistoryData);
-  const fetchProjects = usePortfolioStore((state) => state.fetchProjects);
   const fetchSertifikat = usePortfolioStore((state) => state.fetchSertifikat);
+
+  const fetchProjects = useProjectStore((state) => state?.fetchProjects);
 
   const siteData = useSiteStore((state) => state.siteData);
   const historyData = usePortfolioStore((state) => state.historyData);
-  const projects = usePortfolioStore((state) => state.projects);
   const sertifikatData = usePortfolioStore((state) => state.sertifikatData);
+
+  const projects = useProjectStore((state) => state?.projects || []);
 
   const profileImages = siteData?.profileImages || [];
   const [currentIndices, setCurrentIndices] = useState([0, 1, 2]);
@@ -98,21 +101,21 @@ function About() {
         value: `${historyData.experience?.length || 0}`,
         label: "Pengalaman",
         link: "/#histori",
-        tooltip: "Lihat riwayat pengalaman saya" 
+        tooltip: "Lihat riwayat pengalaman saya"
       },
       {
         icon: "mdi:flask",
         value: `${projects?.length || 0}`,
         label: "Proyek",
         link: "/#galeri",
-        tooltip: "Jelajahi galeri proyek saya" 
+        tooltip: "Jelajahi galeri proyek saya"
       },
       {
         icon: "mdi:certificate",
         value: `${sertifikatData?.length || 0}`,
         label: "Sertifikat",
         link: "/sertifikasi",
-        tooltip: "Cek koleksi sertifikat & lisensi" 
+        tooltip: "Cek koleksi sertifikat & lisensi"
       },
     ];
   }, [historyData, projects, sertifikatData]);
