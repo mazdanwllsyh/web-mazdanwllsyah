@@ -34,7 +34,7 @@ cloudinary.config({
 
 const app = express();
 
-let isConnected = false; 
+let isConnected = false;
 
 const connectDB = async () => {
   if (isConnected) {
@@ -42,7 +42,9 @@ const connectDB = async () => {
   }
 
   try {
-    const db = await mongoose.connect(process.env.MONGO_URI);
+    const db = await mongoose.connect(process.env.MONGO_URI, {
+      serverSelectionTimeoutMS: 3500, 
+    });
     isConnected = db.connections[0].readyState === 1;
     console.log("✅ KONEKSI DATABASE SERVERLESS BERHASIL!");
   } catch (error) {
