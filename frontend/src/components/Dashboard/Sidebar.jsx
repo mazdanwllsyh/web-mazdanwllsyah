@@ -103,7 +103,7 @@ function Sidebar() {
         <div className="flex flex-col gap-2 pb-2">
 
           <Link
-            to="/profile"
+            to="/profil"
             className="flex items-center gap-3 bg-base-200/50 hover:bg-base-200 px-3 py-3 rounded-2xl border border-base-content/5 transition-colors w-full group"
           >
             <div className="avatar placeholder">
