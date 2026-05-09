@@ -23,7 +23,7 @@ const SkillsSkeleton = () => (
         {Array.from({ length: 6 }).map((_, i) => (
           <div
             key={i}
-            className="p-4 bg-base-100 rounded-lg shadow flex items-center space-x-3 border border-base-300"
+            className="p-4 bg-base-100 rounded-lg shadow flex items-center space-x-3 border border-base-content/20"
           >
             <div className="skeleton h-8 w-8 rounded-full shrink-0"></div>{" "}
             <div className="w-full space-y-2">
@@ -79,7 +79,7 @@ function Skills() {
           <SkillsSkeleton />
         ) : (
           <div className="flex flex-col items-center gap-8 md:gap-12 max-w-4xl mx-auto">
-            <div className="card shadow-md p-4 border border-base-300 w-full">
+            <div className="card shadow-md p-4 border border-base-content/20 w-full">
               <h3
                 className="text-lg font-bold font-display mb-4 text-center"
                 data-aos="zoom-out-up"
@@ -104,7 +104,7 @@ function Skills() {
               </div>
             </div>
 
-            <div className="card shadow-md p-4 border border-base-300 w-full">
+            <div className="card shadow-md p-4 border border-base-content/20 w-full">
               <h3
                 className="text-lg font-bold font-display mb-4 text-center"
                 data-aos="zoom-in-up"
@@ -116,7 +116,7 @@ function Skills() {
                   <div
                     key={skill.name}
                     tabIndex={0}
-                    className="p-4 rounded-lg shadow flex items-center space-x-3 border border-base-300 cursor-pointer transition-all duration-300 ease-in-out hover:scale-102 hover:bg-base-200 hover:shadow-lg hover:border-primary focus:outline-none focus-within:scale-102 focus-within:bg-base-200 focus-within:shadow-lg focus-within:border-primary"
+                    className="p-4 rounded-lg shadow flex items-center space-x-3 border border-base-content/20 cursor-pointer transition-all duration-300 ease-in-out hover:scale-102 hover:bg-base-200 hover:shadow-lg hover:border-primary focus:outline-none focus-within:scale-102 focus-within:bg-base-200 focus-within:shadow-lg focus-within:border-primary"
                     data-aos="fade-up"
                     data-aos-delay={index * 120}
                   >

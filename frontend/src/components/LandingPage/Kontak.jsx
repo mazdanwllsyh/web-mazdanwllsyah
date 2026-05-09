@@ -103,7 +103,7 @@ function Kontak() {
               <div
                 className={`card shadow-sm p-6 flex flex-col items-center text-center space-y-2 border cursor-pointer transition-all duration-200 h-full ${selectedMethod === "email"
                     ? "border-primary scale-105 bg-base-200"
-                    : "border-base-300 bg-base-100"
+                    : "border border-base-content/20 bg-base-100"
                   }`}
                 onClick={() => setSelectedMethod("email")}
               >
@@ -124,7 +124,7 @@ function Kontak() {
               <div
                 className={`card shadow-sm p-6 flex flex-col items-center text-center space-y-2 border cursor-pointer transition-all duration-200 h-full ${selectedMethod === "whatsapp"
                     ? "border-success scale-105 bg-base-200"
-                    : "border-base-300 bg-base-100"
+                    : "border border-base-content/20 bg-base-100"
                   }`}
                 onClick={() => setSelectedMethod("whatsapp")}
               >
@@ -142,7 +142,7 @@ function Kontak() {
               <div
                 className={`card shadow-sm p-6 flex flex-col items-center text-center space-y-2 border cursor-pointer transition-all duration-200 h-full ${selectedMethod === "telegram"
                     ? "border-info scale-105 bg-base-200"
-                    : "border-base-300 bg-base-100"
+                    : "border border-base-content/20 bg-base-100"
                   }`}
                 onClick={() => setSelectedMethod("telegram")}
               >
@@ -158,7 +158,7 @@ function Kontak() {
           </div>
 
           <div
-            className={`card w-full shadow-sm p-6 border border-base-300 bg-base-100`}
+            className={`card w-full shadow-sm p-6 border border-base-content/20 bg-base-100`}
             data-aos="fade-up"
             data-aos-delay="200"
           >

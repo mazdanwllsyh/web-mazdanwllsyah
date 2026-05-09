@@ -98,8 +98,8 @@ function Footer() {
 
       <footer className="footer footer-center p-4 bg-base-300 text-base-content">
         <aside>
-          <h3 className="font-bold">
-            © {currentYear} - All right reserved by Mazda Nawallsyah.
+          <h3 className="font-bold text-sm text-center">
+            © 2025 - {currentYear} - All right reserved by Mazda Nawallsyah.
           </h3>
         </aside>
       </footer>

@@ -3,8 +3,9 @@ import { Icon } from "@iconify/react";
 import { useProjectStore } from "../../stores/projectStore";
 import { useCustomToast } from "../../hooks/useCustomToast";
 import useCustomSwals from "../../hooks/useCustomSwals";
-import { usePagination } from "../../hooks/usePagination";
 import FloatingLabelInput, { FloatingLabelTextarea } from "../FloatingLabelInput";
+import { TableContainer, THead, TRow, TCell, TableFooter } from "../StylingTable";
+import ModalDashboard from "../ModalDashboard";
 
 const initialProjectForm = {
   title: "",
@@ -23,7 +24,7 @@ function EditGallery() {
   const updateProject = useProjectStore((state) => state.updateProject);
   const deleteProject = useProjectStore((state) => state.deleteProject);
 
-  const { error: errorToast } = useCustomToast();
+  const { success: customToast, error: errorToast } = useCustomToast();
   const { showConfirmSwal, showSuccessSwal } = useCustomSwals();
 
   useEffect(() => {
@@ -31,34 +32,33 @@ function EditGallery() {
   }, [fetchProjects, projects.length]);
 
   const [projectForm, setProjectForm] = useState(initialProjectForm);
-  const [editingProjectIndex, setEditingProjectIndex] = useState(null);
   const [editingProjectId, setEditingProjectId] = useState(null);
-
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
+  const [tagInput, setTagInput] = useState("");
+
   const [searchTerm, setSearchTerm] = useState("");
+  const [limit, setLimit] = useState(9);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => { setCurrentPage(1); }, [searchTerm]);
 
   const filteredProjects = useMemo(() => {
-    const lowerCaseSearch = searchTerm.toLowerCase();
-    return projects.filter(
-      (proj) =>
-        proj.title.toLowerCase().includes(lowerCaseSearch) ||
-        proj.description.toLowerCase().includes(lowerCaseSearch) ||
-        (proj.tags && proj.tags.toLowerCase().includes(lowerCaseSearch))
+    const lower = searchTerm.toLowerCase();
+    return projects.filter(p =>
+      p.title.toLowerCase().includes(lower) ||
+      p.description?.toLowerCase().includes(lower) ||
+      p.tags?.toLowerCase().includes(lower)
     );
   }, [projects, searchTerm]);
 
-  const paginationConfig = {
-    md: 4,
-    lg: 6,
-  };
-
-  const { currentItems, PaginationComponent } = usePagination(
-    filteredProjects,
-    paginationConfig
-  );
+  const totalData = filteredProjects.length;
+  const paginatedProjects = useMemo(() => {
+    const startIndex = (currentPage - 1) * limit;
+    return filteredProjects.slice(startIndex, startIndex + limit);
+  }, [filteredProjects, currentPage, limit]);
 
   useEffect(() => {
     const currentPreview = imagePreview;
@@ -71,44 +71,56 @@ function EditGallery() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setProjectForm((prev) => ({ ...prev, [name]: value }));
+    setProjectForm(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleFileChange = (e) => {
+  const handleImageChange = (e) => {
     const file = e.target.files[0];
-    if (imagePreview && imagePreview.startsWith("blob:")) {
-      URL.revokeObjectURL(imagePreview);
-    }
-
     if (file) {
       if (!file.type.startsWith("image/")) {
-        errorToast("File harus berupa gambar!");
-        setImageFile(null);
-        setImagePreview("");
-        e.target.value = null;
+        errorToast("Harus berupa gambar!");
         return;
       }
       setImageFile(file);
-      const previewUrl = URL.createObjectURL(file);
-      setImagePreview(previewUrl);
-    } else {
-      setImageFile(null);
-      setImagePreview("");
+      setImagePreview(URL.createObjectURL(file));
     }
+  };
+
+  const handleAddTag = () => {
+    if (!tagInput.trim()) return;
+    const currentTags = projectForm.tags ? projectForm.tags.split(",").map(t => t.trim()).filter(Boolean) : [];
+    if (!currentTags.includes(tagInput.trim())) {
+      const newTags = [...currentTags, tagInput.trim()].join(", ");
+      setProjectForm(prev => ({ ...prev, tags: newTags }));
+    }
+    setTagInput("");
+  };
+
+  const handleRemoveTag = (tagToRemove) => {
+    const currentTags = projectForm.tags.split(",").map(t => t.trim()).filter(Boolean);
+    const newTags = currentTags.filter(t => t !== tagToRemove).join(", ");
+    setProjectForm(prev => ({ ...prev, tags: newTags }));
   };
 
   const handleOpenProjectModal = (project = null) => {
     if (project) {
       setEditingProjectId(project._id);
-      setProjectForm(project);
+      setProjectForm({
+        title: project.title || "",
+        description: project.description || "",
+        imageUrl: project.imageUrl || "",
+        demoUrl: project.demoUrl || "",
+        sourceUrl: project.sourceUrl || "",
+        tags: project.tags || "",
+      });
       setImagePreview(project.imageUrl || "");
-      setEditingProjectIndex(null);
     } else {
       setEditingProjectId(null);
       setProjectForm(initialProjectForm);
       setImagePreview("");
     }
     setImageFile(null);
+    setTagInput("");
     document.getElementById("project_modal").showModal();
   };
 
@@ -116,289 +128,203 @@ function EditGallery() {
     document.getElementById("project_modal").close();
   };
 
-  const handleProjectSubmit = async (e) => {
-    e.preventDefault();
-    setIsSaving(true);
-
-    const formData = new FormData();
-    formData.append("title", projectForm.title);
-    formData.append("description", projectForm.description);
-    formData.append("demoUrl", projectForm.demoUrl);
-    formData.append("sourceUrl", projectForm.sourceUrl);
-    formData.append("tags", projectForm.tags);
-
-    if (imageFile) {
-      formData.append("thumbnail", imageFile);
+  const handleProjectSubmit = async () => {
+    if (!editingProjectId && !imageFile) {
+      return errorToast("Gagal", "Gambar utama wajib di-upload untuk proyek baru.");
     }
+    setIsSaving(true);
+    const formData = new FormData();
+    Object.keys(projectForm).forEach((key) => {
+      if (!['imageUrl', '_id', 'createdAt', 'updatedAt', '__v'].includes(key)) {
+        formData.append(key, projectForm[key]);
+      }
+    });
+    if (imageFile) formData.append("imageFile", imageFile);
 
     try {
-      if (editingProjectId) {
-        await updateProject(editingProjectId, formData);
-        showSuccessSwal("Proyek berhasil diperbarui!");
-      } else {
-        await addProject(formData);
-        showSuccessSwal("Proyek baru berhasil ditambahkan!");
-      }
+      if (editingProjectId) await updateProject(editingProjectId, formData);
+      else await addProject(formData);
+      showSuccessSwal("Berhasil!");
       handleCloseProjectModal();
     } catch (error) {
-      console.error("Gagal simpan proyek:", error);
-      errorToast(
-        "Simpan Gagal",
-        error.response?.data?.message || "Error server"
-      );
+      errorToast("Error", error.response?.data?.message || "Gagal menyimpan data.");
     } finally {
       setIsSaving(false);
     }
   };
 
   const handleProjectDelete = async (project) => {
-    const isConfirmed = await showConfirmSwal(
-      "Hapus Proyek?",
-      `Anda yakin ingin menghapus proyek: "${project.title}"?`
-    );
-    if (isConfirmed) {
+    if (await showConfirmSwal("Hapus Proyek?", `Hapus proyek: ${project.title}?`)) {
       try {
         await deleteProject(project._id);
-        showSuccessSwal("Proyek berhasil dihapus.");
-      } catch (error) {
-        console.error("Gagal hapus proyek:", error);
-        errorToast(
-          "Hapus Gagal",
-          error.response?.data?.message || "Error server"
-        );
+        showSuccessSwal("Dihapus!");
+      } catch (e) {
+        errorToast("Gagal hapus");
       }
     }
   };
 
-  if (isProjectsLoading) {
-    return (
-      <div className="card bg-base-100 shadow-md border border-base-200">
-        <div className="card-body flex items-center justify-center h-96">
-          <span className="loading loading-lg loading-bars"></span>
-          <p className="mt-4">Memuat data proyek...</p>
-        </div>
-      </div>
-    );
-  }
+  if (isProjectsLoading) return <div className="flex justify-center py-20"><span className="loading loading-ring loading-lg text-primary"></span></div>;
 
   return (
-    <div className="card bg-base-100 shadow-md border border-base-200">
-      <div className="card-body">
-        <h1 className="card-title text-2xl font-display text-center justify-center">
-          Kelola Proyek Galeri
-        </h1>
-        <div className="divider my-2"></div>
+    <div className="card bg-base-100 shadow-sm border border-base-content/20 rounded-[2.5rem] overflow-hidden">
+      <div className="card-body p-8 md:p-10">
+        <div className="flex flex-col md:flex-row justify-between gap-4 mb-6">
+          <div>
+            <h1 className="text-3xl font-black font-display flex items-center gap-3">
+              <Icon icon="solar:gallery-bold-duotone" className="text-primary" /> Kelola Galeri
+            </h1>
+          </div>
+          <button className="btn btn-primary rounded-2xl shadow-lg shadow-primary/20" onClick={() => handleOpenProjectModal()}>
+            <Icon icon="mdi:plus-circle" className="w-5 h-5" /> Tambah Proyek
+          </button>
+        </div>
 
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-4">
-          <div className="w-full md:w-auto">
-            <button
-              className="btn btn-primary w-full"
-              onClick={() => handleOpenProjectModal()}
-            >
-              <Icon icon="mdi:plus" className="w-5 h-5" />
-              Tambah Proyek Baru
-            </button>
-          </div>
-          <div className="w-full md:w-auto flex justify-center order-last md:order-none">
-            <PaginationComponent />
-          </div>
-          <div className="w-full md:w-72">
-            <input
-              type="search"
-              placeholder="Cari proyek..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="input input-bordered w-full"
-            />
+        <div className="flex justify-end mb-6">
+          <div className="w-full md:w-80 relative">
+            <input type="search" placeholder="Cari proyek (judul, tag)..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="input input-bordered w-full rounded-2xl pl-10 bg-base-200/50 border-base-content/20 focus:bg-base-100 transition-colors" />
+            <Icon icon="mdi:magnify" className="absolute left-4 top-1/2 -translate-y-1/2 opacity-40" />
           </div>
         </div>
 
-        <div className="space-y-4">
-          <div className="overflow-x-auto border border-base-300 rounded-lg">
-            <table className="table table-zebra table-hover w-full">
-              <thead className="bg-neutral text-neutral-content text-center">
+        <div className="flex flex-col shadow-sm border border-base-content/20 rounded-2xl overflow-hidden">
+          <TableContainer>
+            <THead>
+              <th className="w-16">No</th>
+              <th className="w-32">Thumbnail</th>
+              <th>Informasi Proyek</th>
+              <th className="w-32 text-center">Tautan</th>
+              <th className="w-48 text-center">Aksi</th>
+            </THead>
+            <tbody>
+              {paginatedProjects.map((project, idx) => (
+                <TRow key={project._id}>
+                  <TCell className="text-center font-mono opacity-50">{(currentPage - 1) * limit + idx + 1}</TCell>
+                  <TCell>
+                    <div className="avatar justify-center">
+                      <div className="w-24 h-16 rounded-lg border border-base-content/10 overflow-hidden shadow-sm bg-base-200">
+                        <img src={project.imageUrl} className="object-cover w-full h-full hover:scale-110 transition-transform duration-500" alt={project.title} />
+                      </div>
+                    </div>
+                  </TCell>
+                  <TCell>
+                    <div className="font-bold text-sm mb-1 text-base-content">{project.title}</div>
+                    <div className="text-xs opacity-60 line-clamp-2 mb-2 max-w-sm">{project.description}</div>
+                    <div className="flex gap-1 flex-wrap">
+                      {project.tags && project.tags.split(",").map((tag, i) => (
+                        <span key={i} className="badge badge-primary badge-outline badge-xs font-bold">{tag.trim()}</span>
+                      ))}
+                    </div>
+                  </TCell>
+                  <TCell className="text-center">
+                    <div className="flex justify-center gap-2">
+                      {project.demoUrl && (
+                        <a href={project.demoUrl} target="_blank" rel="noreferrer" className="btn btn-xs btn-square btn-ghost text-info" title="Lihat Demo">
+                          <Icon icon="mdi:web" className="w-5 h-5" />
+                        </a>
+                      )}
+                      {project.sourceUrl && (
+                        <a href={project.sourceUrl} target="_blank" rel="noreferrer" className="btn btn-xs btn-square btn-ghost text-accent" title="Lihat Source Code">
+                          <Icon icon="mdi:github" className="w-5 h-5" />
+                        </a>
+                      )}
+                    </div>
+                  </TCell>
+                  <TCell className="text-center align-middle">
+                    <div className="flex gap-2 justify-center">
+                      <button className="btn btn-xs btn-outline btn-warning" onClick={() => handleOpenProjectModal(project)}>
+                        <Icon icon="mdi:pencil" className="w-3 h-3 mr-1" /> Edit
+                      </button>
+                      <button className="btn btn-xs btn-outline btn-error" onClick={() => handleProjectDelete(project)}>
+                        <Icon icon="mdi:delete" className="w-3 h-3 mr-1" /> Hapus
+                      </button>
+                    </div>
+                  </TCell>
+                </TRow>
+              ))}
+              {paginatedProjects.length === 0 && (
                 <tr>
-                  <th className="w-12 px-4 py-3">#</th>
-                  <th className="w-24 px-4 py-3 border-l border-base-300">
-                    Gambar
-                  </th>
-                  <th className="px-4 py-3 border-l border-base-300">Judul</th>
-                  <th className="px-4 py-3 border-l border-base-300">Tags</th>
-                  <th className="w-32 px-4 py-3 border-l border-base-300">
-                    Aksi
-                  </th>
+                  <td colSpan="5" className="text-center py-10 text-base-content/40 italic border-b border-base-content/5">
+                    {searchTerm ? "Proyek tidak ditemukan." : "Belum ada proyek."}
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {currentItems.map((proj) => (
-                  <tr
-                    key={proj._id}
-                    className="border-b border-base-300 last:border-b-0 hover"
-                  >
-                    <th className="text-center px-4 py-2">
-                      {projects.indexOf(proj) + 1}
-                    </th>
-                    <td className="px-4 py-2 border-l border-base-300">
-                      <div className="avatar flex justify-center">
-                        <div className="w-20 h-20 rounded shadow">
-                          <img
-                            src={proj.imageUrl}
-                            alt={proj.title}
-                            className="object-cover"
-                          />
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-2 border-l border-base-300 align-top">
-                      <div className="font-bold">{proj.title}</div>
-                      <div className="text-xs opacity-70 break-all">
-                        {proj.description?.substring(0, 70)}...
-                      </div>
-                    </td>
-                    <td className="px-4 py-2 border-l border-base-300 align-top">
-                      <div className="flex flex-wrap gap-1">
-                        {proj.tags &&
-                          proj.tags.split(",").map((tag) => (
-                            <div
-                              key={tag}
-                              className="badge badge-accent text-xs h-auto py-1 whitespace-normal text-center"
-                            >
-                              {tag.trim()}
-                            </div>
-                          ))}
-                      </div>
-                    </td>
-                    <td className="px-4 py-2 border-l border-base-300 text-center align-middle">
-                      <div className="flex flex-col sm:flex-row gap-2 justify-center">
-                        <button
-                          className="btn btn-sm btn-warning"
-                          onClick={() => handleOpenProjectModal(proj)}
-                        >
-                          <Icon icon="mdi:pencil" />
-                        </button>
-                        <button
-                          className="btn btn-sm btn-error"
-                          onClick={() => handleProjectDelete(proj)}
-                        >
-                          <Icon icon="mdi:delete" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-                {filteredProjects.length === 0 && (
-                  <tr className="border-b border-base-300 last:border-b-0">
-                    <td
-                      colSpan="5"
-                      className="text-center text-base-content/60 italic py-4"
-                    >
-                      {searchTerm
-                        ? "Proyek tidak ditemukan."
-                        : "Belum ada proyek galeri."}
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+              )}
+            </tbody>
+          </TableContainer>
+          <TableFooter limit={limit} setLimit={setLimit} totalData={totalData} currentDataCount={paginatedProjects.length} onNext={() => setCurrentPage(p => p + 1)} onPrev={() => setCurrentPage(p => p - 1)} />
         </div>
 
-        <dialog id="project_modal" className="modal modal-middle">
-          <div className="modal-box w-11/12 max-w-2xl">
-            <h3 className="font-bold text-lg font-display">
-              {editingProjectIndex !== null ? "Edit Proyek" : "Tambah Proyek"}
-            </h3>
+        <ModalDashboard
+          id="project_modal"
+          title={editingProjectId ? "Edit Proyek" : "Tambah Proyek Baru"}
+          icon="solar:gallery-bold-duotone"
+          isSaving={isSaving}
+          onSave={handleProjectSubmit}
+          onCancel={handleCloseProjectModal}
+        >
+          <div className="space-y-6 mt-2">
+            <FloatingLabelInput label="Judul Proyek" name="title" value={projectForm.title} onChange={handleInputChange} required />
 
-            <form onSubmit={handleProjectSubmit} className="space-y-5 pt-4">
-              <FloatingLabelInput
-                id="proj_title"
-                name="title"
-                label="Judul Proyek"
-                value={projectForm.title}
-                onChange={handleInputChange}
-                required
-              />
-              <FloatingLabelTextarea
-                id="proj_desc"
-                name="description"
-                label="Deskripsi"
-                value={projectForm.description}
-                onChange={handleInputChange}
-                className="h-32"
-              />
+            <FloatingLabelTextarea label="Deskripsi Singkat" name="description" value={projectForm.description} onChange={handleInputChange} rows={3} required />
 
-              <div className="form-control w-full">
-                <label className="label">
-                  <span className="label-text font-semibold">
-                    Upload Thumbnail Proyek
-                  </span>
-                </label>
-                <input
-                  id="projectImageUpload"
-                  type="file"
-                  className="file-input file-input-bordered w-full"
-                  onChange={handleFileChange}
-                  accept="image/*"
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FloatingLabelInput label="URL Demo Web (opsional)" name="demoUrl" value={projectForm.demoUrl} onChange={handleInputChange} />
+              <FloatingLabelInput label="URL Github/Source (opsional)" name="sourceUrl" value={projectForm.sourceUrl} onChange={handleInputChange} />
+            </div>
+
+            <div className="space-y-3 p-5 border border-base-content/20 rounded-2xl bg-base-200/20">
+              <label className="label-text font-bold opacity-60 uppercase text-xs tracking-wider">Tags Proyek</label>
+              <div className="flex gap-2 items-center">
+                <FloatingLabelInput
+                  label="Ketik Tag (Cth: React) lalu tekan Enter"
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      handleAddTag();
+                    }
+                  }}
                 />
-              </div>
-
-              {imagePreview && (
-                <div className="p-2 border border-dashed border-base-300 rounded-lg flex justify-center">
-                  <img
-                    src={imagePreview}
-                    alt="Pratinjau thumbnail"
-                    className="w-24 h-24 rounded-lg object-cover shadow"
-                  />
-                </div>
-              )}
-
-              <FloatingLabelInput
-                id="proj_demo"
-                name="demoUrl"
-                label="URL Demo (diawali http:// atau #)"
-                value={projectForm.demoUrl}
-                onChange={handleInputChange}
-              />
-              <FloatingLabelInput
-                id="proj_source"
-                name="sourceUrl"
-                label="URL Source Code (diawali http:// atau #)"
-                value={projectForm.sourceUrl}
-                onChange={handleInputChange}
-              />
-              <FloatingLabelInput
-                id="proj_tags"
-                name="tags"
-                label="Tags (pisahkan koma, cth: React,Node,MUI)"
-                value={projectForm.tags}
-                onChange={handleInputChange}
-              />
-
-              <div className="modal-action mt-6">
                 <button
                   type="button"
-                  className="btn btn-neutral"
-                  onClick={handleCloseProjectModal}
-                  disabled={isSaving}
+                  onClick={handleAddTag}
+                  className="btn btn-primary h-14 w-14 rounded-xl shrink-0"
                 >
-                  Batal
-                </button>
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  disabled={isSaving}
-                >
-                  {isSaving ? (
-                    <span className="loading loading-spinner loading-xs"></span>
-                  ) : (
-                    <Icon icon="mdi:content-save" className="mr-1" />
-                  )}
-                  {isSaving ? "Menyimpan..." : "Simpan"}
+                  <Icon icon="mdi:plus-circle" className="w-6 h-6" />
                 </button>
               </div>
-            </form>
+
+              <div className="flex flex-wrap gap-2 p-4 border border-base-content/10 rounded-xl bg-base-100 min-h-[4rem] content-start">
+                {projectForm.tags ? projectForm.tags.split(",").map((tag, i) => tag.trim() && (
+                  <div key={i} className="badge badge-lg py-4 px-4 bg-base-200 border-base-content/20 gap-2 font-bold text-xs uppercase tracking-wider group">
+                    {tag.trim()}
+                    <button
+                      type="button"
+                      className="hover:scale-125 transition-transform"
+                      onClick={() => handleRemoveTag(tag.trim())}
+                    >
+                      <Icon icon="solar:close-circle-bold" className="w-4 h-4 text-error" />
+                    </button>
+                  </div>
+                )) : (
+                  <span className="text-xs italic opacity-40 ml-2 self-center">Belum ada tag ditambahkan.</span>
+                )}
+              </div>
+            </div>
+
+            <div className="p-5 border border-base-content/20 rounded-2xl bg-base-200/20">
+              <label className="label-text font-bold mb-2 block opacity-60 uppercase text-xs tracking-wider">Thumbnail Proyek</label>
+              <input type="file" className="file-input file-input-sm file-input-bordered file-input-primary w-full" onChange={handleImageChange} accept="image/*" />
+              {imagePreview && (
+                <div className="mt-4 p-2 border border-dashed border-base-content/20 rounded-xl flex justify-center bg-base-100 h-64 overflow-hidden">
+                  <img src={imagePreview} className="w-full h-full object-contain rounded-lg" alt="Preview" />
+                </div>
+              )}
+            </div>
+
           </div>
-        </dialog>
+        </ModalDashboard>
       </div>
     </div>
   );

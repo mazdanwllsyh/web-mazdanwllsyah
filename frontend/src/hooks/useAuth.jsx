@@ -1,12 +1,12 @@
 import { useNavigate } from "react-router-dom";
-import { useUserStore } from "../stores/userStore"; // Import Store
-import useGlobalModal from "./useGlobalModal";
-import { useCustomToast } from "./useCustomToast"; // Import Toast
+import { useUserStore } from "../stores/userStore";
+import { useCustomToast } from "./useCustomToast";
+import useCustomSwals from "./useCustomSwals"; 
 import instance from "../utils/axios";
 
 export const useAuth = () => {
     const navigate = useNavigate();
-    const { showConfirm, showError } = useGlobalModal();
+    const { showConfirmSwal, showErrorSwal } = useCustomSwals(); 
     const { success: customToast } = useCustomToast();
 
     const user = useUserStore((state) => state.user);
@@ -17,7 +17,7 @@ export const useAuth = () => {
     const checkUserSession = useUserStore((state) => state.checkUserSession);
 
     const handleSignOut = async () => {
-        const isConfirmed = await showConfirm(
+        const isConfirmed = await showConfirmSwal(
             "Yakin ingin logout?",
             "Sesi Anda akan berakhir dan harus login ulang."
         );

@@ -216,7 +216,7 @@ function History() {
                   >
                     <div
                       tabIndex={0}
-                      className="card w-[17rem] md:w-[20rem] lg:w-[24rem] bg-base-100 shadow-md border border-base-300 cursor-pointer transition-transform duration-200 hover:-translate-y-2 hover:border-primary hover:bg-base-200 hover:shadow-lg focus:outline-none focus-within:-translate-y-2 focus-within:border-primary focus-within:bg-base-200 focus-within:shadow-lg"
+                      className="card w-[17rem] md:w-[20rem] lg:w-[24rem] bg-base-100 shadow-md border border-base-content/20 cursor-pointer transition-transform duration-200 hover:-translate-y-2 hover:border-primary hover:bg-base-200 hover:shadow-lg focus:outline-none focus-within:-translate-y-2 focus-within:border-primary focus-within:bg-base-200 focus-within:shadow-lg"
                     >
                       <div className="card-body p-6">
                         <h3 className="card-title text-lg font-bold font-display">

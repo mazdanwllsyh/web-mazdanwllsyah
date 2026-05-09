@@ -112,22 +112,25 @@ export const FloatingLabelTextarea = ({ label, id, value, onChange, readOnly, di
     );
 };
 
-export const FloatingLabelSelect = ({ label, id, value, onChange, disabled, className = '', children, ...props }) => {
+export const FloatingLabelSelect = ({ label, id, value, onChange, disabled, children, className = '', ...props }) => {
     const [isFocused, setIsFocused] = useState(false);
-    const labelShouldFloat = isFocused || (value && value.toString().length > 0);
+
+    const labelShouldFloat = true;
+
+    const isNotEditable = disabled;
 
     return (
         <div className="relative form-control w-full font-text group">
             <fieldset
                 aria-hidden="true"
                 className={`absolute -top-2.25 bottom-0 left-0 right-0 rounded-xl border transition-all duration-300 pointer-events-none m-0 p-0
-                    ${disabled
+                    ${isNotEditable
                         ? 'border-base-content/20'
                         : 'border-base-content/30 group-hover:border-base-content/50 group-focus-within:border-base-content group-focus-within:ring-[1px] group-focus-within:ring-primary/5'
                     }
                 `}
             >
-                <legend className={`opacity-0 text-[13px] font-extrabold whitespace-nowrap overflow-hidden ml-3 transition-all duration-300 ${labelShouldFloat ? 'max-w-full px-1' : 'max-w-0 px-0'}`}>
+                <legend className={`opacity-0 text-[13px] font-extrabold whitespace-nowrap overflow-hidden ml-3 transition-all duration-300 ${labelShouldFloat ? 'max-w-full px-1' : 'max-w-0'}`}>
                     {label}
                 </legend>
             </fieldset>

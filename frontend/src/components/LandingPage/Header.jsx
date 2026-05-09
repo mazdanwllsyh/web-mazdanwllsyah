@@ -115,7 +115,6 @@ function Header() {
 
                 <div className="divider my-1 px-2"></div>
 
-                {/* 4. Tombol Logout (Style disamakan + text-error) */}
                 <li className="w-full">
                   <button
                     onClick={handleSignOut}

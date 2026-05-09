@@ -1,5 +1,5 @@
 console.log(
-  "--- BACKEND BERJALAN PADA ... " + new Date().toISOString() + " ---"
+  "--- BACKEND BERJALAN PADA ... " + new Date().toISOString() + " ---",
 );
 import express from "express";
 import mongoose from "mongoose";
@@ -34,26 +34,37 @@ cloudinary.config({
 
 const app = express();
 
-console.log("MEMULAI KONEKSI KE DATABASE...");
+let isConnected = false; 
 
-mongoose
-  .connect(process.env.MONGO_URI, {})
-  .then(() => {
-    console.log("KONEKSI DATABASE BERHASIL!");
-  })
-  .catch((err) => console.error("KONEKSI DATABASE GAGAL:", err));
+const connectDB = async () => {
+  if (isConnected) {
+    return;
+  }
+
+  try {
+    const db = await mongoose.connect(process.env.MONGO_URI);
+    isConnected = db.connections[0].readyState === 1;
+    console.log("✅ KONEKSI DATABASE SERVERLESS BERHASIL!");
+  } catch (error) {
+    console.error("❌ KONEKSI DATABASE GAGAL:", error);
+  }
+};
+
+app.use(async (req, res, next) => {
+  await connectDB();
+  next();
+});
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
-
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 
 const allowedOrigins = [
   "http://localhost:5173",
   "https://fewebdev-mazdanwllsyah.vercel.app",
-  "https://mazdaweb.bejalen.com"
+  "https://mazdaweb.bejalen.com",
 ];
 
 app.use(
@@ -67,7 +78,7 @@ app.use(
     },
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true,
-  })
+  }),
 );
 
 app.use((req, res, next) => {
@@ -106,7 +117,7 @@ app.use((err, req, res, next) => {
 app.use(notFound);
 app.use(errorHandler);
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== "production") {
   app.listen(PORT, () => {
     console.log(`app.js Berjalan di port ${PORT}`);
   });

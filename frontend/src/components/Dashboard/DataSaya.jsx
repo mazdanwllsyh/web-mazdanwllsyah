@@ -105,7 +105,7 @@ function DataSaya() {
       <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
         <div className="lg:col-span-8 grid grid-cols-1 gap-6">
-          <div className="card bg-base-100 border border-base-content/20 shadow-sm overflow-hidden">
+          <div className="card bg-base-100 border border-base-content/20 shadow-sm rounded-[2.5rem] overflow-hidden">
             <div className="card-body p-0">
               <div className="p-6 border-b border-base-300 bg-base-200/50 flex items-center gap-3">
                 <div className="p-2 bg-primary/10 text-primary rounded-xl">
@@ -153,7 +153,7 @@ function DataSaya() {
             </div>
           </div>
 
-          <div className="card bg-base-100 border border-base-content/20 shadow-sm">
+          <div className="card bg-base-100 border border-base-content/20 rounded-[2.5rem] overflow-hidden shadow-sm">
             <div className="card-body p-0">
               <div className="p-6 border-b border-base-300 bg-base-200/50 flex items-center gap-3">
                 <div className="p-2 bg-secondary/10 text-secondary rounded-xl">
@@ -181,7 +181,7 @@ function DataSaya() {
         </div>
 
         <div className="lg:col-span-4 space-y-6">
-          <div className="card bg-base-100 border border-base-content/20 shadow-sm sticky top-6">
+          <div className="card bg-base-100 border border-base-content/20 shadow-sm rounded-[2.5rem] overflow-hidden sticky top-6">
             <div className="card-body p-0">
               <div className="p-6 border-b border-base-300 bg-base-200/50 flex items-center gap-3">
                 <div className="p-2 bg-accent/10 text-accent rounded-xl">

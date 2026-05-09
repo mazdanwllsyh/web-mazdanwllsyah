@@ -16,7 +16,7 @@ import {
 } from "recharts";
 
 const QuickLinkSkeleton = () => (
-  <div className="card bg-base-200 shadow-lg border border-base-300">
+  <div className="card bg-base-200 shadow-lg border border-base-content/20">
     <div className="card-body">
       <div className="skeleton h-10 w-10 opacity-70"></div>
       <div className="skeleton h-8 w-1/4 self-end"></div>
@@ -80,7 +80,7 @@ function DashboardBeranda() {
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-base-100/90 backdrop-blur-md text-base-content p-4 border border-base-300 shadow-2xl rounded-2xl">
+        <div className="bg-base-100/90 backdrop-blur-md text-base-content p-4 border border-base-content/20 shadow-2xl rounded-2xl">
           <p className="font-black text-sm">{`${payload[0].payload.name} : ${payload[0].value}`}</p>
         </div>
       );
@@ -91,7 +91,7 @@ function DashboardBeranda() {
   return (
     <div className="space-y-10 pb-10">
       {/* Header dengan Glow Efek */}
-      <div className="hidden lg:block p-12 bg-base-100 border border-base-300 rounded-[2.5rem] shadow-sm relative overflow-hidden">
+      <div className="hidden lg:block p-12 bg-base-100 border border-base-content/20 rounded-[2.5rem] shadow-sm relative overflow-hidden">
         <div className="absolute -right-10 -top-10 w-40 h-40 bg-primary/10 rounded-full blur-3xl"></div>
         <div className="relative z-10">
           <h1 className="text-5xl font-black font-display tracking-tight text-base-content">
@@ -115,9 +115,8 @@ function DashboardBeranda() {
                 <Link
                   key={link.path}
                   to={link.path}
-                  className="group relative card bg-base-100 border border-base-300 shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-500 rounded-3xl overflow-hidden"
+                  className="group relative card bg-base-100 border border-base-content/20 shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-500 rounded-3xl overflow-hidden"
                 >
-                  {/* LINGKARAN LUCU (Top Right Effect ala SIMRS) */}
                   <div className={`absolute -top-6 -right-6 w-20 h-20 bg-${link.colorClass}/10 rounded-full transition-all duration-700 group-hover:scale-[3] group-hover:opacity-20`}></div>
 
                   <div className="card-body p-8 relative z-10">
@@ -135,7 +134,6 @@ function DashboardBeranda() {
                       <h3 className="text-xs font-black uppercase tracking-widest text-base-content/60 group-hover:text-base-content transition-colors">
                         {link.name}
                       </h3>
-                      {/* Border Hover Dinamis */}
                       <div className={`h-1.5 w-8 bg-${link.colorClass} mt-3 rounded-full transition-all duration-500 group-hover:w-full`}></div>
                     </div>
                   </div>
@@ -145,10 +143,9 @@ function DashboardBeranda() {
           </div>
         </div>
 
-        {/* Chart Section */}
         <div className="hidden lg:block space-y-6">
           <h2 className="text-xl font-black uppercase tracking-[0.2em] text-base-content/40 ml-2">Analitik Data</h2>
-          <div className="card bg-base-100 shadow-xl border border-base-300 rounded-[2.5rem] overflow-hidden">
+          <div className="card bg-base-100 shadow-xl border border-base-content/20 rounded-[2.5rem] overflow-hidden">
             <div className="card-body h-[450px] p-10">
               {allLoading ? (
                 <div className="flex justify-center items-center h-full">
@@ -167,7 +164,6 @@ function DashboardBeranda() {
                       dataKey="name"
                       axisLine={false}
                       tickLine={false}
-                      /* FIX: Pake currentColor biar ngikutin mode Dark/Light otomatis */
                       tick={{ fill: 'currentColor', fontSize: 13, fontWeight: 700, opacity: 0.6 }}
                       dy={15}
                     />

@@ -27,14 +27,14 @@ const ProfileSkeleton = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div className="lg:col-span-4">
-            <div className="card bg-base-100 shadow-md border border-base-200 p-4 items-center text-center">
+            <div className="card bg-base-100 shadow-md border border-base-content/20 p-4 items-center text-center">
               <div className="skeleton w-36 h-36 rounded-full shrink-0"></div>
               <div className="skeleton h-4 w-2/3 mt-3"></div>
               <div className="skeleton h-10 w-full mt-4"></div>
             </div>
           </div>
           <div className="lg:col-span-8">
-            <div className="card bg-base-100 shadow-md border border-base-200">
+            <div className="card bg-base-100 shadow-md border border-base-content/20">
               <div className="card-body">
                 <div className="skeleton h-6 w-1/3 mb-2"></div>
                 <div className="divider my-2"></div>
@@ -213,7 +213,7 @@ function Profile() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <div className="lg:col-span-4 mb-4 lg:mb-0 order-1 lg:order-1">
               <div
-                className="card bg-base-100 shadow-md border border-base-200"
+                className="card bg-base-100 shadow-md border border-base-content/20"
                 data-aos="fade-right"
               >
                 <div className="card-body items-center text-center">
@@ -301,7 +301,7 @@ function Profile() {
 
             <div className="lg:col-span-8 order-2 lg:order-2">
               <div
-                className="card bg-base-100 shadow-md border border-base-200"
+                className="card bg-base-100 shadow-md border border-base-content/20"
                 data-aos="fade-left"
               >
                 <form
