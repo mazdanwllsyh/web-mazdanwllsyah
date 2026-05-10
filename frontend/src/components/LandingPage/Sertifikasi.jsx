@@ -7,7 +7,7 @@ import { usePagination } from "../../hooks/usePagination";
 import { useSiteStore } from "../../stores/siteStore";
 import { usePortfolioStore } from "../../stores/portfolioStore";
 import { transformCloudinaryUrl } from "../../utils/imageHelper.js";
-import SeoHelmet from "../SeoHelmet";
+import SeoHelmet from "../SEOHelmet.jsx";
 
 const containerVariants = {
   hidden: { opacity: 0 },
