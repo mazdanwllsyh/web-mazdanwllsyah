@@ -1,138 +1,143 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Icon } from "@iconify/react";
+import { motion } from "framer-motion";
 import { usePortfolioStore } from "../../stores/portfolioStore";
-import AOS from "aos";
 
-const SkillsSkeleton = () => (
-  <div className="flex flex-col items-center gap-8 md:gap-12 max-w-4xl mx-auto hover:cursor-wait">
-    <div className="card bg-base-200 shadow-xl p-4 w-full">
-      <div className="skeleton h-6 w-1/3 mb-4 mx-auto"></div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6">
-        {Array.from({ length: 8 }).map((_, i) => (
-          <div key={i} className="flex items-center space-x-2">
-            <div className="skeleton h-5 w-5 rounded-full shrink-0"></div>{" "}
-            <div className="skeleton h-4 w-4/5"></div>
-          </div>
-        ))}
-      </div>
-    </div>
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.03 }
+  }
+};
 
-    <div className="card bg-base-200 shadow-xl p-4 w-full">
-      <div className="skeleton h-6 w-1/3 mb-4 mx-auto"></div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <div
-            key={i}
-            className="p-4 bg-base-100 rounded-lg shadow flex items-center space-x-3 border border-base-content/20"
-          >
-            <div className="skeleton h-8 w-8 rounded-full shrink-0"></div>{" "}
-            <div className="w-full space-y-2">
-              <div className="skeleton h-4 w-3/4"></div>
-              <div className="skeleton h-3 w-1/2"></div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  </div>
-);
+const itemVariants = {
+  hidden: { y: 15, opacity: 0 },
+  visible: { y: 0, opacity: 1, transition: { duration: 0.4, ease: "easeOut" } }
+};
+
+const getLevelPercentage = (level) => {
+  const l = level?.toLowerCase() || "";
+  if (l.includes("expert") || l.includes("advanced") || l.includes("lanjut") || l.includes("mahir")) return "90%";
+  if (l.includes("intermediate") || l.includes("menengah")) return "70%";
+  if (l.includes("beginner") || l.includes("dasar") || l.includes("pemula")) return "45%";
+  return "60%";
+};
 
 function Skills() {
-  const fetchSkillsData = usePortfolioStore((state) => state.fetchSkillsData); 
+  const fetchSkillsData = usePortfolioStore((state) => state.fetchSkillsData);
   const skillsData = usePortfolioStore((state) => state.skillsData);
   const isSkillsLoading = usePortfolioStore((state) => state.isSkillsLoading);
-  const [loading, setLoading] = useState(true);
-
-  const displayedHardSkills = skillsData.hardSkills || [];
-  const displayedSoftSkills = skillsData.softSkills || [];
 
   useEffect(() => {
-    if (displayedHardSkills.length === 0 && displayedSoftSkills.length === 0) {
-        fetchSkillsData();
+    const isHardEmpty = !skillsData?.hardSkills || skillsData.hardSkills.length === 0;
+    const isSoftEmpty = !skillsData?.softSkills || skillsData.softSkills.length === 0;
+    if (isHardEmpty && isSoftEmpty) {
+      fetchSkillsData();
     }
-  }, [fetchSkillsData, displayedHardSkills.length, displayedSoftSkills.length]);
+  }, [fetchSkillsData, skillsData]);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1200);
-    return () => clearTimeout(timer);
-  }, []);
+  const displayedHardSkills = useMemo(() => skillsData?.hardSkills || [], [skillsData]);
+  const displayedSoftSkills = useMemo(() => skillsData?.softSkills || [], [skillsData]);
 
-  useEffect(() => {
-    if (!loading) {
-      AOS.refresh();
-    }
-  }, [loading]);
+  if (isSkillsLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
+        <span className="loading loading-ring w-16 h-16 text-primary"></span>
+        <p className="font-bold opacity-60 animate-pulse tracking-widest text-sm uppercase">Sinkronisasi Keahlian...</p>
+      </div>
+    );
+  }
 
   return (
     <div
-      className="bg-base-100 text-base-content min-h-screen flex flex-col items-center justify-center"
+      className="bg-base-100 min-h-[auto] lg:min-h-screen flex flex-col items-center justify-center py-16 lg:py-0 scroll-mt-9 lg:scroll-mt-14"
       id="skills"
     >
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12" data-aos="fade-up">
-          <h2 className="text-4xl font-bold font-display mb-2">Kemampuan</h2>
+      <div className="w-full max-w-6xl mx-auto px-0 lg:px-4">
+        <motion.div
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-2 tracking-tight">Skills</h2>
+          <p className="text-base md:text-lg text-base-content/60">Teknologi dan kompetensi profesional saya</p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <motion.div
+            className="lg:col-span-8 space-y-6"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+          >
+            <div className="flex items-center gap-3 mb-4 px-2 lg:px-0">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <Icon icon="solar:code-bold-duotone" className="w-6 h-6 text-primary" />
+              </div>
+              <h3 className="text-2xl font-bold font-display uppercase tracking-wider text-base-content/80">Hard Skills</h3>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 px-2 lg:px-0">
+              {displayedHardSkills.map((skill) => (
+                <motion.div
+                  key={skill.name}
+                  variants={itemVariants}
+                  whileHover={{ y: -5 }}
+                  whileTap={{ scale: 0.95 }}
+                  tabIndex={0}
+                  className="p-4 rounded-2xl bg-base-200 border border-base-content/10 flex items-center gap-4 transition-all duration-300 hover:border-primary hover:bg-base-100 focus:border-primary focus:bg-base-100 cursor-pointer group shadow-sm"
+                >
+                  <div className="w-12 h-12 shrink-0 flex items-center justify-center rounded-xl bg-base-300 group-hover:bg-primary/5 group-focus:bg-primary/5 transition-colors">
+                    <Icon icon={skill.icon} className="w-8 h-8" />
+                  </div>
+                  <div className="flex flex-col min-w-0">
+                    <span className="font-bold font-headings text-sm leading-tight break-words">{skill.name}</span>
+                    <span className="text-[13px] font-black opacity-40 mt-1 tracking-tighter">{skill.level || "Expert"}</span>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+
+          <motion.div
+            className="lg:col-span-4 space-y-6"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+          >
+            <div className="flex items-center gap-3 mb-4 px-2 lg:px-0">
+              <div className="p-2 bg-secondary/10 rounded-lg">
+                <Icon icon="vscode-icons:file-type-skill" className="w-6 h-6 text-secondary" />
+              </div>
+              <h3 className="text-2xl font-bold font-display uppercase tracking-wider text-base-content/80">Soft Skills</h3>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3 px-2 lg:px-0">
+              {displayedSoftSkills.map((skill, index) => (
+                <motion.div
+                  key={index}
+                  variants={itemVariants}
+                  whileHover={{ x: 5 }} 
+                  whileTap={{ scale: 0.95 }}
+                  tabIndex={0}
+                  className="flex items-center gap-2 p-4 rounded-2xl bg-base-200 border border-base-content/10 hover:border-secondary focus:border-secondary transition-all duration-300 shadow-sm cursor-pointer group"
+                >
+                  <Icon
+                    icon="line-md:check-all"
+                    className="w-0 h-6 opacity-0 text-secondary flex-shrink-0 group-hover:w-6 group-hover:opacity-100 group-focus:w-6 group-focus:opacity-100 transition-all duration-300"
+                  />
+                  <span className="font-bold text-sm md:text-base leading-tight break-words transition-colors duration-300 group-hover:text-secondary group-focus:text-secondary">{skill}</span>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+
         </div>
-
-        {isSkillsLoading ? (
-          <SkillsSkeleton />
-        ) : (
-          <div className="flex flex-col items-center gap-8 md:gap-12 max-w-4xl mx-auto">
-            <div className="card shadow-md p-4 border border-base-content/20 w-full">
-              <h3
-                className="text-lg font-bold font-display mb-4 text-center"
-                data-aos="zoom-out-up"
-              >
-                Soft Skills
-              </h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-y-3 gap-x-8">
-                {displayedSoftSkills.map((skill, index) => (
-                  <div
-                    key={skill}
-                    className="flex items-center space-x-2"
-                    data-aos="zoom-in-up"
-                    data-aos-delay={index * 180}
-                  >
-                    <Icon
-                      icon="mdi:check-circle"
-                      className="w-5 h-5 text-success flex-shrink-0"
-                    />
-                    <p className="text-sm">{skill}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="card shadow-md p-4 border border-base-content/20 w-full">
-              <h3
-                className="text-lg font-bold font-display mb-4 text-center"
-                data-aos="zoom-in-up"
-              >
-                Hard Skills
-              </h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
-                {displayedHardSkills.map((skill, index) => (
-                  <div
-                    key={skill.name}
-                    tabIndex={0}
-                    className="p-4 rounded-lg shadow flex items-center space-x-3 border border-base-content/20 cursor-pointer transition-all duration-300 ease-in-out hover:scale-102 hover:bg-base-200 hover:shadow-lg hover:border-primary focus:outline-none focus-within:scale-102 focus-within:bg-base-200 focus-within:shadow-lg focus-within:border-primary"
-                    data-aos="fade-up"
-                    data-aos-delay={index * 120}
-                  >
-                    <Icon icon={skill.icon} className="w-8 h-8 flex-shrink-0" />
-                    <div>
-                      <p className="font-semibold">{skill.name}</p>
-                      <p className="text-sm text-base-content/70">
-                        {skill.level}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

@@ -1,21 +1,37 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Icon } from "@iconify/react";
-import AOS from "aos";
+import { motion } from "framer-motion";
 import { usePagination } from "../../hooks/usePagination";
 import { useProjectStore } from "../../stores/projectStore";
 import { transformCloudinaryUrl } from "../../utils/imageHelper";
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 }
+  }
+};
+
+const itemVariants = {
+  hidden: { y: 30, opacity: 0 },
+  visible: { y: 0, opacity: 1, transition: { duration: 0.5, ease: "easeOut" } }
+};
+
 const GallerySkeleton = ({ count = 3 }) => (
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto hover:cursor-wait">
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl mx-auto hover:cursor-wait">
     {Array.from({ length: count }).map((_, index) => (
-      <div
-        key={index}
-        className="card bg-base-100 shadow-xl border border-base-300 overflow-hidden"
-      >
-        <div className="skeleton aspect-square w-full"></div>
-        <div className="card-body p-4 space-y-2">
-          <div className="skeleton h-4 w-1/2"></div>
-          <div className="skeleton h-3 w-3/4"></div>
+      <div key={index} className="card bg-base-200 border border-base-content/40 shadow-xl overflow-hidden">
+        <div className="skeleton h-56 w-full rounded-none"></div>
+        <div className="flex justify-center -mt-5 relative z-10 gap-3">
+          <div className="skeleton h-10 w-24 rounded-full"></div>
+          <div className="skeleton h-10 w-24 rounded-full"></div>
+        </div>
+        <div className="card-body p-6 space-y-3">
+          <div className="skeleton h-6 w-3/4"></div>
+          <div className="skeleton h-4 w-full"></div>
+          <div className="skeleton h-4 w-5/6"></div>
+          <div className="skeleton h-4 w-4/6"></div>
         </div>
       </div>
     ))}
@@ -23,15 +39,11 @@ const GallerySkeleton = ({ count = 3 }) => (
 );
 
 const shuffleArray = (array) => {
-  let currentIndex = array.length,
-    randomIndex;
+  let currentIndex = array.length, randomIndex;
   while (currentIndex !== 0) {
     randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex--;
-    [array[currentIndex], array[randomIndex]] = [
-      array[randomIndex],
-      array[currentIndex],
-    ];
+    [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
   }
   return array;
 };
@@ -65,32 +77,11 @@ function Gallery() {
     );
   }, [searchTerm, shuffledProjects]);
 
-  const { currentItems, PaginationComponent } = usePagination(
-    filteredProjects,
-    { sm: 2, md: 4, lg: 6 }
-  );
+  const { currentItems, PaginationComponent } = usePagination(filteredProjects, { sm: 2, md: 4, lg: 6 });
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 1000);
     return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    if (!loading) AOS.refresh();
-  }, [loading]);
-
-  useEffect(() => {
-    const hash = window.location.hash;
-    if (hash === "#galeri" && sectionRef.current) {
-      const header = document.querySelector("header");
-      const headerOffset = header ? header.offsetHeight + 12 : 80;
-      const elementPosition =
-        sectionRef.current.getBoundingClientRect().top + window.scrollY;
-      const offsetPosition = elementPosition - headerOffset;
-      requestAnimationFrame(() => {
-        window.scrollTo({ top: offsetPosition, behavior: "smooth" });
-      });
-    }
   }, []);
 
   const structuredData = {
@@ -112,150 +103,134 @@ function Gallery() {
   return (
     <div
       ref={sectionRef}
-      className="py-12 min-h-screen flex flex-col items-center justify-center text-base-content"
+      className="bg-base-100 min-h-[auto] my-12 lg:min-h-screen flex flex-col items-center justify-center py-16 lg:py-0 scroll-mt-16 lg:scroll-mt-24 text-base-content"
       id="galeri"
     >
-        <script type="application/ld+json">
-          {JSON.stringify(structuredData)}
-        </script>
+      <script type="application/ld+json">
+        {JSON.stringify(structuredData)}
+      </script>
 
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12" data-aos="fade-down">
-          <h2 className="text-4xl font-bold font-display mb-2">
-            Galeri Proyek
-          </h2>
-          <p className="text-lg text-base-content/70">
-            Beberapa proyek terakhir
-          </p>
-        </div>
+      <div className="w-full max-w-6xl mx-auto px-4 lg:px-4">
+        <motion.div
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-2 tracking-tight">Galeri Proyek</h2>
+          <p className="text-base md:text-lg text-base-content/60">Mahakarya dan studi kasus terbaru saya</p>
+        </motion.div>
 
         {!isProjectsLoading && !loading && (
-          <div
-            className="w-full max-w-5xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8"
-            data-aos="fade-right"
-            data-aos-delay="100"
+          <motion.div
+            className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-10 w-full"
+            initial={{ opacity: 0, y: -20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
           >
-            <div className="order-2 md:order-1 self-center md:self-auto">
+            <div className="order-2 md:order-1 flex justify-center md:justify-start w-full md:w-auto">
               <PaginationComponent />
             </div>
 
-            <div className="order-1 md:order-2 w-full max-w-sm mx-auto md:mx-0 md:w-72 lg:w-96">
+            <div className="order-1 md:order-2 w-full max-w-md mx-auto md:mx-0 relative">
               <input
                 type="search"
                 placeholder="Cari proyek..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="input input-bordered w-full shadow-lg"
+                className="input input-bordered w-full rounded-2xl bg-base-200/50 pl-10 focus:bg-base-100 transition-colors"
               />
+              <Icon icon="mdi:magnify" className="absolute left-4 top-1/2 -translate-y-1/2 opacity-40 w-5 h-5" />
             </div>
-          </div>
+          </motion.div>
         )}
 
         {isProjectsLoading || loading ? (
           <GallerySkeleton count={projects.length || 3} />
         ) : (
-          <div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto"
-            data-aos="fade-up"
+          <motion.div
+            key={`grid-${searchTerm}-${currentItems[0]?._id || 'empty'}`}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
           >
-            {currentItems.map((project, index) => (
-              <div
+            {currentItems.map((project) => (
+              <motion.div
                 key={project._id}
-                className="card bg-base-100 shadow-md border border-base-300 overflow-hidden group focus-within:ring-2 focus-within:ring-primary transition-all"
-                data-aos="zoom-in"
-                data-aos-delay={100 + index * 100}
+                variants={itemVariants}
+                className="card bg-base-200 border border-base-content/40 shadow-lg overflow-visible group hover:border-primary transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 rounded-3xl"
               >
-                <figure
-                  className="relative aspect-square focus:outline-none"
-                  tabIndex={0}
-                >
+                <figure className="relative h-56 w-full overflow-hidden rounded-t-3xl border-b border-base-content/10 bg-base-300">
                   <img
-                    src={transformCloudinaryUrl(project.imageUrl, 800, 800)}
-                    srcSet={`
-                      ${transformCloudinaryUrl(
-                      project.imageUrl,
-                      480,
-                      480
-                    )} 480w,
-                      ${transformCloudinaryUrl(project.imageUrl, 800, 800)} 800w
-                    `}
-                    sizes="(max-width: 640px) 480px, 800px"
-                    alt={`Preview proyek ${project.title}`}
-                    width="800"
-                    height="800"
+                    src={transformCloudinaryUrl(project.imageUrl, 600, 400)}
+                    alt={`Preview ${project.title}`}
                     loading="lazy"
-                    decoding="async"
-                    fetchPriority="low"
-                    className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105 group-focus-within:scale-105"
+                    className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-110"
                   />
-
-                  <div
-                    className="absolute inset-0 bg-neutral bg-opacity-80 backdrop-blur-sm opacity-0 
-                               group-hover:opacity-100 group-focus-within:opacity-100
-                               transition-opacity duration-300 ease-in-out 
-                               flex flex-col items-center justify-center text-justify p-4 text-neutral-content"
-                  >
-                    <h3 className="text-xl font-bold font-display mb-2">
-                      {project.title}
-                    </h3>
-                    <p className="text-sm mb-4 line-clamp-3">
-                      {project.description}
-                    </p>
-                    <div className="flex flex-wrap justify-center gap-1 mb-4">
-                      {project.tags?.split(",").map((tag) => (
-                        <div key={tag} className="badge badge-accent text-xs">
-                          {tag}
-                        </div>
-                      ))}
-                    </div>
-                    <div className="card-actions justify-center">
-                      {project.demoUrl && project.demoUrl !== "#" && (
-                        <a
-                          href={project.demoUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="btn btn-primary btn-sm"
-                          aria-label={`Kunjungi demo ${project.title}`}
-                        >
-                          <Icon icon="mdi:web" className="w-4 h-4 mr-1" />
-                          Kunjungi
-                        </a>
-                      )}
-
-                      {project.sourceUrl && project.sourceUrl !== "#" && (
-                        <a
-                          href={project.sourceUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="btn btn-secondary btn-sm"
-                          aria-label={`Lihat source code ${project.title}`}
-                        >
-                          <Icon icon="mdi:github" className="w-4 h-4 mr-1" />
-                          Source Code
-                        </a>
-                      )}
-
-                      {(!project.demoUrl || project.demoUrl === "#") &&
-                        (!project.sourceUrl || project.sourceUrl === "#") && (
-                          <div
-                            className="tooltip tooltip-bottom"
-                            data-tip="Proyek ini masih tahap pengembangan"
-                          >
-                            <button className="btn btn-sm btn-ghost border-white/20 text-white/70 btn-disabled cursor-not-allowed">
-                              <Icon
-                                icon="mdi:progress-wrench"
-                                className="w-4 h-4 mr-1"
-                              />
-                              Sedang dalam Pengembangan
-                            </button>
-                          </div>
-                        )}
-                    </div>
-                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-base-200/80 to-transparent opacity-50 group-hover:opacity-10 transition-opacity"></div>
                 </figure>
-              </div>
+
+                <div className="flex justify-center gap-3 -mt-5 relative z-10 px-2">
+                  {(!project.demoUrl || project.demoUrl === "#") && (!project.sourceUrl || project.sourceUrl === "#") ? (
+                    <div className="tooltip tooltip-bottom tooltip-warning cursor-help" data-tip="Proyek masih tahap pengembangan">
+                      <div className="badge badge-warning shadow-md py-3 px-4 font-bold gap-2 text-xs border border-base-content/40">
+                        <Icon icon="mdi:progress-wrench" className="w-4 h-4" /> Pengembangan
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      {project.demoUrl && project.demoUrl !== "#" && (
+                        <div className="tooltip tooltip-bottom tooltip-primary" data-tip="Lihat Live Demo">
+                          <a
+                            href={project.demoUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="btn btn-sm bg-base-100 text-base-content hover:bg-primary hover:text-primary-content hover:border-primary shadow-md rounded-full border border-base-content/20 px-4 transition-all"
+                          >
+                            <Icon icon="mdi:external-link" className="w-4 h-4" /> Demo
+                          </a>
+                        </div>
+                      )}
+                      {project.sourceUrl && project.sourceUrl !== "#" && (
+                        <div className="tooltip tooltip-bottom tooltip-secondary" data-tip="Lihat Source Code">
+                          <a
+                            href={project.sourceUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="btn btn-sm bg-base-100 text-base-content hover:bg-secondary hover:text-secondary-content hover:border-secondary shadow-md rounded-full border border-base-content/20 px-4 transition-all"
+                          >
+                            <Icon icon="mdi:github" className="w-4 h-4" /> Source
+                          </a>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+
+                <div className="card-body p-6 pt-4 space-y-2">
+                  <h3 className="card-title text-xl font-display font-bold text-base-content">
+                    {project.title}
+                  </h3>
+
+                  <p className="text-sm text-base-content/70 text-justify leading-relaxed break-words">
+                    {project.description}
+                  </p>
+
+                  <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-base-content/5">
+                    {project.tags?.split(",").map((tag) => (
+                      <span key={tag} className="text-[11px] font-black tracking-wider px-2 py-1 bg-base-300 text-base-content border border-base-content/40 rounded-md">
+                        {tag.trim()}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         )}
       </div>
     </div>

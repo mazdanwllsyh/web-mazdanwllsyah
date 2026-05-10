@@ -45,6 +45,11 @@ const initialHardSkills = [
   { id: 40, icon: "logos:greensock-icon", name: "GSAP" },
   { id: 41, icon: "logos:threejs", name: "Three.js" },
   { id: 42, icon: "logos:graphql", name: "GraphQL" },
+  { id: 43, icon: "vscode-icons:file-type-word", name: "Ms. Word" },
+  { id: 44, icon: "vscode-icons:file-type-excel", name: "Ms. Excel" },
+  { id: 45, icon: "vscode-icons:file-type-powerpoint", name: "Ms. PowerPoint" },
+  { id: 46, icon: "logos:visual-studio-code", name: "VS Code" },
+  { id: 47, icon: "logos:postman-icon", name: "Postman" },
 ];
 
 export const categories = [

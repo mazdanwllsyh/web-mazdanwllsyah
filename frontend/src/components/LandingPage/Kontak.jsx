@@ -1,9 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import { toast } from "react-hot-toast";
+import { motion } from "framer-motion";
 import { useSiteStore } from "../../stores/siteStore";
 import { useAuth } from "../../hooks/useAuth";
 import FloatingLabelInput, { FloatingLabelTextarea } from "../FloatingLabelInput";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 }
+  }
+};
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: { y: 0, opacity: 1, transition: { duration: 0.5, ease: "easeOut" } }
+};
 
 function Kontak() {
   const siteData = useSiteStore((state) => state.siteData);
@@ -21,8 +35,6 @@ function Kontak() {
   }, [user]);
 
   const handleSendMessage = () => {
-    const links = siteData?.contactLinks || {};
-
     if (selectedMethod === "telegram") {
       const url = `https://t.me/${siteData.contactLinks.telegram}`;
       window.open(url, "_blank", "noopener,noreferrer");
@@ -30,7 +42,7 @@ function Kontak() {
       return;
     }
     if (!selectedMethod) {
-      toast.error("Pilih metode kontak terlebih dahulu (Email/WhatsApp).");
+      toast.error("Pilih metode kontak terlebih dahulu.");
       return;
     }
     if (nama.trim().length < 5) {
@@ -46,8 +58,7 @@ function Kontak() {
       return;
     }
     const subject = `Pesan dari ${nama || "Pengunjung"}`;
-    const body = `Nama: ${nama}\nEmail: ${emailForm || "-"
-      }\n\nPesan:\n${pesan}`;
+    const body = `Nama: ${nama}\nEmail: ${emailForm || "-"}\n\nPesan:\n${pesan}`;
     const encodedBody = encodeURIComponent(body);
     const encodedSubject = encodeURIComponent(subject);
     let url = "";
@@ -56,10 +67,8 @@ function Kontak() {
         url = `mailto:${siteData.contactLinks.email}?subject=${encodedSubject}&body=${encodedBody}`;
         break;
       case "whatsapp":
-        const waBody = `Halo Mazda,\n\nNama: ${nama || "-"}\nEmail: ${emailForm || "-"
-          }\n\nPesan:\n${pesan}`;
-        const encodedWaBody = encodeURIComponent(waBody);
-        url = `https://wa.me/${siteData.contactLinks.whatsapp}?text=${encodedWaBody}`;
+        const waBody = `Halo Mazda,\n\nNama: ${nama || "-"}\nEmail: ${emailForm || "-"}\n\nPesan:\n${pesan}`;
+        url = `https://wa.me/${siteData.contactLinks.whatsapp}?text=${encodeURIComponent(waBody)}`;
         break;
       default:
         return;
@@ -69,152 +78,93 @@ function Kontak() {
 
   const getButtonText = () => {
     switch (selectedMethod) {
-      case "email":
-        return "Kirim via Email";
-      case "whatsapp":
-        return "Chat via WhatsApp";
-      case "telegram":
-        return "Buka Telegram";
-      default:
-        return "Pilih Kontak Dahulu";
+      case "email": return "Kirim via Email";
+      case "whatsapp": return "Chat via WhatsApp";
+      case "telegram": return "Buka Telegram";
+      default: return "Pilih Metode Kontak";
     }
   };
 
   const isFormDisabled = selectedMethod === "telegram";
-
-  const isFormValid =
-    !isFormDisabled &&
-    nama.trim().length >= 5 &&
-    emailForm.trim().length >= 8 &&
-    pesan.trim().length >= 25;
+  const isFormValid = !isFormDisabled && nama.trim().length >= 5 && emailForm.trim().length >= 8 && pesan.trim().length >= 25;
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center py-20 bg-base-100 text-base-content"
+      className="bg-base-100 min-h-[auto] my-12 lg:min-h-screen flex flex-col items-center justify-center py-16 lg:py-0 scroll-mt-16 lg:scroll-mt-24 text-base-content"
       id="kontak"
     >
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12" data-aos="fade-up">
-          <h2 className="text-4xl font-bold font-display mb-2">Hubungi Saya</h2>
-        </div>
-        <div className="max-w-3xl mx-auto flex flex-col items-center">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mb-8">
-            <div data-aos="fade-right" data-aos-delay="150">
-              <div
-                className={`card shadow-sm p-6 flex flex-col items-center text-center space-y-2 border cursor-pointer transition-all duration-200 h-full ${selectedMethod === "email"
-                    ? "border-primary scale-105 bg-base-200"
-                    : "border border-base-content/20 bg-base-100"
-                  }`}
-                onClick={() => setSelectedMethod("email")}
-              >
-                <Icon
-                  icon="mdi:email-outline"
-                  className="w-10 h-10 text-primary"
-                />
-                <div>
-                  <h3 className="font-bold font-display text-lg">Email</h3>
-                  <p className="text-sm text-base-content/80 break-all">
-                    {siteData.contactLinks?.email}
-                  </p>
-                </div>
-              </div>
-            </div>
+      <div className="w-full max-w-6xl mx-auto px-4">
+        <motion.div
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: -20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-2 tracking-tight">Hubungi Saya</h2>
+          <p className="text-base md:text-lg text-base-content/60">Mari berdiskusi tentang proyek hebat Anda</p>
+        </motion.div>
 
-            <div data-aos="fade-up" data-aos-delay="300">
-              <div
-                className={`card shadow-sm p-6 flex flex-col items-center text-center space-y-2 border cursor-pointer transition-all duration-200 h-full ${selectedMethod === "whatsapp"
-                    ? "border-success scale-105 bg-base-200"
-                    : "border border-base-content/20 bg-base-100"
-                  }`}
-                onClick={() => setSelectedMethod("whatsapp")}
-              >
-                <Icon icon="mdi:whatsapp" className="w-10 h-10 text-success" />
-                <div>
-                  <h3 className="font-bold font-display text-lg">WhatsApp</h3>
-                  <p className="text-sm text-base-content/80">
-                    {siteData.contactLinks?.whatsapp}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div data-aos="fade-left" data-aos-delay="590">
-              <div
-                className={`card shadow-sm p-6 flex flex-col items-center text-center space-y-2 border cursor-pointer transition-all duration-200 h-full ${selectedMethod === "telegram"
-                    ? "border-info scale-105 bg-base-200"
-                    : "border border-base-content/20 bg-base-100"
-                  }`}
-                onClick={() => setSelectedMethod("telegram")}
-              >
-                <Icon icon="mdi:telegram" className="w-10 h-10 text-info" />
-                <div>
-                  <h3 className="font-bold font-display text-lg">Telegram</h3>
-                  <p className="text-sm text-base-content/80">
-                    @{siteData.contactLinks?.telegram}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div
-            className={`card w-full shadow-sm p-6 border border-base-content/20 bg-base-100`}
-            data-aos="fade-up"
-            data-aos-delay="200"
+        <div className="w-full">
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8 w-full mb-8"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
           >
-            <h3 className="text-xl font-bold font-display mb-4 text-center">
-              Tuliskan Pesan Anda
-            </h3>
-            <form className="space-y-4">
-              <FloatingLabelInput
-                id="contactNama"
-                label="Nama"
-                value={nama}
-                onChange={(e) => setNama(e.target.value)}
-                disabled={isFormDisabled}
-              />
-
-              <FloatingLabelInput
-                id="contactEmail"
-                label="Email"
-                type="email"
-                value={emailForm}
-                onChange={(e) => setEmailForm(e.target.value)}
-                disabled={isFormDisabled}
-              />
-
-              <FloatingLabelTextarea
-                id="contactPesan"
-                label="Pesan atau Kritik"
-                value={pesan}
-                onChange={(e) => setPesan(e.target.value)}
-                disabled={isFormDisabled}
-                required={!isFormDisabled}
-              />
-
-              <button
-                type="button"
-                onClick={handleSendMessage}
-                className={`btn w-full mt-4 ${!selectedMethod
-                    ? "btn-disabled"
-                    : isFormDisabled
-                      ? "btn-primary"
-                      : isFormValid
-                        ? "btn-primary"
-                        : "btn-disabled"
+            {[
+              { id: "email", icon: "mdi:email-outline", label: "Email", color: "text-primary", border: "border-primary", data: siteData.contactLinks?.email },
+              { id: "whatsapp", icon: "mdi:whatsapp", label: "WhatsApp", color: "text-success", border: "border-success", data: siteData.contactLinks?.whatsapp },
+              { id: "telegram", icon: "mdi:telegram", label: "Telegram", color: "text-info", border: "border-info", data: `@${siteData.contactLinks?.telegram}` }
+            ].map((method) => (
+              <motion.div
+                key={method.id}
+                variants={itemVariants}
+                whileHover={{ y: -5 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setSelectedMethod(method.id)}
+                className={`card shadow-sm p-6 flex flex-col items-center text-center space-y-2 border-2 cursor-pointer transition-all duration-300 rounded-3xl ${selectedMethod === method.id ? `${method.border} bg-base-200 shadow-md` : "border-base-content/10 bg-base-100"
                   }`}
-                disabled={!selectedMethod || (!isFormDisabled && !isFormValid)}
+              >
+                <Icon icon={method.icon} className={`w-12 h-12 ${method.color}`} />
+                <h3 className="font-bold font-display text-lg">{method.label}</h3>
+                <p className="text-xs text-base-content/60 break-all">{method.data}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          <motion.div
+            className="card w-full shadow-lg p-6 md:p-10 border border-base-content/40 bg-base-200/50 rounded-[2.5rem]"
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            <h3 className="text-2xl font-bold font-display mb-8 text-center uppercase tracking-widest text-base-content/80">
+              Kirim Pesan
+            </h3>
+            <form className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FloatingLabelInput id="contactNama" label="Nama Lengkap" value={nama} onChange={(e) => setNama(e.target.value)} disabled={isFormDisabled} />
+                <FloatingLabelInput id="contactEmail" label="Alamat Email" type="email" value={emailForm} onChange={(e) => setEmailForm(e.target.value)} disabled={isFormDisabled} />
+              </div>
+
+              <FloatingLabelTextarea id="contactPesan" label="Pesan atau Pertanyaan" value={pesan} onChange={(e) => setPesan(e.target.value)} disabled={isFormDisabled} rows={4} required={!isFormDisabled} />
+
+              <motion.button
+                type="button"
+                whileHover={selectedMethod && (isFormDisabled || isFormValid) ? { scale: 1.01 } : {}}
+                whileTap={selectedMethod && (isFormDisabled || isFormValid) ? { scale: 0.98 } : {}}
+                onClick={handleSendMessage}
+                className={`btn btn-lg w-full rounded-2xl font-bold shadow-lg transition-all ${!selectedMethod ? "btn-disabled" : isFormDisabled ? "btn-info text-white" : isFormValid ? "btn-primary" : "btn-disabled"
+                  }`}
               >
                 {getButtonText()}
-                {selectedMethod && selectedMethod !== "telegram" && (
-                  <Icon icon="mdi:send" className="w-4 h-4 ml-1" />
-                )}
-                {selectedMethod === "telegram" && (
-                  <Icon icon="mdi:open-in-new" className="w-4 h-4 ml-1" />
-                )}
-              </button>
+                <Icon icon={selectedMethod === "telegram" ? "mdi:open-in-new" : "mdi:send"} className="w-5 h-5 ml-2" />
+              </motion.button>
             </form>
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>

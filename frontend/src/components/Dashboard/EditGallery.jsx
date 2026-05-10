@@ -214,7 +214,7 @@ function EditGallery() {
                   </TCell>
                   <TCell>
                     <div className="font-bold text-sm mb-1 text-base-content">{project.title}</div>
-                    <div className="text-xs opacity-60 line-clamp-2 mb-2 max-w-sm">{project.description}</div>
+                    <div className="text-xs opacity-60 mb-2 max-w-sm break-words whitespace-normal leading-relaxed">{project.description}</div>
                     <div className="flex gap-1 flex-wrap">
                       {project.tags && project.tags.split(",").map((tag, i) => (
                         <span key={i} className="badge badge-primary badge-outline badge-xs font-bold">{tag.trim()}</span>

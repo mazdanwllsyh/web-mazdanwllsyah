@@ -35,14 +35,14 @@ function Header() {
       }`}>
       <header
         className={`mx-auto transition-all duration-500 ease-in-out ${isScrolled
-            ? "w-[95%] md:w-[85%] lg:w-[75%] rounded-full border border-base-content/10 bg-base-100/70 backdrop-blur-md shadow-lg py-2 px-6"
-            : "w-full bg-base-100 py-4 px-6 md:px-12"
+            ? "w-[92%] md:w-[88%] lg:w-[85%] max-w-7xl rounded-full border border-base-content/10 bg-base-100/70 backdrop-blur-md shadow-lg py-2 px-6 mt-4"
+            : "w-[92%] md:w-[88%] lg:w-[85%] max-w-7xl bg-transparent py-4 px-2"
           }`}
       >
         <div className="flex items-center justify-between">
           <div className="flex-1">
-            <Link to="/" className="flex items-center gap-2 group">
-              <div className={`rounded-xl bg-gradient-to-br from-accent to-primary text-primary-content flex items-center justify-center font-black transition-all duration-500 ${isScrolled ? "w-8 h-8 text-sm" : "w-10 h-10 text-lg"
+            <a href="/" className="flex items-center gap-2 group w-fit">
+              <div className={`rounded-xl bg-primary text-primary-content flex items-center justify-center font-black transition-all duration-500 ${isScrolled ? "w-8 h-8 text-sm" : "w-10 h-10 text-lg"
                 }`}>
                 {siteData?.brandName?.charAt(0) || "M"}
               </div>
@@ -50,12 +50,11 @@ function Header() {
                 }`}>
                 {siteData?.brandName || "Mazda"}
               </span>
-            </Link>
+            </a>
           </div>
 
           <nav className="hidden lg:flex items-center gap-1 bg-base-200/50 p-1 rounded-full border border-base-content/5">
             {navLinks.map((link) => {
-              // FIX LOGIKA ACTIVE: Cek apakah lagi di home page (/) DAN hash-nya cocok
               const isAtHome = location.pathname === "/";
               const isActive = isAtHome && (
                 location.hash === link.to.replace("/", "") ||
@@ -68,8 +67,8 @@ function Header() {
                   to={link.to}
                   smooth
                   className={`px-5 py-2 rounded-full text-sm font-bold transition-all duration-300 ${isActive
-                      ? "bg-primary text-primary-content shadow-md shadow-primary/20 scale-105"
-                      : "text-base-content/70 hover:bg-primary/10 hover:text-primary"
+                    ? "bg-primary text-primary-content shadow-md shadow-primary/20 scale-105"
+                    : "text-base-content/70 hover:bg-primary/10 hover:text-primary"
                     }`}
                 >
                   {link.text}
