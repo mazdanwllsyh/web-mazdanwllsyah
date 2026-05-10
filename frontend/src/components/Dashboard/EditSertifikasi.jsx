@@ -44,7 +44,7 @@ function EditSertifikat() {
   const [currentPage, setCurrentPage] = useState(1);
 
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
-  const workerUrl = "/workers/pdf.worker.min.js";const workerUrl = "https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js";
+  const workerUrl = "https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js";
 
   useEffect(() => {
     if (!sertifikatData || sertifikatData.length === 0) fetchSertifikat();
