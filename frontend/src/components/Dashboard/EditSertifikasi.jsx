@@ -138,14 +138,19 @@ function EditSertifikat() {
     }
   };
 
-  if (isSertifikatLoading) return <div className="flex justify-center py-20"><span className="loading loading-ring loading-lg"></span></div>;
+  if (isSertifikatLoading) return (
+    <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+      <span className="loading loading-ring w-16 h-16 text-primary"></span>
+      <p className="font-bold opacity-60 animate-pulse tracking-widest text-sm uppercase">Memuat Data...</p>
+    </div>
+  );
 
   return (
     <div className="card bg-base-100 shadow-sm border border-base-content/20 rounded-[2.5rem] overflow-hidden">
       <div className="card-body p-8 md:p-10">
         <div className="flex flex-col md:flex-row justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-3xl font-black font-display flex items-center gap-3">
+            <h1 className="text-2xl font-black font-display flex items-center gap-3">
               <Icon icon="ph:certificate-duotone" className="text-primary" /> Kelola Sertifikat
             </h1>
           </div>

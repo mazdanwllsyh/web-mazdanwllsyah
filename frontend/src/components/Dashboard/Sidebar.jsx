@@ -77,11 +77,11 @@ function Sidebar() {
       <div>
         <a href="/" className="flex justify-start items-center mb-8 px-2 gap-4 mt-2 hover:opacity-80 transition-opacity cursor-pointer">
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-secondary text-primary-content flex items-center justify-center font-black text-2xl shadow-lg shadow-primary/30">
-            {siteData?.brandNameShort ? siteData.brandNameShort.charAt(0).toUpperCase() : "M"}
+            {siteData?.brandName ? siteData.brandNameShort.charAt(0).toUpperCase() : "M"}
           </div>
           <div className="flex flex-col items-start overflow-hidden">
             <span className="text-xl font-display font-black text-base-content truncate w-full tracking-tight">
-              {siteData?.brandNameShort || "Portfolio"}
+              {siteData?.brandName || "Portfolio"}
             </span>
             <span className="text-primary font-bold text-[10px] tracking-widest uppercase mt-0.5">
               Admin Panel
@@ -101,14 +101,23 @@ function Sidebar() {
       <div className="mt-auto pt-4 space-y-3">
         <div className="border-t border-base-content/10 my-4"></div>
         <div className="flex flex-col gap-2 pb-2">
-
           <Link
             to="/profil"
             className="flex items-center gap-3 bg-base-200/50 hover:bg-base-200 px-3 py-3 rounded-2xl border border-base-content/5 transition-colors w-full group"
           >
-            <div className="avatar placeholder">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-black font-display text-lg shadow-sm group-hover:bg-primary group-hover:text-primary-content transition-colors">
-                <span>{user?.fullName ? user.fullName.charAt(0).toUpperCase() : "A"}</span>
+            <div className="avatar">
+              <div className="w-10 h-10 rounded-xl border border-base-content/10 overflow-hidden shadow-sm">
+                {user?.profilePicture ? (
+                  <img
+                    src={user.profilePicture}
+                    alt="Profile"
+                    className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-primary/10 text-primary flex items-center justify-center font-black font-display text-lg group-hover:bg-primary group-hover:text-primary-content transition-colors">
+                    <span>{user?.fullName ? user.fullName.charAt(0).toUpperCase() : "A"}</span>
+                  </div>
+                )}
               </div>
             </div>
             <div className="flex-1 overflow-hidden">
@@ -124,7 +133,7 @@ function Sidebar() {
           <button
             type="button"
             className="btn btn-error w-full text-white rounded-2xl shadow-sm hover:shadow-md hover:shadow-error/20 transition-all duration-300 flex items-center justify-center gap-2"
-            onClick={handleSignOut} 
+            onClick={handleSignOut}
             title="Logout"
           >
             <Icon icon="lucide:log-out" className="w-5 h-5" />

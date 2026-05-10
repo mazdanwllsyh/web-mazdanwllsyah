@@ -35,7 +35,7 @@ function AppDashboard() {
     <div className="drawer lg:drawer-open min-h-screen font-text text-base-content selection:bg-primary/20 selection:text-primary">
       <input id="dashboard-sidebar-drawer" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content flex flex-col bg-base-200/40">
-        <header className="navbar bg-base-100/80 backdrop-blur-md shadow-sm px-4 md:px-6 lg:px-8 border-b border-base-content/5 sticky top-0 z-30 transition-all">
+        <header className="navbar bg-base-300/50 backdrop-blur-md shadow-sm px-4 md:px-6 lg:px-8 border-b border-base-content/5 sticky top-0 z-30 transition-all">
           <div className="flex-1 gap-2">
             <label htmlFor="dashboard-sidebar-drawer" className="btn btn-ghost btn-circle lg:hidden">
               <Icon icon="lucide:menu" className="w-6 h-6" />
@@ -62,7 +62,7 @@ function AppDashboard() {
           </Suspense>
         </main>
 
-        <footer className="footer footer-center p-6 bg-base-100/50 border-t border-base-content/5 text-base-content/60 text-xs font-medium">
+        <footer className="footer footer-center p-6 bg-base-200/80 border-t border-base-content/5 text-base-content/60 text-xs font-medium">
           <div>&copy; 2025 - {new Date().getFullYear()} - {siteData?.brandNameShort || "Mazda Nawallsyah"}. All Rights Reserved.</div>
         </footer>
       </div>

@@ -175,7 +175,12 @@ function UserDashboard() {
     }
   };
 
-  if (isLoading) return <div className="flex justify-center py-20"><span className="loading loading-ring loading-lg text-primary"></span></div>;
+  if (isLoading) return (
+    <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+      <span className="loading loading-ring w-16 h-16 text-primary"></span>
+      <p className="font-bold opacity-60 animate-pulse tracking-widest text-sm uppercase">Memuat Data...</p>
+    </div>
+  );
 
   return (
     <SuperAdminGate>
@@ -213,7 +218,6 @@ function UserDashboard() {
           </div>
         </div>
 
-        {/* CARD 1: SUPER ADMIN */}
         <div className="card bg-base-100 shadow-sm border border-base-content/20 rounded-[2rem] overflow-hidden">
           <div className="p-5 border-b border-base-content/10 bg-base-200/50 flex items-center gap-3">
             <div className="p-2 bg-secondary/10 text-secondary rounded-xl"><Icon icon="solar:crown-star-bold-duotone" className="w-6 h-6" /></div>
@@ -249,7 +253,6 @@ function UserDashboard() {
           </div>
         </div>
 
-        {/* CARD 2: ADMINISTRATOR */}
         <div className="card bg-base-100 shadow-sm border border-base-content/20 rounded-[2rem] overflow-hidden">
           <div className="p-5 border-b border-base-content/10 bg-base-200/50 flex justify-between items-center gap-3">
             <div className="flex items-center gap-3">
@@ -323,7 +326,6 @@ function UserDashboard() {
           </div>
         </div>
 
-        {/* CARD 3: USERS (PENGGUNA) */}
         <div className="card bg-base-100 shadow-sm border border-base-content/20 rounded-[2rem] overflow-hidden">
           <div className="p-5 border-b border-base-content/10 bg-base-200/50 flex justify-between items-center gap-3">
             <div className="flex items-center gap-3">
@@ -397,7 +399,6 @@ function UserDashboard() {
           </div>
         </div>
 
-        {/* MODAL TAMBAH ADMIN */}
         <ModalDashboard
           id="add_admin_modal"
           title="Daftarkan Admin Baru"

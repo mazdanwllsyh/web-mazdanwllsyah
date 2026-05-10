@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 import ThemeSwitcher from "../ThemeSwitcher";
 import { Icon } from "@iconify/react";
@@ -7,6 +7,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { useSiteStore } from "../../stores/siteStore";
 
 function Header() {
+  const location = useLocation();
   const siteData = useSiteStore((state) => state.siteData);
   const [isScrolled, setIsScrolled] = useState(false);
   const { user, handleSignOut } = useAuth();
@@ -15,145 +16,137 @@ function Header() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 125);
+      setIsScrolled(window.scrollY > 50);
     };
     window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const navLinks = [
     { to: "/#home", text: "Beranda", icon: "mdi:home" },
+    { to: "/#histori", text: "Histori", icon: "mdi:history" },
     { to: "/#skills", text: "Kemampuan", icon: "mdi:tools" },
     { to: "/#galeri", text: "Galeri", icon: "mdi:image-multiple" },
     { to: "/#kontak", text: "Kontak Saya", icon: "mdi:email" },
   ];
 
   return (
-    <nav
-      className={`fixed top-0 z-50 w-full transition-shadow duration-300 ease-in-out bg-base-100/70 backdrop-blur-md ${isScrolled ? "shadow-md" : "border-b-1 border-base-300 shadow-none"
-        }`}
-    >
-      <div className="navbar container mx-auto md:px-6 lg:px-12">
-        <div className="navbar-start">
-          <a
-            href="/"
-            className="text-xl font-display font-bold normal-case px-0 hover:bg-transparent"
-          >
-            {siteData.brandName}
-          </a>
-        </div>
-        <div className="navbar-center hidden lg:flex">
-          <div className="flex items-center space-x-2">
-            {navLinks.map((link) => (
-              <HashLink
-                key={link.to}
-                to={link.to}
-                smooth
-                className={`font-base px-3 py-2 flex items-center gap-1 relative rounded-md hover:bg-transparent
-                           after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full
-                           after:origin-bottom-left after:scale-x-0 after:bg-secondary
-                           after:transition-transform after:duration-400 after:ease-out
-                           hover:after:scale-x-100`}
-              >
-                <Icon icon={link.icon} className="w-4 h-4" />
-                {link.text}
-              </HashLink>
-            ))}
+    <div className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ease-in-out ${isScrolled ? "py-4" : "py-0"
+      }`}>
+      <header
+        className={`mx-auto transition-all duration-500 ease-in-out ${isScrolled
+            ? "w-[95%] md:w-[85%] lg:w-[75%] rounded-full border border-base-content/10 bg-base-100/70 backdrop-blur-md shadow-lg py-2 px-6"
+            : "w-full bg-base-100 py-4 px-6 md:px-12"
+          }`}
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex-1">
+            <Link to="/" className="flex items-center gap-2 group">
+              <div className={`rounded-xl bg-gradient-to-br from-accent to-primary text-primary-content flex items-center justify-center font-black transition-all duration-500 ${isScrolled ? "w-8 h-8 text-sm" : "w-10 h-10 text-lg"
+                }`}>
+                {siteData?.brandName?.charAt(0) || "M"}
+              </div>
+              <span className={`font-display font-black tracking-tighter transition-all duration-500 ${isScrolled ? "text-base" : "text-xl"
+                }`}>
+                {siteData?.brandName || "Mazda"}
+              </span>
+            </Link>
           </div>
-        </div>
-        <div className="navbar-end flex items-center">
-          <div className="mx-4">
+
+          <nav className="hidden lg:flex items-center gap-1 bg-base-200/50 p-1 rounded-full border border-base-content/5">
+            {navLinks.map((link) => {
+              // FIX LOGIKA ACTIVE: Cek apakah lagi di home page (/) DAN hash-nya cocok
+              const isAtHome = location.pathname === "/";
+              const isActive = isAtHome && (
+                location.hash === link.to.replace("/", "") ||
+                (location.hash === "" && link.to === "/#home")
+              );
+
+              return (
+                <HashLink
+                  key={link.to}
+                  to={link.to}
+                  smooth
+                  className={`px-5 py-2 rounded-full text-sm font-bold transition-all duration-300 ${isActive
+                      ? "bg-primary text-primary-content shadow-md shadow-primary/20 scale-105"
+                      : "text-base-content/70 hover:bg-primary/10 hover:text-primary"
+                    }`}
+                >
+                  {link.text}
+                </HashLink>
+              );
+            })}
+          </nav>
+
+          <div className="flex-1 flex items-center justify-end gap-2 md:gap-4">
             <ThemeSwitcher />
-          </div>
 
-          {/* JIKA SUDAH LOGIN (user ada) */}
-          {user && (
-            <div className="dropdown dropdown-end ml-1">
-              <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-                <div className="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                  {user.profilePicture ? (
-                    <img src={user.profilePicture} alt="Foto Profil" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-base-300">
-                      <Icon icon="mdi:account" className="w-6 h-6" />
-                    </div>
-                  )}
-                </div>
-              </label>
-              <ul
-                tabIndex={0}
-                className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 items-center"
-              >
-                {/* 1. Tombol Profil (Style disamakan) */}
-                <li className="w-full">
-                  <Link
-                    to="/profil"
-                    className="font-semibold flex items-center justify-center gap-2 py-2 w-full"
-                  >
-                    <Icon icon="mdi:user-circle-outline" className="w-4 h-4" />
-                    Profil
-                  </Link>
-                </li>
-
-                {/* 2. Tombol Dashboard (Style disamakan) */}
-                {isAdmin && (
-                  <li className="w-full">
-                    <Link
-                      to="/dashboard"
-                      className="font-semibold flex items-center justify-center gap-2 py-2 w-full"
-                    >
-                      <Icon
-                        icon="mdi:view-dashboard-outline"
-                        className="w-4 h-4"
-                      />
-                      Dashboard
+            {user ? (
+              <div className="dropdown dropdown-end">
+                <label tabIndex={0} className="btn btn-ghost btn-circle avatar border-2 border-primary/20 hover:border-primary transition-colors">
+                  <div className="w-9 rounded-full">
+                    {user.profilePicture ? (
+                      <img src={user.profilePicture} alt={user.fullName} />
+                    ) : (
+                      <div className="bg-primary text-primary-content flex items-center justify-center h-full text-xs font-bold">
+                        {user.fullName?.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+                </label>
+                <ul tabIndex={0} className="mt-4 z-[1] p-2 shadow-2xl menu menu-md dropdown-content bg-base-100 rounded-2xl w-64 border border-base-content/10 animate-fade-in-up">
+                  <li className="menu-title px-4 py-3 border-b border-base-content/5 mb-2 text-xs opacity-50 uppercase font-bold text-base-content">Akun Saya</li>
+                  <li>
+                    <Link to="/profile" className="flex items-center gap-3 py-3 rounded-xl hover:bg-primary/10 font-bold">
+                      <Icon icon="solar:user-circle-bold-duotone" className="w-5 h-5 text-primary" />
+                      Profil
                     </Link>
                   </li>
-                )}
+                  {isAdmin && (
+                    <li>
+                      <Link to="/dashboard" className="flex items-center gap-3 py-3 rounded-xl hover:bg-secondary/10 font-bold text-secondary">
+                        <Icon icon="solar:widget-5-bold-duotone" className="w-5 h-5 text-secondary" />
+                        Dashboard
+                      </Link>
+                    </li>
+                  )}
+                  <div className="divider my-1 opacity-10"></div>
+                  <li>
+                    <button onClick={handleSignOut} className="flex items-center gap-3 py-3 rounded-xl text-error hover:bg-error/10 font-bold">
+                      <Icon icon="solar:logout-3-bold-duotone" className="w-5 h-5" />
+                      Logout
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            ) : null}
 
-                <div className="divider my-1 px-2"></div>
-
-                <li className="w-full">
-                  <button
-                    onClick={handleSignOut}
-                    className="font-semibold flex items-center justify-center gap-2 py-2 w-full text-error"
-                  >
-                    <Icon icon="mdi:logout" className="w-4 h-4" />
-                    Logout
-                  </button>
-                </li>
+            <div className="dropdown dropdown-end lg:hidden">
+              <label tabIndex={0} className="btn btn-ghost btn-circle border border-base-content/10">
+                <Icon icon="solar:hamburger-menu-linear" className="w-6 h-6" />
+              </label>
+              <ul tabIndex={0} className="menu menu-md dropdown-content mt-4 z-[1] p-3 shadow-2xl bg-base-100 rounded-2xl w-60 border border-base-content/10">
+                {navLinks.map((link) => {
+                  const isAtHome = location.pathname === "/";
+                  const isActive = isAtHome && (
+                    location.hash === link.to.replace("/", "") ||
+                    (location.hash === "" && link.to === "/#home")
+                  );
+                  return (
+                    <li key={link.to}>
+                      <HashLink to={link.to} smooth className={`font-bold py-3 ${isActive ? "bg-primary/10 text-primary" : ""}`}>
+                        <Icon icon={link.icon} className={`w-5 h-5 ${isActive ? "text-primary" : "opacity-60"}`} />
+                        {link.text}
+                      </HashLink>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
-          )}
-
-          {/* Hamburger Menu (Hanya di mobile) */}
-          <div className="dropdown dropdown-end lg:hidden ml-1">
-            <label tabIndex={0} className="btn btn-ghost px-2">
-              <Icon icon="solar:hamburger-menu-bold" className="w-6 h-6" />
-            </label>
-            <ul
-              tabIndex={0}
-              className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 items-center"
-            >
-              {navLinks.map((link) => (
-                <li key={link.to} className="w-full">
-                  <HashLink
-                    to={link.to}
-                    smooth
-                    className={`flex items-center justify-center gap-2 py-2 w-full`}
-                  >
-                    <Icon icon={link.icon} className="w-4 h-4" />
-                    {link.text}
-                  </HashLink>
-                </li>
-              ))}
-            </ul>
           </div>
         </div>
-      </div>
-    </nav>
+      </header>
+    </div>
   );
 }
 

@@ -69,12 +69,11 @@ function DashboardBeranda() {
     { name: "Edit History", path: "/dashboard/configuration", icon: "mdi:timeline-text-outline", count: (historyData.education?.length || 0) + (historyData.experience?.length || 0), colorClass: "info" },
   ];
 
-  // Helper Warna Chart (Hanya pake Variable CSS, Recharts lebih suka ini)
   const chartData = [
-    { name: "Proyek", total: projects.length, color: "var(--p)" },
-    { name: "Sertifikat", total: sertifikatData.length, color: "var(--s)" },
-    { name: "History", total: (historyData.education?.length || 0) + (historyData.experience?.length || 0), color: "var(--a)" },
-    { name: "Skills", total: skillsData.hardSkills.length, color: "var(--n)" },
+    { name: "Proyek", total: projects.length, color: "var(--color-error)" },
+    { name: "Sertifikat", total: sertifikatData.length, color: "var(--color-primary)" },
+    { name: "History", total: (historyData.education?.length || 0) + (historyData.experience?.length || 0), color: "var(--color-accent)" },
+    { name: "Skills", total: (skillsData.hardSkills?.length || 0), color: "var(--color-info)" },
   ];
 
   const CustomTooltip = ({ active, payload }) => {
@@ -104,7 +103,6 @@ function DashboardBeranda() {
       </div>
 
       <div className="space-y-10">
-        {/* Quick Links Section */}
         <div className="space-y-6">
           <h2 className="text-xl font-black uppercase tracking-[0.2em] text-base-content/40 ml-2">Navigasi Cepat</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -117,24 +115,24 @@ function DashboardBeranda() {
                   to={link.path}
                   className="group relative card bg-base-100 border border-base-content/20 shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-500 rounded-3xl overflow-hidden"
                 >
-                  <div className={`absolute -top-6 -right-6 w-20 h-20 bg-${link.colorClass}/10 rounded-full transition-all duration-700 group-hover:scale-[3] group-hover:opacity-20`}></div>
+                  <div className={`absolute -top-6 -right-6 w-20 h-20 bg-${link.colorClass}/10 rounded-full transition-all duration-700 scale-[3] opacity-20 lg:scale-100 lg:opacity-10 lg:group-hover:scale-[3] lg:group-hover:opacity-20`}></div>
 
                   <div className="card-body p-8 relative z-10">
                     <div className="flex justify-between items-center">
-                      <div className={`text-${link.colorClass} transition-transform duration-500 group-hover:scale-110`}>
+                      <div className={`text-${link.colorClass} transition-transform duration-500 lg:group-hover:scale-110`}>
                         <Icon icon={link.icon} className="w-10 h-10" />
                       </div>
                       {link.count !== null && (
-                        <span className="text-4xl font-black opacity-20 group-hover:opacity-100 transition-opacity duration-500">
+                        <span className="text-4xl font-black opacity-100 lg:opacity-20 lg:group-hover:opacity-100 transition-opacity duration-500">
                           {link.count}
                         </span>
                       )}
                     </div>
                     <div className="mt-8">
-                      <h3 className="text-xs font-black uppercase tracking-widest text-base-content/60 group-hover:text-base-content transition-colors">
+                      <h3 className="text-xs font-black uppercase tracking-widest text-base-content lg:text-base-content/60 lg:group-hover:text-base-content transition-colors">
                         {link.name}
                       </h3>
-                      <div className={`h-1.5 w-8 bg-${link.colorClass} mt-3 rounded-full transition-all duration-500 group-hover:w-full`}></div>
+                      <div className={`h-1.5 w-full lg:w-8 bg-${link.colorClass} mt-3 rounded-full transition-all duration-500 lg:group-hover:w-full`}></div>
                     </div>
                   </div>
                 </Link>
@@ -153,7 +151,7 @@ function DashboardBeranda() {
                 </div>
               ) : (
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+                  <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 15 }}>
                     <CartesianGrid
                       strokeDasharray="3 3"
                       vertical={false}
@@ -183,7 +181,7 @@ function DashboardBeranda() {
                       animationDuration={2000}
                     >
                       {chartData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={`hsl(var(${entry.color}))`} />
+                        <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Bar>
                   </BarChart>

@@ -193,7 +193,7 @@ function EditHistory() {
                           <div className="text-xs font-bold text-primary">{item.years}</div>
                         </div>
                       </div>
-                      <div className="flex gap-1 align-top opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex gap-1 align-top opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity mt-2 lg:mt-0">
                         <button className="btn btn-square btn-xs btn-warning" onClick={() => handleEdit(item, section)}><Icon icon="mdi:pencil" /></button>
                         <button className="btn btn-square btn-xs btn-error" onClick={() => handleDelete(item._id, section)}><Icon icon="mdi:delete" /></button>
                       </div>

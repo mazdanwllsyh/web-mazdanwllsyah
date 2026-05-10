@@ -8,7 +8,7 @@ const defaultImageUrl =
 const siteUrl = "https://mazdaweb.bejalen.com";
 
 const pageTitles = {
-  "/": "Mazda N. Portofolio",
+  "/": "Mazda Nawallsyah's Web",
   "/tentang": "Tentang Saya",
   "/sertifikasi": "Sertifikat yang dimiliki",
   "/donasi": "Donasi Yuk",
@@ -60,7 +60,7 @@ function SeoHelmet({ title, description, imageUrl, url }) {
       baseDesc = firstSentence ? firstSentence + "." : `Portofolio ${siteData.brandName}.`;
     }
 
-    return `${baseDesc} Fresh Graduate S1 - Teknik Informatika USM. Dikenal sebagai Mazda Nawallsyah or Milord de Rafford a.k.a Mazda Bejalen.`;
+    return `${baseDesc} Wisudawan S1 - Teknik Informatika USM 74. Dikenal sebagai Mazda Nawallsyah or Milord de Rafford a.k.a Mazda Bejalen.`;
   }, [description, siteData, pathname]);
 
   const pageImage = imageUrl || defaultImageUrl;
@@ -84,7 +84,7 @@ function SeoHelmet({ title, description, imageUrl, url }) {
     "@context": "https://schema.org",
     "@type": "Person",
     "name": siteData.brandNameShort,
-    "alternateName": ["Nawallsyah", "Milord de Rafford", "Mas mas Ambarawa", "Mazda Bejalen"],
+    "alternateName": ["Nawallsyah", "Milord de Rafford", "Rafford", "Mas mas Ambarawa", "Mazda Bejalen"],
     "identifier": "G.211.21.0082",
     "jobTitle": siteData.jobTitle,
     "image": pageImage,
@@ -106,7 +106,6 @@ function SeoHelmet({ title, description, imageUrl, url }) {
       <link rel="canonical" href={canonicalUrl} />
       <meta name="robots" content="index, follow" />
 
-      {/* Open Graph */}
       <meta property="og:type" content="profile" />
       <meta property="og:title" content={pageTitle} />
       <meta property="og:description" content={dynamicDescription} />
