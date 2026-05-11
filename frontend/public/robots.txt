@@ -1,14 +1,12 @@
-# https://www.robotstxt.org/robotstxt.html
 User-agent: *
+Allow: /
 
-# Izinkan semua halaman (default)
-Disallow:
-
+# Blokir halaman sistem/auth agar tidak terindeks Google
 Disallow: /dashboard/
 Disallow: /profil/
 Disallow: /signin/
 Disallow: /signup/
 Disallow: /verifikasi/
 
-# Tunjukkan lokasi Sitemap
+# Peta Situs
 Sitemap: https://mazdaweb.bejalen.com/sitemap.xml
