@@ -7,13 +7,23 @@ const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.03 }
+    transition: {
+      staggerChildren: 0.15, 
+      delayChildren: 0.2     
+    }
   }
 };
 
 const itemVariants = {
-  hidden: { y: 15, opacity: 0 },
-  visible: { y: 0, opacity: 1, transition: { duration: 0.4, ease: "easeOut" } }
+  hidden: { y: 30, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.8, 
+      ease: [0.25, 0.1, 0.25, 1] 
+    }
+  }
 };
 
 const getLevelPercentage = (level) => {
@@ -51,7 +61,7 @@ function Skills() {
 
   return (
     <div
-      className="bg-base-100 min-h-[auto] lg:min-h-screen flex flex-col items-center justify-center py-16 lg:py-0 scroll-mt-9 lg:scroll-mt-14"
+      className="bg-base-100 min-h-[auto] lg:min-h-screen flex flex-col items-center justify-center py-16 lg:py-0 scroll-mt-8 lg:scroll-mt-12"
       id="skills"
     >
       <div className="w-full max-w-6xl mx-auto px-0 lg:px-4">
@@ -122,7 +132,7 @@ function Skills() {
                 <motion.div
                   key={index}
                   variants={itemVariants}
-                  whileHover={{ x: 5 }} 
+                  whileHover={{ x: 5 }}
                   whileTap={{ scale: 0.95 }}
                   tabIndex={0}
                   className="flex items-center gap-2 p-4 rounded-2xl bg-base-200 border border-base-content/10 hover:border-secondary focus:border-secondary transition-all duration-300 shadow-sm cursor-pointer group"

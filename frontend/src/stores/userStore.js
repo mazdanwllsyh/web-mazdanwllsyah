@@ -34,7 +34,13 @@ export const useUserStore = create(
         set({ isUserLoading: true });
         try {
           const response = await instance.get("/users/getuser");
-          set({ user: response.data.user, isUserLoading: false });
+
+          if (!response.data.user) {
+            get().logout();
+            set({ isUserLoading: false });
+          } else {
+            set({ user: response.data.user, isUserLoading: false });
+          }
         } catch (error) {
           get().logout();
           set({ isUserLoading: false });

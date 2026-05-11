@@ -20,7 +20,7 @@ const refreshAuthToken = async (oldToken) => {
 
   const cookieOptions = getCookieOptions();
   cookieOptions.expires = new Date(
-    Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+    Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
   );
 
   user.sessionExpiresAt = decodedNew.exp * 1000;
@@ -35,7 +35,12 @@ const refreshAuthToken = async (oldToken) => {
 export const protectedMiddleware = asyncHandler(async (req, res, next) => {
   let token = req.cookies.jwt;
 
+  const isAuthCheck =
+    req.originalUrl.includes("/getuser") || req.originalUrl.includes("/logout");
+
   if (!token) {
+    if (isAuthCheck) return res.status(200).json({ user: null });
+
     res.status(401);
     throw new Error("Tidak terotentikasi, tidak ada token.");
   }
@@ -45,6 +50,7 @@ export const protectedMiddleware = asyncHandler(async (req, res, next) => {
     const user = await User.findById(decoded.id).select("-password");
 
     if (!user || user.sessionTokenId !== decoded.sessionId) {
+      if (isAuthCheck) return res.status(200).json({ user: null });
       res.status(401);
       throw new Error("Tidak terotentikasi, sesi tidak valid.");
     }
@@ -52,6 +58,8 @@ export const protectedMiddleware = asyncHandler(async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
+    if (isAuthCheck) return res.status(200).json({ user: null });
+
     if (error.name === "TokenExpiredError") {
       res.status(401);
       throw new Error("Sesi telah berakhir. Silakan login kembali.");
@@ -88,7 +96,7 @@ export const roleMiddleware = (...roles) => {
     if (!req.user || !roles.includes(req.user.role)) {
       res.status(403);
       throw new Error(
-        `Akses ditolak. Peran Anda bukan ${roles.join(" atau ")}.`
+        `Akses ditolak. Peran Anda bukan ${roles.join(" atau ")}.`,
       );
     }
     next();

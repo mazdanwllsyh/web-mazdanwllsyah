@@ -35,8 +35,8 @@ function Header() {
       }`}>
       <header
         className={`mx-auto transition-all duration-500 ease-in-out ${isScrolled
-            ? "w-[92%] md:w-[88%] lg:w-[85%] max-w-7xl rounded-full border border-base-content/10 bg-base-100/70 backdrop-blur-md shadow-lg py-2 px-6 mt-4"
-            : "w-[92%] md:w-[88%] lg:w-[85%] max-w-7xl bg-transparent py-4 px-2"
+          ? "w-[92%] md:w-[88%] lg:w-[85%] max-w-7xl rounded-full border border-base-content/10 bg-base-100/70 backdrop-blur-md shadow-lg py-2 px-6 mt-3"
+          : "w-[92%] md:w-[88%] lg:w-[85%] max-w-7xl bg-transparent py-4 px-2"
           }`}
       >
         <div className="flex items-center justify-between">
@@ -68,7 +68,7 @@ function Header() {
                   smooth
                   className={`px-5 py-2 rounded-full text-sm font-bold transition-all duration-300 ${isActive
                     ? "bg-primary text-primary-content shadow-md shadow-primary/20 scale-105"
-                    : "text-base-content/70 hover:bg-primary/10 hover:text-primary"
+                    : "text-base-content hover:bg-primary/10 hover:text-primary"
                     }`}
                 >
                   {link.text}

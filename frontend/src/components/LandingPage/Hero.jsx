@@ -15,6 +15,29 @@ const socialLinkConfig = [
   { key: "telegram", label: "Telegram", icon: "mdi:telegram", baseUrl: "https://t.me/" },
 ];
 
+const textContainerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.35, 
+      delayChildren: 0.4,    
+    }
+  }
+};
+
+const textItemVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 1.2, 
+      ease: [0.25, 0.1, 0.25, 1] 
+    }
+  }
+};
+
 function Hero() {
   const siteData = useSiteStore((state) => state.siteData);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -88,7 +111,7 @@ function Hero() {
                 decoding="sync"
                 width="384"
                 height="384"
-                className={`w-full h-full object-cover transition-all duration-500 ease-in-out cursor-pointer ${imageLoaded ? "opacity-100 lg:group-hover:scale-110" : "opacity-0"}`}
+                className={`w-full h-full object-cover transition-all duration-1000 ease-in-out cursor-pointer ${imageLoaded ? "opacity-100 lg:group-hover:scale-110" : "opacity-0"}`}
                 onLoad={() => setImageLoaded(true)}
                 onError={(e) => { e.target.src = "/default-avatar.png"; }}
               />
@@ -101,7 +124,7 @@ function Hero() {
               className={`absolute ${tech.position} bg-base-300 p-2 lg:p-3 rounded-full shadow-lg`}
               initial={{ opacity: 0, scale: 0 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.4 + index * 0.1, duration: 0.5, type: "spring" }}
+              transition={{ delay: 0.6 + index * 0.15, duration: 1, type: "spring", bounce: 0.4 }}
             >
               <Icon icon={tech.icon} className="w-6 h-6 md:w-8 md:h-8 lg:w-10 lg:h-10 drop-shadow-lg" />
             </motion.div>
@@ -115,7 +138,8 @@ function Hero() {
                 className="flex flex-col space-y-4"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.5, duration: 0.6 }}
+                // Ikon sosial media desktop muncul paling akhir
+                transition={{ delay: 1.6, duration: 1, ease: "easeOut" }}
               >
                 {socialLinkConfig.filter((link) => availableLinks[link.key]).map((link) => (
                   <a key={link.key} href={link.baseUrl + availableLinks[link.key]} target="_blank" rel="noopener noreferrer" aria-label={link.label} className="text-base-content/70 hover:text-primary transition-colors duration-200">
@@ -144,19 +168,20 @@ function Hero() {
               </div>
             ) : (
               <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
+                variants={textContainerVariants}
+                initial="hidden"
+                animate="visible"
+                className="flex flex-col"
               >
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display tracking-tight">Mazda Nawallsyah</h1>
+                <motion.h1 variants={textItemVariants} className="text-4xl md:text-5xl lg:text-6xl font-bold font-display tracking-tight">Mazda Nawallsyah</motion.h1>
 
-                <div className="min-h-[32px] md:min-h-[40px] lg:min-h-[48px] flex items-center justify-center lg:justify-start mt-2">
+                <motion.div variants={textItemVariants} className="min-h-[32px] md:min-h-[40px] lg:min-h-[48px] flex items-center justify-center lg:justify-start mt-2">
                   {isAnimationReady ? (
                     <TypeAnimation
                       key={rawSequence}
                       sequence={dynamicSequence}
                       wrapper="span"
-                      speed={17}
+                      speed={9}
                       className="text-2xl md:text-3xl lg:text-4xl font-semibold"
                       repeat={Infinity}
                     />
@@ -165,20 +190,18 @@ function Hero() {
                       ...
                     </span>
                   )}
-                </div>
+                </motion.div>
 
-                <div className="divider before:bg-base-content/20 after:bg-base-content/20 lg:hidden my-6"></div>
-                <div className="hidden lg:block h-1.5 w-32 bg-accent my-6 rounded-full"></div>
+                <motion.div variants={textItemVariants}>
+                  <div className="divider before:bg-base-content/20 after:bg-base-content/20 lg:hidden my-6"></div>
+                  <div className="hidden lg:block h-1.5 w-32 bg-accent my-6 rounded-full"></div>
+                </motion.div>
 
-                <p className="py-4 lg:py-6 text-base md:text-lg lg:text-xl text-base-content/80 text-justify min-h-[80px] leading-relaxed">
+                <motion.p variants={textItemVariants} className="py-4 lg:py-6 text-base md:text-lg lg:text-xl text-base-content/80 text-justify min-h-[80px] leading-relaxed">
                   {displayParagraph}
-                </p>
+                </motion.p>
 
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.6, duration: 0.5 }}
-                >
+                <motion.div variants={textItemVariants}>
                   <Link tabIndex={0} to="/tentang" className="btn btn-lg bg-base-300 font-display border-neutral border-2 shadow-lg group rounded-2xl lg:px-8">
                     Tentang Saya?
                     <Icon icon="streamline-flex:finger-snapping" className="w-6 h-6 ml-1 group-hover:scale-110 transition-transform" focusable="false" />
@@ -186,10 +209,8 @@ function Hero() {
                 </motion.div>
 
                 <motion.div
+                  variants={textItemVariants}
                   className="flex sm:hidden space-x-5 mt-8 justify-center min-h-[24px]"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.7 }}
                 >
                   {socialLinkConfig.filter((link) => availableLinks[link.key]).map((link) => (
                     <a key={link.key} href={link.baseUrl + availableLinks[link.key]} target="_blank" rel="noopener noreferrer" aria-label={link.label} className="text-base-content/70 hover:text-primary transition-colors duration-200">

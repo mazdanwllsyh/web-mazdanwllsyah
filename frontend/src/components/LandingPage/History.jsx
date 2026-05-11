@@ -115,7 +115,7 @@ function History() {
 
   return (
     <div
-      className="bg-base-100 min-h-[auto] lg:min-h-screen flex flex-col items-center justify-center py-16 lg:py-0 scroll-mt-16 lg:scroll-mt-24"
+      className="bg-base-100 min-h-[auto] lg:min-h-screen flex flex-col items-center justify-center py-16 lg:py-0 scroll-mt-12 lg:scroll-mt-24 text-base-content"
       id="histori"
     >
       <script type="application/ld+json">
@@ -141,10 +141,10 @@ function History() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
         >
           <button
-            className={`tab tab-lg tab-bordered bg-base-200 border-primary mx-2 rounded-lg font-bold ${activeTab === "pendidikan" ? "tab-active text-primary" : ""
+            className={`tab tab-lg tab-bordered bg-base-200 border-primary mx-2 rounded-lg font-bold ${activeTab === "pendidikan" ? "tab-active border-3 shadow-md border-primary" : ""
               }`}
             onClick={() => {
               setActiveTab("pendidikan");
@@ -155,7 +155,7 @@ function History() {
             Pendidikan
           </button>
           <button
-            className={`tab tab-lg tab-bordered bg-base-200 border-primary mx-2 rounded-lg font-bold ${activeTab === "pengalaman" ? "tab-active text-primary" : ""
+            className={`tab tab-lg tab-bordered bg-base-200 border-primary mx-2 rounded-lg font-bold ${activeTab === "pengalaman" ? "tab-active border-3 shadow-md border-primary" : ""
               }`}
             onClick={() => {
               setActiveTab("pengalaman");

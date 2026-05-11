@@ -129,24 +129,26 @@ function About() {
   };
 
   return (
-    <div
-      className="bg-base-100 min-h-[auto] lg:min-h-screen flex flex-col items-center justify-center py-12 lg:py-0 scroll-mt-8 lg:scroll-mt-12 text-base-content"
-      id="tentang"
-    >
+    <div className="bg-base-100 min-h-[auto] lg:min-h-screen flex flex-col items-center justify-center py-12 lg:py-0 scroll-mt-8 lg:scroll-mt-12 text-base-content" id="tentang">
       <SeoHelmet />
 
       <div className="w-full max-w-6xl mx-auto px-4 lg:px-4">
-        <motion.div
-          className="flex flex-col items-center lg:grid lg:grid-cols-2 lg:gap-10 lg:items-center"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-        >
-          <motion.div variants={itemVariants} className="py-8 flex flex-col items-center lg:items-start order-2 lg:order-none lg:col-start-1 lg:row-start-1 lg:row-span-3">
-            {loading ? (
-              <PhotoSkeleton />
-            ) : (
+        {loading ? (
+          <div className="flex flex-col items-center lg:grid lg:grid-cols-2 lg:gap-10 lg:items-center w-full">
+            <div className="py-8 flex flex-col items-center lg:items-start order-2 lg:order-none lg:col-start-1 lg:row-start-1 lg:row-span-3 w-full"><PhotoSkeleton /></div>
+            <div className="w-full order-1 lg:order-none lg:col-start-2 text-center lg:text-left"><TextSkeleton /></div>
+            <div className="w-full order-3 lg:order-none lg:col-start-2 text-center lg:text-left"><ParagraphSkeleton /></div>
+            <div className="flex justify-center items-center order-4 lg:hidden mt-2 w-full"><ButtonSkeleton /></div>
+            <div className="w-full order-5 lg:order-none lg:col-start-2 mt-2"><StatsSkeleton /></div>
+          </div>
+        ) : (
+          <motion.div
+            className="flex flex-col items-center lg:grid lg:grid-cols-2 lg:gap-10 lg:items-center"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            <motion.div variants={itemVariants} className="py-8 flex flex-col items-center lg:items-start order-2 lg:order-none lg:col-start-1 lg:row-start-1 lg:row-span-3">
               <div className="relative w-64 h-80 md:w-80 md:h-96">
                 {profileImages.length > 2 && (
                   <div className="card absolute inset-0 bg-base-300 shadow-xl transform -rotate-6 translate-x-2 translate-y-4 overflow-hidden border border-base-content/30 rounded-2xl transition-transform duration-700 hover:-rotate-12">
@@ -170,42 +172,28 @@ function About() {
                   </div>
                 )}
               </div>
-            )}
-          </motion.div>
+            </motion.div>
 
-          <motion.div variants={itemVariants} className="w-full order-1 lg:order-none lg:col-start-2 text-center lg:text-left">
-            {loading ? (
-              <TextSkeleton />
-            ) : (
+            <motion.div variants={itemVariants} className="w-full order-1 lg:order-none lg:col-start-2 text-center lg:text-left">
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display tracking-tight mb-2">
                 Tentang Saya
               </h2>
-            )}
-          </motion.div>
+            </motion.div>
 
-          <motion.div variants={itemVariants} className="w-full order-3 lg:order-none lg:col-start-2 text-center lg:text-left">
-            {loading ? (
-              <ParagraphSkeleton />
-            ) : (
+            <motion.div variants={itemVariants} className="w-full order-3 lg:order-none lg:col-start-2 text-center lg:text-left">
               <p className="py-4 lg:py-6 text-base md:text-lg text-base-content/80 text-justify leading-relaxed break-words">
                 {siteData.aboutParagraph || "Paragraf tentang Saya akan muncul di sini."}
               </p>
-            )}
-          </motion.div>
+            </motion.div>
 
-          <motion.div variants={itemVariants} className="flex justify-center items-center order-4 lg:hidden mt-2">
-            {loading ? (
-              <ButtonSkeleton />
-            ) : (
+            <motion.div variants={itemVariants} className="flex justify-center items-center order-4 lg:hidden mt-2">
               <HashLink to="/sertifikasi" className="btn btn-secondary rounded-2xl shadow-lg group flex lg:hidden px-8">
                 Sertifikasi Saya
                 <Icon icon="mdi:arrow-right" className="w-5 h-5 ml-1 group-hover:translate-x-1 transition-transform" />
               </HashLink>
-            )}
-          </motion.div>
+            </motion.div>
 
-          <motion.div variants={itemVariants} className="w-full order-5 lg:order-none lg:col-start-2 mt-2">
-            {loading ? <StatsSkeleton /> : (
+            <motion.div variants={itemVariants} className="w-full order-5 lg:order-none lg:col-start-2 mt-2">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
                 {stats.map((stat) => (
                   <motion.div
@@ -228,10 +216,10 @@ function About() {
                   </motion.div>
                 ))}
               </div>
-            )}
-          </motion.div>
+            </motion.div>
 
-        </motion.div>
+          </motion.div>
+        )}
       </div>
     </div>
   );

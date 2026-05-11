@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { Icon } from "@iconify/react";
-import { usePortfolioStore } from "../../stores/portfolioStore";
+import { usePortfolioStore, initialHardSkills } from "../../stores/portfolioStore";
 import { useCustomToast } from "../../hooks/useCustomToast";
 import FloatingLabelInput from "../FloatingLabelInput";
 import { TableContainer, THead, TRow, TCell, TableFooter } from "../StylingTable";
@@ -47,7 +47,7 @@ function EditSkills() {
     setCurrentPage(1);
   }, [searchTerm]);
 
-  const masterSkillList = skillsData.masterHardSkills || [];
+  const masterSkillList = initialHardSkills;
 
   const skillTableData = useMemo(() => {
     const filteredMasterList = masterSkillList.filter((skill) =>

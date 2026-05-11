@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import instance from "../utils/axios";
 
-const initialHardSkills = [
+export const initialHardSkills = [
   { id: 1, icon: "logos:html-5", name: "HTML" },
   { id: 2, icon: "logos:css-3", name: "CSS" },
   { id: 3, icon: "logos:javascript", name: "JavaScript" },
@@ -274,7 +274,10 @@ export const usePortfolioStore = create(
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         historyData: state.historyData,
-        skillsData: state.skillsData,
+        skillsData: {
+          hardSkills: state.skillsData.hardSkills,
+          softSkills: state.skillsData.softSkills,
+        },
       }),
     },
   ),

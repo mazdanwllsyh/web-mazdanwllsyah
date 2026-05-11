@@ -13,19 +13,29 @@ const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.1 }
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.2
+    }
   }
 };
 
 const itemVariants = {
   hidden: { y: 30, opacity: 0 },
-  visible: { y: 0, opacity: 1, transition: { duration: 0.5, ease: "easeOut" } }
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.8,
+      ease: [0.25, 0.1, 0.25, 1]
+    }
+  }
 };
 
 const SertifikasiSkeleton = ({ count = 3 }) => (
   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl mx-auto hover:cursor-wait">
     {Array.from({ length: count }).map((_, index) => (
-      <div key={index} className="card bg-base-200 border border-base-content/10 shadow-xl overflow-hidden rounded-3xl">
+      <div key={index} className="card bg-base-200 border border-base-content/40 shadow-xl overflow-hidden rounded-3xl">
         <div className="skeleton h-auto aspect-[849/600] w-full rounded-none"></div>
         <div className="card-body p-6 space-y-3">
           <div className="skeleton h-6 w-3/4"></div>
@@ -144,9 +154,8 @@ function Sertifikasi() {
           <motion.div
             className="text-center mb-12"
             initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
           >
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-2 tracking-tight">
               Sertifikasi
@@ -160,9 +169,8 @@ function Sertifikasi() {
             <motion.div
               className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-10 w-full"
               initial={{ opacity: 0, y: -20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
             >
               <div className="order-2 md:order-1 flex justify-center md:justify-start w-full md:w-auto">
                 <PaginationComponent />
@@ -175,7 +183,7 @@ function Sertifikasi() {
                     className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-base-content/50 pointer-events-none z-10"
                   />
                   <select
-                    className="select select-bordered w-full pl-10 rounded-2xl bg-base-200/50 cursor-pointer focus:bg-base-100 transition-colors"
+                    className="select select-bordered w-full pl-10 rounded-2xl bg-base-200 cursor-pointer focus:bg-base-100 transition-colors"
                     value={activeCategory}
                     onChange={(e) => setActiveCategory(e.target.value)}
                     aria-label="Filter Kategori"
@@ -220,7 +228,7 @@ function Sertifikasi() {
                   whileHover={{ y: -5 }}
                   whileTap={{ scale: 0.95 }}
                   tabIndex={0}
-                  className="card bg-base-200 border border-base-content/10 shadow-lg overflow-hidden group transition-all duration-300 hover:border-primary hover:shadow-xl hover:shadow-primary/5 rounded-3xl cursor-pointer focus:outline-none focus:border-primary"
+                  className="card bg-base-200 border border-base-content/40 shadow-lg overflow-hidden group transition-all duration-300 hover:border-primary hover:shadow-xl hover:shadow-primary/5 rounded-3xl cursor-pointer focus:outline-none focus:border-primary"
                   onClick={() => handleOpenModal(cert)}
                 >
                   <figure className="relative aspect-[849/600] w-full overflow-hidden border-b border-base-content/10 bg-base-300">
@@ -279,7 +287,7 @@ function Sertifikasi() {
 
                 if (isPdf) {
                   return (
-                    <div className="w-full h-[60vh] sm:h-[75vh] bg-white rounded-xl overflow-hidden shadow-lg border border-base-content/10">
+                    <div className="w-full h-[60vh] sm:h-[75vh] bg-white rounded-xl overflow-hidden shadow-lg border border-base-content/40">
                       <Worker workerUrl={workerUrl}>
                         <div style={{ height: "100%", width: "100%" }}>
                           <Viewer fileUrl={fileToShow} plugins={[defaultLayoutPluginInstance]} theme={themeMode} defaultScale={1} />
@@ -289,7 +297,7 @@ function Sertifikasi() {
                   );
                 } else {
                   return (
-                    <img src={fileToShow} alt={selectedCert.title} className="w-full h-auto max-h-[70vh] object-contain mx-auto rounded-xl shadow-lg border border-base-content/10 bg-white" />
+                    <img src={fileToShow} alt={selectedCert.title} className="w-full h-auto max-h-[70vh] object-contain mx-auto rounded-xl shadow-lg border border-base-content/40 bg-white" />
                   );
                 }
               })()

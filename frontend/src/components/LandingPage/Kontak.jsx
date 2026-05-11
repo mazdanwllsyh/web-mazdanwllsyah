@@ -90,7 +90,7 @@ function Kontak() {
 
   return (
     <div
-      className="bg-base-100 min-h-[auto] my-12 lg:min-h-screen flex flex-col items-center justify-center py-16 lg:py-0 scroll-mt-16 lg:scroll-mt-24 text-base-content"
+      className="bg-base-100 min-h-[auto] my-12 lg:min-h-screen flex flex-col items-center justify-center py-8 lg:py-12 scroll-mt-14 lg:scroll-mt-18 text-base-content"
       id="kontak"
     >
       <div className="w-full max-w-6xl mx-auto px-4">
