@@ -42,7 +42,7 @@ function Header() {
         <div className="flex items-center justify-between">
           <div className="flex-1">
             <a href="/" className="flex items-center gap-2 group w-fit">
-              <div className={`rounded-xl bg-primary text-primary-content flex items-center justify-center font-black transition-all duration-500 ${isScrolled ? "w-8 h-8 text-sm" : "w-10 h-10 text-lg"
+              <div className={`rounded-2xl bg-gradient-to-br from-accent to-primary text-primary-content flex items-center justify-center font-black transition-all duration-500 ${isScrolled ? "w-8 h-8 text-sm" : "w-10 h-10 text-lg"
                 }`}>
                 {siteData?.brandName?.charAt(0) || "M"}
               </div>
