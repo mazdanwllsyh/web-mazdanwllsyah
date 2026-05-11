@@ -4,8 +4,6 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App.jsx";
 import "./index.css";
 import "./App.css";
-import AOS from "aos";
-import "aos/dist/aos.css";
 import { Toaster } from "react-hot-toast";
 
 import "@react-pdf-viewer/core/lib/styles/index.css";

@@ -18,8 +18,8 @@ function Beranda() {
   return (
     <>
       <SeoHelmet
-        title="Portofolio Website - Mazda Nawallsyah (Newbie Front-End Developer)"
-        description="Portofolio pribadi Mazda Nawallsyah, seorang Mahasiswa Fresh Graduate Universitas Prodi S1 - Teknik Informatika, yang berminat dan berfokus di Bidang Front-End Web Developer."
+        title="Mazda Nawallsyah (Newbie Front-End Developer)"
+        description="Portofolio Resmi pribadi Mazda Nawallsyah, seorang Wisudawan Universitas Semarang Prodi S1 - Teknik Informatika, yang berminat dan berfokus di Bidang Front-End Web Developer."
         url="/"
       />
 

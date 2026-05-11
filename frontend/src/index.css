@@ -48,6 +48,10 @@
   }
 }
 
+.swal2-container { 
+  z-index: 9999999 !important; 
+}
+
 .animate-enter {
   animation: toast-enter 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; 
 }

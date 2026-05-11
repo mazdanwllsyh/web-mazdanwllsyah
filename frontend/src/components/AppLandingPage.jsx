@@ -1,10 +1,9 @@
-import React, { useEffect, useRef, Suspense, lazy } from "react";
+import React, { useEffect, useState, Suspense, lazy } from "react";
 import { Routes, Route, useLocation, Navigate, Outlet } from "react-router-dom";
 import Header from "../components/LandingPage/Header";
 import ProtectedRoute from "../routes/ProtectedRoute";
 import { useSiteStore } from "../stores/siteStore";
 import { useAuth } from "../hooks/useAuth";
-import AOS from "aos"; 
 
 import Beranda from "../components/LandingPage/Beranda";
 
@@ -36,8 +35,10 @@ const PublicOnlyWrapper = () => {
 function AppLandingPage() {
   const location = useLocation();
   const fetchSiteData = useSiteStore((state) => state.fetchSiteData);
-  const { checkUserSession } = useAuth();
-  const aosInitCalled = useRef(false);
+  const isSiteDataLoading = useSiteStore((state) => state.isSiteDataLoading);
+  const { checkUserSession, isUserLoading } = useAuth();
+
+  const [showContent, setShowContent] = useState(false);
 
   useEffect(() => {
     fetchSiteData();
@@ -45,57 +46,67 @@ function AppLandingPage() {
   }, [fetchSiteData, checkUserSession]);
 
   useEffect(() => {
+    if (!isSiteDataLoading && !isUserLoading) {
+      const timer = setTimeout(() => {
+        setShowContent(true);
+      }, 600);
+      return () => clearTimeout(timer);
+    } else {
+      setShowContent(false);
+    }
+  }, [isSiteDataLoading, isUserLoading]);
+
+  useEffect(() => {
+    if (!showContent) return;
     const hash = location.hash;
-    const scrollTimer = setTimeout(() => {
-      if (hash) {
+
+    if (hash) {
+      const scrollTimer = setTimeout(() => {
         const id = hash.replace("#", "");
         const element = document.getElementById(id);
         if (element) {
           element.scrollIntoView({ behavior: "smooth", block: "start" });
         }
-      } else {
-        window.scrollTo({ top: 0, behavior: "instant" });
-      }
-    }, 1600);
-    return () => clearTimeout(scrollTimer);
-  }, [location.hash, location.pathname]);
-
-  useEffect(() => {
-    if (!aosInitCalled.current) {
-      aosInitCalled.current = true;
-      AOS.init({ duration: 800, once: true, offset: 50 });
+      }, 300);
+      return () => clearTimeout(scrollTimer);
+    } else {
+      window.scrollTo({ top: 0, behavior: "instant" });
     }
-    setTimeout(() => AOS.refresh(), 1600);
-  }, []);
+  }, [location.hash, location.pathname, showContent]);
 
   return (
     <div className="flex flex-col min-h-screen overflow-x-hidden">
-      <Header />
-      <main className="flex-grow pt-24 pb-16 w-full flex flex-col items-center">
-        <div className="w-[92%] md:w-[88%] lg:w-[85%] max-w-7xl">
-          <Suspense fallback={null}>
-            <Routes>
-              <Route element={<PublicOnlyWrapper />}>
-                <Route path="signin" element={<LoginPage />} />
-                <Route path="signup" element={<RegisterPage />} />
-                <Route path="verifikasi" element={<VerificationPage />} />
-              </Route>
+      {showContent && (
+        <>
+          <Header />
 
-              <Route index element={<Beranda />} />
-              <Route path="tentang" element={<About />} />
-              <Route path="sertifikasi" element={<Sertifikasi />} />
-              <Route path="donasi" element={<Donasi />} />
-              <Route path="*" element={<NotFoundRedirect />} />
+          <main className="flex-grow pt-24 pb-16 w-full flex flex-col items-center">
+            <div className="w-[92%] md:w-[88%] lg:w-[85%] max-w-7xl">
+              <Suspense fallback={null}>
+                <Routes key={location.pathname}>
+                  <Route element={<PublicOnlyWrapper />}>
+                    <Route path="signin" element={<LoginPage />} />
+                    <Route path="signup" element={<RegisterPage />} />
+                    <Route path="verifikasi" element={<VerificationPage />} />
+                  </Route>
 
-              <Route element={<ProtectedRoute />}>
-                <Route path="profil" element={<Profile />} />
-              </Route>
-            </Routes>
-          </Suspense>
-        </div>
-      </main>
+                  <Route index element={<Beranda />} />
+                  <Route path="tentang" element={<About />} />
+                  <Route path="sertifikasi" element={<Sertifikasi />} />
+                  <Route path="donasi" element={<Donasi />} />
+                  <Route path="*" element={<NotFoundRedirect />} />
 
-      <Footer />
+                  <Route element={<ProtectedRoute />}>
+                    <Route path="profil" element={<Profile />} />
+                  </Route>
+                </Routes>
+              </Suspense>
+            </div>
+          </main>
+
+          <Footer />
+        </>
+      )}
     </div>
   );
 }

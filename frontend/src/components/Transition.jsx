@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSiteStore } from "../stores/siteStore";
 import SeoHelmet from "./SEOHelmet";
+import { motion, AnimatePresence } from "framer-motion";
 
 const fallbackImageUrl = "https://res.cloudinary.com/dk0yjrhvx/image/upload/v1759605657/member_photos/jbsfiyuahppa3nrckdk4.webp";
 
@@ -12,21 +13,16 @@ const transformCloudinaryUrl = (url, width, height) => {
 
 function Transition({ isLoading }) {
   const siteData = useSiteStore((state) => state.siteData);
-  const isSiteDataLoading = useSiteStore((state) => state.isSiteDataLoading);
-
   const [currentImageUrl, setCurrentImageUrl] = useState(null);
-  const [isVisible, setIsVisible] = useState(false);
-
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     if (isLoading) {
-      setIsVisible(true);
-      setProgress(0); 
+      setProgress(0);
 
       const interval = setInterval(() => {
         setProgress((prev) => {
-          if (prev >= 90) return prev; 
+          if (prev >= 90) return prev;
           return prev + 10;
         });
       }, 150);
@@ -43,46 +39,62 @@ function Transition({ isLoading }) {
       };
 
       return () => clearInterval(interval);
-
     } else {
       setProgress(100);
-      setTimeout(() => setIsVisible(false), 500);
     }
-  }, [isLoading, siteData, isSiteDataLoading]);
+  }, [isLoading, siteData]);
 
   return (
-    <div
-      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center transition-all duration-500 bg-base-100 ${isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
-    >
-      <SeoHelmet
-        title="Memuat Website..."
-        imageUrl={currentImageUrl || fallbackImageUrl}
-        url="/"
-      />
-
-      {!currentImageUrl ? (
-        <div className="animate-pulse my-4">
-          <div className="skeleton w-48 h-48 md:w-64 md:h-64 rounded-full shadow-lg"></div>
-        </div>
-      ) : (
-        <div className="my-4">
-          <img
-            src={currentImageUrl}
-            alt="Loading..."
-            width="256"
-            height="256"
-            className="w-48 h-48 md:w-64 md:h-64 rounded-full object-cover shadow-lg transition-transform duration-700 ease-in-out animate-[pulse_2s_infinite]"
+    <AnimatePresence>
+      {isLoading && (
+        <motion.div
+          initial={{ opacity: 1 }}
+          exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
+          transition={{ duration: 0.8, ease: "easeInOut" }}
+          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-base-100"
+        >
+          <SeoHelmet
+            title="Memuat Website..."
+            imageUrl={currentImageUrl || fallbackImageUrl}
+            url="/"
           />
-        </div>
-      )}
 
-      <progress
-        className="progress progress-primary w-56 mt-8 h-2"
-        value={progress}
-        max="100"
-      ></progress>
-    </div>
+          {!currentImageUrl ? (
+            <motion.div
+              animate={{ scale: [1, 1.05, 1], opacity: [0.5, 1, 0.5] }}
+              transition={{ repeat: Infinity, duration: 1.5 }}
+              className="my-4 skeleton w-48 h-48 md:w-64 md:h-64 rounded-full shadow-2xl"
+            />
+          ) : (
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              className="my-4 relative"
+            >
+              <motion.img
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                src={currentImageUrl}
+                alt="Loading..."
+                width="256"
+                height="256"
+                className="w-48 h-48 md:w-64 md:h-64 rounded-full object-cover shadow-2xl ring-4 ring-primary/30 ring-offset-4 ring-offset-base-100"
+              />
+            </motion.div>
+          )}
+
+          <div className="w-56 mt-8 h-2 bg-base-300 rounded-full overflow-hidden shadow-inner">
+            <motion.div
+              className="h-full bg-primary"
+              initial={{ width: 0 }}
+              animate={{ width: `${progress}%` }}
+              transition={{ ease: "linear", duration: 0.2 }}
+            ></motion.div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 

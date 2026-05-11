@@ -5,11 +5,12 @@ export function useCustomToast() {
   const defaultStyle = {
     background: "var(--color-base-100, oklch(var(--b1)))",
     color: "var(--color-base-content, oklch(var(--bc)))",
-    border: "1px solid var(--color-base-content, oklch(var(--bc) / 0.2))",
-    borderRadius: "1rem",
+    border: "2px solid var(--color-base-content, oklch(var(--bc) / 0.2))",
+    borderRadius: "1.5rem",
     padding: "16px",
     fontWeight: "600",
     boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+    zIndex: 9999999,
   };
 
   const showSuccessToast = useCallback((message, options = {}) => {

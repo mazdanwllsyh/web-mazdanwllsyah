@@ -258,7 +258,7 @@ function Sertifikasi() {
 
       <dialog
         id="sertifikasi_modal"
-        className="modal modal-bottom sm:modal-middle"
+        className="modal modal-middle"
         onClose={handleCloseModal}
       >
         <div className="modal-box w-full sm:w-11/12 max-w-5xl p-0 overflow-hidden bg-base-100 rounded-t-3xl sm:rounded-3xl relative">
@@ -272,27 +272,27 @@ function Sertifikasi() {
           </div>
 
           <div className="w-full bg-base-300/20 flex items-center justify-center p-4 sm:p-6 min-h-[40vh]">
-            {selectedCert && selectedCert.type === "image" && (
-              <img
-                src={selectedCert.fileUrl}
-                alt={selectedCert.title}
-                className="w-full h-auto max-h-[70vh] object-contain mx-auto rounded-xl shadow-lg border border-base-content/10 bg-white"
-              />
-            )}
+            {selectedCert && (
+              (() => {
+                const fileToShow = selectedCert.fileUrl || selectedCert.imageUrl;
+                const isPdf = selectedCert.type === "pdf" || fileToShow?.toLowerCase().includes(".pdf");
 
-            {selectedCert && selectedCert.type === "pdf" && (
-              <div className="w-full h-[60vh] sm:h-[75vh] bg-white rounded-xl overflow-hidden shadow-lg border border-base-content/10">
-                <Worker workerUrl={workerUrl}>
-                  <div style={{ height: "100%", width: "100%" }}>
-                    <Viewer
-                      fileUrl={selectedCert.fileUrl}
-                      plugins={[defaultLayoutPluginInstance]}
-                      theme={themeMode}
-                      defaultScale={1}
-                    />
-                  </div>
-                </Worker>
-              </div>
+                if (isPdf) {
+                  return (
+                    <div className="w-full h-[60vh] sm:h-[75vh] bg-white rounded-xl overflow-hidden shadow-lg border border-base-content/10">
+                      <Worker workerUrl={workerUrl}>
+                        <div style={{ height: "100%", width: "100%" }}>
+                          <Viewer fileUrl={fileToShow} plugins={[defaultLayoutPluginInstance]} theme={themeMode} defaultScale={1} />
+                        </div>
+                      </Worker>
+                    </div>
+                  );
+                } else {
+                  return (
+                    <img src={fileToShow} alt={selectedCert.title} className="w-full h-auto max-h-[70vh] object-contain mx-auto rounded-xl shadow-lg border border-base-content/10 bg-white" />
+                  );
+                }
+              })()
             )}
           </div>
         </div>

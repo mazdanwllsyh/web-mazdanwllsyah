@@ -14,7 +14,7 @@ const ModalDashboard = ({
     maxWidth = "max-w-2xl",
 }) => {
     return (
-        <dialog id={id} className="modal modal-bottom sm:modal-middle font-text">
+        <dialog id={id} className="modal modal-middle font-text">
             <div className={`modal-box sm:w-11/12 ${maxWidth} bg-base-100 border border-base-content/20 rounded-[2rem] p-0 overflow-hidden shadow-2xl`}>
                 <div className="p-6 border-b border-base-content/10 bg-base-200/50 flex items-center gap-3">
                     {icon && (

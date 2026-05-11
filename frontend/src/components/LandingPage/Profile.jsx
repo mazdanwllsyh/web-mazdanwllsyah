@@ -7,7 +7,6 @@ import { useSiteStore } from "../../stores/siteStore";
 import { useCustomToast } from "../../hooks/useCustomToast";
 import useCustomSwals from "../../hooks/useCustomSwals";
 import instance from "../../utils/axios";
-import AOS from "aos";
 import FloatingLabelInput, { FloatingLabelSelect } from "../FloatingLabelInput";
 
 const ProfileSkeleton = () => {
@@ -85,7 +84,7 @@ function Profile() {
         phone: user.phone || "",
         gender: user.gender || "",
       });
-      AOS.refresh();
+      // FIX: AOS.refresh() sudah dihapus dari sini
     }
   }, [user]);
 
@@ -201,7 +200,8 @@ function Profile() {
           url="/profil"
         />
         <div className="max-w-7xl mx-auto">
-          <div className="text-sm breadcrumbs mb-4" data-aos="fade-down">
+          {/* FIX: data-aos dihapus dari breadcrumbs */}
+          <div className="text-sm breadcrumbs mb-4">
             <ul>
               <li>
                 <Link to="/">Beranda</Link>
@@ -212,10 +212,8 @@ function Profile() {
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <div className="lg:col-span-4 mb-4 lg:mb-0 order-1 lg:order-1">
-              <div
-                className="card bg-base-100 shadow-md border border-base-content/20"
-                data-aos="fade-right"
-              >
+              {/* FIX: data-aos dihapus dari card Foto Profil */}
+              <div className="card bg-base-100 shadow-md border border-base-content/20">
                 <div className="card-body items-center text-center">
                   <h2 className="text-3xl font-bold font-display">
                     Foto Profil
@@ -300,10 +298,8 @@ function Profile() {
             </div>
 
             <div className="lg:col-span-8 order-2 lg:order-2">
-              <div
-                className="card bg-base-100 shadow-md border border-base-content/20"
-                data-aos="fade-left"
-              >
+              {/* FIX: data-aos dihapus dari card Data Diri */}
+              <div className="card bg-base-100 shadow-md border border-base-content/20">
                 <form
                   className="card-body"
                   onSubmit={(e) => e.preventDefault()}
