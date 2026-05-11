@@ -96,7 +96,7 @@ function Header() {
                 <ul tabIndex={0} className="mt-4 z-[1] p-2 shadow-2xl menu menu-md dropdown-content bg-base-100 rounded-2xl w-64 border border-base-content/10 animate-fade-in-up">
                   <li className="menu-title px-4 py-3 border-b border-base-content/5 mb-2 text-xs opacity-50 uppercase font-bold text-base-content">Akun Saya</li>
                   <li>
-                    <Link to="/profile" className="flex items-center gap-3 py-3 rounded-xl hover:bg-primary/10 font-bold">
+                    <Link to="/profil" className="flex items-center gap-3 py-3 rounded-xl hover:bg-primary/10 font-bold">
                       <Icon icon="solar:user-circle-bold-duotone" className="w-5 h-5 text-primary" />
                       Profil
                     </Link>
