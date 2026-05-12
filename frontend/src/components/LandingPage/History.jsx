@@ -131,7 +131,7 @@ function History() {
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-2 tracking-tight">History</h2>
-          <p className="text-base md:text-lg text-base-content/60">
+          <p className="text-base md:text-lg text-base-content">
             Perjalanan {activeTab} saya
           </p>
         </motion.div>
@@ -144,7 +144,7 @@ function History() {
           transition={{ duration: 0.8, delay: 0.2 }}
         >
           <button
-            className={`tab tab-lg tab-bordered bg-base-200 border-primary mx-2 rounded-lg font-bold ${activeTab === "pendidikan" ? "tab-active border-3 shadow-md border-primary" : ""
+            className={`tab tab-lg tab-bordered bg-base-200 border-primary mx-2 rounded-lg font-bold ${activeTab === "pendidikan" ? "tab-active border-2 shadow-md border-primary" : ""
               }`}
             onClick={() => {
               setActiveTab("pendidikan");
@@ -155,7 +155,7 @@ function History() {
             Pendidikan
           </button>
           <button
-            className={`tab tab-lg tab-bordered bg-base-200 border-primary mx-2 rounded-lg font-bold ${activeTab === "pengalaman" ? "tab-active border-3 shadow-md border-primary" : ""
+            className={`tab tab-lg tab-bordered bg-base-200 border-primary mx-2 rounded-lg font-bold ${activeTab === "pengalaman" ? "tab-active border-2 shadow-md border-primary" : ""
               }`}
             onClick={() => {
               setActiveTab("pengalaman");

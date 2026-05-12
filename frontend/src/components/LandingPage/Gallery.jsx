@@ -10,23 +10,12 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.15, 
-      delayChildren: 0.2     
+      staggerChildren: 0.15,
+      delayChildren: 0.2
     }
   }
 };
 
-const itemVariants = {
-  hidden: { y: 30, opacity: 0 },
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      duration: 0.8, 
-      ease: [0.25, 0.1, 0.25, 1] 
-    }
-  }
-};
 
 const GallerySkeleton = ({ count = 3 }) => (
   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl mx-auto hover:cursor-wait">
@@ -129,7 +118,7 @@ function Gallery() {
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-2 tracking-tight">Galeri Proyek</h2>
-          <p className="text-base md:text-lg text-base-content/60">Mahakarya dan studi kasus terbaru saya</p>
+          <p className="text-base md:text-lg text-base-content">Mahakarya dan studi kasus terbaru saya</p>
         </motion.div>
 
         {!isProjectsLoading && !loading && (
@@ -168,11 +157,14 @@ function Gallery() {
             animate="visible"
             viewport={{ once: true, amount: 0.1 }}
           >
-            {currentItems.map((project) => (
+            {currentItems.map((project, index) => (
               <motion.div
                 key={project._id}
-                variants={itemVariants}
-                className="card bg-base-200 border border-base-content/40 shadow-lg overflow-visible group hover:border-primary transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 rounded-3xl"
+                className="card bg-base-200 border border-base-content/40 shadow-lg overflow-visible group hover:border-primary duration-300 hover:shadow-xl hover:shadow-primary/5 rounded-3xl"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.1 }}
+                transition={{ type: "spring", stiffness: 100, damping: 20, delay: index * 0.3 }}
               >
                 <figure className="relative h-56 w-full overflow-hidden rounded-t-3xl border-b border-base-content/10 bg-base-300">
                   <img
@@ -226,7 +218,7 @@ function Gallery() {
                     {project.title}
                   </h3>
 
-                  <p className="text-sm text-base-content/70 text-justify leading-relaxed break-words">
+                  <p className="text-sm text-base-content text-justify leading-relaxed break-words">
                     {project.description}
                   </p>
 

@@ -99,7 +99,7 @@ function Skills() {
                   whileHover={{ y: -5 }}
                   whileTap={{ scale: 0.95 }}
                   tabIndex={0}
-                  className="p-4 rounded-2xl bg-base-200 border border-base-content/10 flex items-center gap-4 transition-all duration-300 hover:border-primary hover:bg-base-100 focus:border-primary focus:bg-base-100 cursor-pointer group shadow-sm"
+                  className="p-4 rounded-2xl bg-base-200 border border-base-content/10 flex items-center gap-4 hover:border-primary hover:bg-base-100 focus:border-primary focus:bg-base-100 cursor-pointer group shadow-sm"
                 >
                   <div className="w-12 h-12 shrink-0 flex items-center justify-center rounded-xl bg-base-300 group-hover:bg-primary/5 group-focus:bg-primary/5 transition-colors">
                     <Icon icon={skill.icon} className="w-8 h-8" />

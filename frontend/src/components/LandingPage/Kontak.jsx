@@ -124,7 +124,7 @@ function Kontak() {
                 whileHover={{ y: -5 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setSelectedMethod(method.id)}
-                className={`card shadow-sm p-6 flex flex-col items-center text-center space-y-2 border-2 cursor-pointer transition-all duration-300 rounded-3xl ${selectedMethod === method.id ? `${method.border} bg-base-200 shadow-md` : "border-base-content/10 bg-base-100"
+                className={`card shadow-sm p-6 flex flex-col items-center text-center space-y-2 border-2 cursor-pointer duration-300 rounded-3xl ${selectedMethod === method.id ? `${method.border} bg-base-200/80 shadow-md` : "border-base-content/10 bg-base-100"
                   }`}
               >
                 <Icon icon={method.icon} className={`w-12 h-12 ${method.color}`} />
@@ -135,7 +135,7 @@ function Kontak() {
           </motion.div>
 
           <motion.div
-            className="card w-full shadow-lg p-6 md:p-10 border border-base-content/40 bg-base-200/50 rounded-[2.5rem]"
+            className="card w-full shadow-lg p-6 md:p-10 border border-base-content/40 bg-base-100 rounded-[2.5rem]"
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
