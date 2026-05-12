@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from "react";
 import { Icon } from "@iconify/react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { usePortfolioStore } from "../../stores/portfolioStore";
 
 const containerVariants = {
@@ -65,7 +65,7 @@ function Skills() {
       id="skills"
     >
       <div className="w-full max-w-6xl mx-auto px-0 lg:px-4">
-        <motion.div
+        <m.div
           className="text-center mb-12"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -74,10 +74,10 @@ function Skills() {
         >
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-2 tracking-tight">Skills</h2>
           <p className="text-base md:text-lg text-base-content/60">Teknologi dan kompetensi profesional saya</p>
-        </motion.div>
+        </m.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          <motion.div
+          <m.div
             className="lg:col-span-8 space-y-6"
             variants={containerVariants}
             initial="hidden"
@@ -93,7 +93,7 @@ function Skills() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 px-2 lg:px-0">
               {displayedHardSkills.map((skill) => (
-                <motion.div
+                <m.div
                   key={skill.name}
                   variants={itemVariants}
                   whileHover={{ y: -5 }}
@@ -108,12 +108,12 @@ function Skills() {
                     <span className="font-bold font-headings text-sm leading-tight break-words">{skill.name}</span>
                     <span className="text-[13px] font-black opacity-40 mt-1 tracking-tighter">{skill.level || "Expert"}</span>
                   </div>
-                </motion.div>
+                </m.div>
               ))}
             </div>
-          </motion.div>
+          </m.div>
 
-          <motion.div
+          <m.div
             className="lg:col-span-4 space-y-6"
             variants={containerVariants}
             initial="hidden"
@@ -129,7 +129,7 @@ function Skills() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3 px-2 lg:px-0">
               {displayedSoftSkills.map((skill, index) => (
-                <motion.div
+                <m.div
                   key={index}
                   variants={itemVariants}
                   whileHover={{ x: 5 }}
@@ -142,10 +142,10 @@ function Skills() {
                     className="w-0 h-6 opacity-0 text-secondary flex-shrink-0 group-hover:w-6 group-hover:opacity-100 group-focus:w-6 group-focus:opacity-100 transition-all duration-300"
                   />
                   <span className="font-bold text-sm md:text-base leading-tight break-words transition-colors duration-300 group-hover:text-secondary group-focus:text-secondary">{skill}</span>
-                </motion.div>
+                </m.div>
               ))}
             </div>
-          </motion.div>
+          </m.div>
 
         </div>
       </div>

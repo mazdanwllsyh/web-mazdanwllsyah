@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Icon } from "@iconify/react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { usePagination } from "../../hooks/usePagination";
 import { useProjectStore } from "../../stores/projectStore";
 import { transformCloudinaryUrl } from "../../utils/imageHelper";
@@ -110,7 +110,7 @@ function Gallery() {
       </script>
 
       <div className="w-full max-w-6xl mx-auto px-4 lg:px-4">
-        <motion.div
+        <m.div
           className="text-center mb-12"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -119,10 +119,10 @@ function Gallery() {
         >
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-2 tracking-tight">Galeri Proyek</h2>
           <p className="text-base md:text-lg text-base-content">Mahakarya dan studi kasus terbaru saya</p>
-        </motion.div>
+        </m.div>
 
         {!isProjectsLoading && !loading && (
-          <motion.div
+          <m.div
             className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-10 w-full"
             initial={{ opacity: 0, y: -20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -143,13 +143,13 @@ function Gallery() {
               />
               <Icon icon="mdi:magnify" className="absolute left-4 top-1/2 -translate-y-1/2 opacity-40 w-5 h-5" />
             </div>
-          </motion.div>
+          </m.div>
         )}
 
         {isProjectsLoading || loading ? (
           <GallerySkeleton count={projects.length || 3} />
         ) : (
-          <motion.div
+          <m.div
             key={`grid-${searchTerm}-${currentItems[0]?._id || 'empty'}`}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
             variants={containerVariants}
@@ -158,7 +158,7 @@ function Gallery() {
             viewport={{ once: true, amount: 0.1 }}
           >
             {currentItems.map((project, index) => (
-              <motion.div
+              <m.div
                 key={project._id}
                 className="card bg-base-200 border border-base-content/40 shadow-lg overflow-visible group hover:border-primary duration-300 hover:shadow-xl hover:shadow-primary/5 rounded-3xl"
                 initial={{ opacity: 0, y: 20 }}
@@ -230,9 +230,9 @@ function Gallery() {
                     ))}
                   </div>
                 </div>
-              </motion.div>
+              </m.div>
             ))}
-          </motion.div>
+          </m.div>
         )}
       </div>
     </div>

@@ -92,7 +92,6 @@ img {
   aspect-ratio: attr(width) / attr(height);
 }
 
-/* TRANSISI or PRE-LOADING */
 @keyframes zoom-in-out {
   0%,
   100% {
@@ -157,8 +156,4 @@ img {
   100% {
     transform: translateY(0px);
   }
-}
-
-.animate-float {
-  animation: float 3s ease-in-out infinite alternate;
 }

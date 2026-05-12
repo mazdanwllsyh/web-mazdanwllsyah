@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import { toast } from "react-hot-toast";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { useSiteStore } from "../../stores/siteStore";
 import { useAuth } from "../../hooks/useAuth";
 import FloatingLabelInput, { FloatingLabelTextarea } from "../FloatingLabelInput";
@@ -94,7 +94,7 @@ function Kontak() {
       id="kontak"
     >
       <div className="w-full max-w-6xl mx-auto px-4">
-        <motion.div
+        <m.div
           className="text-center mb-12"
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -103,10 +103,10 @@ function Kontak() {
         >
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-2 tracking-tight">Hubungi Saya</h2>
           <p className="text-base md:text-lg text-base-content/60">Mari berdiskusi tentang proyek hebat Anda</p>
-        </motion.div>
+        </m.div>
 
         <div className="w-full">
-          <motion.div
+          <m.div
             className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8 w-full mb-8"
             variants={containerVariants}
             initial="hidden"
@@ -118,7 +118,7 @@ function Kontak() {
               { id: "whatsapp", icon: "mdi:whatsapp", label: "WhatsApp", color: "text-success", border: "border-success", data: siteData.contactLinks?.whatsapp },
               { id: "telegram", icon: "mdi:telegram", label: "Telegram", color: "text-info", border: "border-info", data: `@${siteData.contactLinks?.telegram}` }
             ].map((method) => (
-              <motion.div
+              <m.div
                 key={method.id}
                 variants={itemVariants}
                 whileHover={{ y: -5 }}
@@ -130,11 +130,11 @@ function Kontak() {
                 <Icon icon={method.icon} className={`w-12 h-12 ${method.color}`} />
                 <h3 className="font-bold font-display text-lg">{method.label}</h3>
                 <p className="text-xs text-base-content/60 break-all">{method.data}</p>
-              </motion.div>
+              </m.div>
             ))}
-          </motion.div>
+          </m.div>
 
-          <motion.div
+          <m.div
             className="card w-full shadow-lg p-6 md:p-10 border border-base-content/40 bg-base-100 rounded-[2.5rem]"
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -152,7 +152,7 @@ function Kontak() {
 
               <FloatingLabelTextarea id="contactPesan" label="Pesan atau Pertanyaan" value={pesan} onChange={(e) => setPesan(e.target.value)} disabled={isFormDisabled} rows={4} required={!isFormDisabled} />
 
-              <motion.button
+              <m.button
                 type="button"
                 whileHover={selectedMethod && (isFormDisabled || isFormValid) ? { scale: 1.01 } : {}}
                 whileTap={selectedMethod && (isFormDisabled || isFormValid) ? { scale: 0.98 } : {}}
@@ -162,9 +162,9 @@ function Kontak() {
               >
                 {getButtonText()}
                 <Icon icon={selectedMethod === "telegram" ? "mdi:open-in-new" : "mdi:send"} className="w-5 h-5 ml-2" />
-              </motion.button>
+              </m.button>
             </form>
-          </motion.div>
+          </m.div>
         </div>
       </div>
     </div>

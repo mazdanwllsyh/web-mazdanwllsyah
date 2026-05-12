@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Icon } from "@iconify/react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { Viewer, Worker } from "@react-pdf-viewer/core";
 import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
 import { usePagination } from "../../hooks/usePagination";
@@ -95,11 +95,10 @@ function Sertifikasi() {
   const handleSearchChange = (event) => setSearchTerm(event.target.value);
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
-  // FIX: Memanggil worker dari CDN dengan versi spesifik 3.11.174
   const workerUrl = "https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js";
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1200);
+    const timer = setTimeout(() => setLoading(false), 2900);
     return () => clearTimeout(timer);
   }, []);
 
@@ -151,7 +150,7 @@ function Sertifikasi() {
         </script>
 
         <div className="w-full max-w-6xl mx-auto px-4 lg:px-4">
-          <motion.div
+          <m.div
             className="text-center mb-12"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -163,10 +162,10 @@ function Sertifikasi() {
             <p className="text-base md:text-lg text-base-content/60">
               Beberapa sertifikat dan lisensi yang telah saya peroleh
             </p>
-          </motion.div>
+          </m.div>
 
           {!isSertifikatLoading && !loading && (
-            <motion.div
+            <m.div
               className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-10 w-full"
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -207,13 +206,13 @@ function Sertifikasi() {
                   <Icon icon="mdi:magnify" className="absolute left-4 top-1/2 -translate-y-1/2 opacity-40 w-5 h-5" />
                 </div>
               </div>
-            </motion.div>
+            </m.div>
           )}
 
           {isSertifikatLoading || loading ? (
             <SertifikasiSkeleton count={sertifikatData.length || 3} />
           ) : (
-            <motion.div
+            <m.div
               key={`cert-grid-${searchTerm}-${activeCategory}-${currentItems[0]?._id || 'empty'}`}
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
               variants={containerVariants}
@@ -222,7 +221,7 @@ function Sertifikasi() {
               viewport={{ once: true, amount: 0.1 }}
             >
               {currentItems.map((cert) => (
-                <motion.div
+                <m.div
                   key={cert._id}
                   variants={itemVariants}
                   whileHover={{ y: -5 }}
@@ -257,9 +256,9 @@ function Sertifikasi() {
                       </span>
                     </div>
                   </div>
-                </motion.div>
+                </m.div>
               ))}
-            </motion.div>
+            </m.div>
           )}
         </div>
       </div>

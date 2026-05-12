@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import SeoHelmet from "../SEOHelmet";
 import { useSiteStore } from "../../stores/siteStore";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { Icon } from "@iconify/react";
 
 const gopayQrUrl = "https://res.cloudinary.com/dr7olcn4r/image/upload/v1761843697/QRIS_Gopay_c70ei6.jpg";
@@ -62,7 +62,7 @@ function Donasi() {
       />
 
       <div className="w-full max-w-6xl mx-auto px-4 lg:px-4">
-        <motion.div
+        <m.div
           className="text-center mb-12"
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -75,7 +75,7 @@ function Donasi() {
           <p className="text-base md:text-lg text-base-content/60">
             Jika Anda merasa terbantu, Anda bisa memberi apresiasi.
           </p>
-        </motion.div>
+        </m.div>
 
         <div className="max-w-lg mx-auto flex flex-col items-center">
           {loading ? (
@@ -89,13 +89,13 @@ function Donasi() {
             </div>
           ) : (
             <>
-              <motion.div
+              <m.div
                 className="grid grid-cols-2 gap-4 md:gap-6 w-full mb-8"
                 variants={containerVariants}
                 initial="hidden"
                 animate="visible"
               >
-                <motion.button
+                <m.button
                   variants={itemVariants}
                   whileHover={{ y: -5 }}
                   whileTap={{ scale: 0.95 }}
@@ -113,9 +113,9 @@ function Donasi() {
                       className="h-8 md:h-10 w-auto object-contain"
                     />
                   </div>
-                </motion.button>
+                </m.button>
 
-                <motion.button
+                <m.button
                   variants={itemVariants}
                   whileHover={{ y: -5 }}
                   whileTap={{ scale: 0.95 }}
@@ -132,14 +132,14 @@ function Donasi() {
                       className="h-6 md:h-8 w-auto object-contain"
                     />
                   </div>
-                </motion.button>
-              </motion.div>
+                </m.button>
+              </m.div>
 
               <div className="w-full max-w-xs min-h-[350px] flex justify-center">
                 {/* ANIMATE PRESENCE: Membuat QR Code muncul & hilang dengan transisi Bounce! */}
                 <AnimatePresence mode="wait">
                   {selectedMethod && (
-                    <motion.figure
+                    <m.figure
                       key={selectedMethod}
                       initial={{ opacity: 0, scale: 0.8, y: 20 }}
                       animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -159,7 +159,7 @@ function Donasi() {
                         <Icon icon="mdi:qrcode-scan" className="w-6 h-6" />
                         {selectedMethod === "gopay" ? "Scan dari GoPay atau Gojek" : "Scan untuk berdonasi ke DANA"}
                       </figcaption>
-                    </motion.figure>
+                    </m.figure>
                   )}
                 </AnimatePresence>
               </div>

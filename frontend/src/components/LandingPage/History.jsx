@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Icon } from "@iconify/react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { usePortfolioStore } from "../../stores/portfolioStore";
 import { useSiteStore } from "../../stores/siteStore";
 import { transformCloudinaryUrl } from "../../utils/imageHelper.js";
@@ -123,7 +123,7 @@ function History() {
       </script>
 
       <div className="w-full max-w-6xl mx-auto px-0 lg:px-4">
-        <motion.div
+        <m.div
           className="text-center mb-12"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -134,9 +134,9 @@ function History() {
           <p className="text-base md:text-lg text-base-content">
             Perjalanan {activeTab} saya
           </p>
-        </motion.div>
+        </m.div>
 
-        <motion.div
+        <m.div
           className="tabs justify-center mb-10"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -165,7 +165,7 @@ function History() {
             <Icon icon="mdi:briefcase" className="w-6 h-6 mr-2" />
             Pengalaman
           </button>
-        </motion.div>
+        </m.div>
 
         {loading || isHistoryLoading ? (
           <TimelineSkeleton count={activeData.length || 3} />
@@ -186,7 +186,7 @@ function History() {
                     />
                   </div>
                 </div>
-                <motion.div
+                <m.div
                   initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true, margin: "-50px" }}
@@ -239,7 +239,7 @@ function History() {
                       </div>
                     </div>
                   </div>
-                </motion.div>
+                </m.div>
                 {index !== sortedData.length - 1 && (
                   <hr className="bg-primary" />
                 )}

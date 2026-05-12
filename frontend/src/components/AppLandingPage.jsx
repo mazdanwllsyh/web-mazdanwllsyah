@@ -5,6 +5,7 @@ import ProtectedRoute from "../routes/ProtectedRoute";
 import { useSiteStore } from "../stores/siteStore";
 import { useAuth } from "../hooks/useAuth";
 
+import { LazyMotion, domAnimation } from "framer-motion";
 import Beranda from "../components/LandingPage/Beranda";
 
 const About = lazy(() => import("../components/LandingPage/About"));
@@ -77,7 +78,7 @@ function AppLandingPage() {
   return (
     <div className="flex flex-col min-h-screen overflow-x-hidden">
       {showContent && (
-        <>
+        <LazyMotion features={domAnimation}>
           <Header />
 
           <main className="flex-grow pt-24 lg:pb-12 w-full flex flex-col items-center">
@@ -105,7 +106,7 @@ function AppLandingPage() {
           </main>
 
           <Footer />
-        </>
+        </LazyMotion>
       )}
     </div>
   );
