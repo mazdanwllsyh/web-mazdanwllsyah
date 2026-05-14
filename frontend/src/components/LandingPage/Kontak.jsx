@@ -157,7 +157,7 @@ function Kontak() {
                 whileHover={selectedMethod && (isFormDisabled || isFormValid) ? { scale: 1.01 } : {}}
                 whileTap={selectedMethod && (isFormDisabled || isFormValid) ? { scale: 0.98 } : {}}
                 onClick={handleSendMessage}
-                className={`btn btn-lg w-full rounded-2xl font-bold shadow-lg transition-all ${!selectedMethod ? "btn-disabled" : isFormDisabled ? "btn-info text-white" : isFormValid ? "btn-primary" : "btn-disabled"
+                className={`btn btn-lg w-full rounded-2xl font-bold shadow-lg transition-all ${!selectedMethod ? "btn-disabled" : isFormDisabled ? "btn-info text-base-100" : isFormValid ? "btn-primary" : "btn-disabled"
                   }`}
               >
                 {getButtonText()}

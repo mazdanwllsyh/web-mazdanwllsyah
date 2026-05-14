@@ -263,7 +263,7 @@ function Profile() {
                 )}
 
                 <button
-                  className="btn btn-error w-full text-white"
+                  className="btn btn-error w-full text-base-100"
                   onClick={handleSignOut}
                 >
                   <Icon icon="mdi:logout" className="mr-2" />
@@ -287,7 +287,7 @@ function Profile() {
                   )}
                   <button
                     type="button"
-                    className="btn btn-error w-full text-white"
+                    className="btn btn-error w-full text-base-100"
                     onClick={handleSignOut}
                   >
                     <Icon icon="mdi:logout" className="mr-2" />

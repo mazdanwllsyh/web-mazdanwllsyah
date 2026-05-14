@@ -132,7 +132,7 @@ function Sidebar() {
 
           <button
             type="button"
-            className="btn btn-error w-full text-white rounded-2xl shadow-sm hover:shadow-md hover:shadow-error/20 transition-all duration-300 flex items-center justify-center gap-2"
+            className="btn btn-error w-full text-base-100 rounded-2xl shadow-sm hover:shadow-md hover:shadow-error/20 transition-all duration-300 flex items-center justify-center gap-2"
             onClick={handleSignOut}
             title="Logout"
           >

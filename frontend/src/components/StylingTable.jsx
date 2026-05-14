@@ -55,10 +55,10 @@ export const TableFooter = ({ limit, setLimit, totalData, currentDataCount, onNe
                 Data: {currentDataCount} / {totalData}
             </div>
             <div className="flex gap-2">
-                <button onClick={onPrev} className="btn btn-xs btn-square btn-outline border-base-content/20 hover:bg-primary hover:text-white transition-all">
+                <button onClick={onPrev} className="btn btn-xs btn-square btn-outline border-base-content/20 hover:bg-primary hover:text-base-100 transition-all">
                     <Icon icon="lucide:chevron-left" className="w-4 h-4" />
                 </button>
-                <button onClick={onNext} className="btn btn-xs btn-square btn-outline border-base-content/20 hover:bg-primary hover:text-white transition-all">
+                <button onClick={onNext} className="btn btn-xs btn-square btn-outline border-base-content/20 hover:bg-primary hover:text-base-100 transition-all">
                     <Icon icon="lucide:chevron-right" className="w-4 h-4" />
                 </button>
             </div>

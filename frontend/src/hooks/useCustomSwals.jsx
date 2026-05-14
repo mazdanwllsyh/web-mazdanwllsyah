@@ -58,7 +58,7 @@ const useCustomSwals = () => {
         reverseButtons: true,
       },
       {
-        confirmButton: "btn btn-error text-white px-6 rounded-xl",
+        confirmButton: "btn btn-error text-base-100 px-6 rounded-xl",
         cancelButton: "btn btn-neutral px-6 rounded-xl",
       }
     );
@@ -74,7 +74,7 @@ const useCustomSwals = () => {
         icon: "success",
         confirmButtonText: '<div class="flex items-center gap-2"><span class="iconify w-5 h-5" data-icon="mdi:hand-okay"></span> Mantap!</div>',
       },
-      { confirmButton: "btn btn-success text-white px-10 rounded-xl shadow-md" }
+      { confirmButton: "btn btn-success text-base-100 px-10 rounded-xl shadow-md" }
     );
     return Swal.fire(config);
   };
@@ -87,7 +87,7 @@ const useCustomSwals = () => {
         icon: "error",
         confirmButtonText: '<div class="flex items-center gap-2"><span class="iconify w-5 h-5" data-icon="mdi:alert-circle"></span> Mengerti</div>',
       },
-      { confirmButton: "btn btn-error text-white px-10 rounded-xl shadow-md" }
+      { confirmButton: "btn btn-error text-base-100 px-10 rounded-xl shadow-md" }
     );
     return Swal.fire(config);
   };

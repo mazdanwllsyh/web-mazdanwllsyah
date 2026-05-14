@@ -294,7 +294,7 @@ function Sertifikasi() {
               {selectedCert?.title || "Detail Sertifikat"}
             </h3>
             <form method="dialog">
-              <button className="btn btn-sm btn-circle btn-ghost bg-base-300 hover:bg-error hover:text-white">
+              <button className="btn btn-sm btn-circle btn-ghost bg-base-300 hover:bg-error hover:text-base-100">
                 ✕
               </button>
             </form>

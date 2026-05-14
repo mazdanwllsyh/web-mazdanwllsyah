@@ -14,15 +14,15 @@ const GlobalModal = () => {
     if (config.type === "success") {
         iconName = "solar:check-circle-bold";
         iconColor = "text-success";
-        confirmBtnColor = "btn-success text-white";
+        confirmBtnColor = "btn-success text-base-100";
     } else if (config.type === "error") {
         iconName = "solar:danger-circle-bold";
         iconColor = "text-error";
-        confirmBtnColor = "btn-error text-white";
+        confirmBtnColor = "btn-error text-base-100";
     } else if (config.type === "warning" || config.type === "confirm") {
         iconName = "solar:shield-warning-bold";
         iconColor = "text-warning";
-        confirmBtnColor = "btn-warning text-white";
+        confirmBtnColor = "btn-warning text-base-100";
     }
 
     return (
