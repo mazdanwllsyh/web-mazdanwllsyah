@@ -15,9 +15,9 @@ const containerVariants = {
     opacity: 1,
     transition: {
       staggerChildren: 0.15,
-      delayChildren: 0.2
-    }
-  }
+      delayChildren: 0.2,
+    },
+  },
 };
 
 const itemVariants = {
@@ -27,15 +27,18 @@ const itemVariants = {
     opacity: 1,
     transition: {
       duration: 0.8,
-      ease: [0.25, 0.1, 0.25, 1]
-    }
-  }
+      ease: [0.25, 0.1, 0.25, 1],
+    },
+  },
 };
 
 const SertifikasiSkeleton = ({ count = 3 }) => (
   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl mx-auto hover:cursor-wait">
     {Array.from({ length: count }).map((_, index) => (
-      <div key={index} className="card bg-base-200 border border-base-content/40 shadow-xl overflow-hidden rounded-3xl">
+      <div
+        key={index}
+        className="card bg-base-200 border border-base-content/40 shadow-xl overflow-hidden rounded-3xl"
+      >
         <div className="skeleton h-auto aspect-[849/600] w-full rounded-none"></div>
         <div className="card-body p-6 space-y-3">
           <div className="skeleton h-6 w-3/4"></div>
@@ -49,7 +52,9 @@ const SertifikasiSkeleton = ({ count = 3 }) => (
 function Sertifikasi() {
   const fetchSertifikat = usePortfolioStore((state) => state.fetchSertifikat);
   const sertifikatData = usePortfolioStore((state) => state.sertifikatData);
-  const isSertifikatLoading = usePortfolioStore((state) => state.isSertifikatLoading);
+  const isSertifikatLoading = usePortfolioStore(
+    (state) => state.isSertifikatLoading,
+  );
 
   useEffect(() => {
     import("@react-pdf-viewer/core/lib/styles/index.css");
@@ -63,7 +68,14 @@ function Sertifikasi() {
   }, [fetchSertifikat, sertifikatData.length]);
 
   const themeMode = useSiteStore((state) => state.getThemeMode());
-  const categories = ["Semua", "Universitas", "Online Course", "Bootcamp", "Nasional", "Internasional"];
+  const categories = [
+    "Semua",
+    "Universitas",
+    "Online Course",
+    "Bootcamp",
+    "Nasional",
+    "Internasional",
+  ];
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCert, setSelectedCert] = useState(null);
@@ -81,7 +93,7 @@ function Sertifikasi() {
     return byCategory.filter(
       (cert) =>
         cert.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        cert.issuer.toLowerCase().includes(searchTerm.toLowerCase())
+        cert.issuer.toLowerCase().includes(searchTerm.toLowerCase()),
     );
   }, [searchTerm, activeCategory, sertifikatData]);
 
@@ -89,13 +101,14 @@ function Sertifikasi() {
 
   const { currentItems, PaginationComponent, currentPage } = usePagination(
     filteredSertifikat,
-    paginationConfig
+    paginationConfig,
   );
 
   const handleSearchChange = (event) => setSearchTerm(event.target.value);
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
-  const workerUrl = "https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js";
+  const workerUrl =
+    "https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js";
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 2900);
@@ -115,7 +128,8 @@ function Sertifikasi() {
     "@context": "https://schema.org",
     "@type": "ItemList",
     name: "Sertifikasi & Penghargaan",
-    description: "Koleksi sertifikat profesional dan pencapaian akademis Mazda Nawallsyah",
+    description:
+      "Koleksi sertifikat profesional dan pencapaian akademis Mazda Nawallsyah",
     itemListElement: sertifikatData.map((cert, index) => ({
       "@type": "ListItem",
       position: index + 1,
@@ -166,17 +180,16 @@ function Sertifikasi() {
 
           {!isSertifikatLoading && !loading && (
             <m.div
-              className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-10 w-full"
+              className="grid grid-cols-12 gap-4 mb-10 w-full"
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
             >
-              <div className="order-2 md:order-1 flex justify-center md:justify-start w-full md:w-auto">
+              <div className="order-3 sm:order-1 flex justify-center md:justify-start w-full md:w-auto col-span-12 sm:col-span-6 lg:col-span-4">
                 <PaginationComponent />
               </div>
-
-              <div className="order-1 md:order-2 flex flex-col sm:flex-row gap-3 w-full md:w-auto ml-auto">
-                <div className="relative w-full sm:w-48">
+              <div className="col-span-12 sm:col-span-6 lg:col-span-4 order-1 sm:order-2">
+                <div className="relative w-full sm:w-48 float-end">
                   <Icon
                     icon="mdi:filter"
                     className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-base-content/50 pointer-events-none z-10"
@@ -194,8 +207,9 @@ function Sertifikasi() {
                     ))}
                   </select>
                 </div>
-
-                <div className="relative w-full sm:w-64 md:w-72">
+              </div>
+              <div className="lg:col-span-4 order-2 md:order-3 col-span-12">
+                <div className="relative w-full">
                   <input
                     type="search"
                     placeholder="Cari sertifikat..."
@@ -203,7 +217,10 @@ function Sertifikasi() {
                     onChange={handleSearchChange}
                     className="input input-bordered w-full rounded-2xl bg-base-200/50 pl-10 focus:bg-base-100 transition-colors"
                   />
-                  <Icon icon="mdi:magnify" className="absolute left-4 top-1/2 -translate-y-1/2 opacity-40 w-5 h-5" />
+                  <Icon
+                    icon="mdi:magnify"
+                    className="absolute left-4 top-1/2 -translate-y-1/2 opacity-40 w-5 h-5"
+                  />
                 </div>
               </div>
             </m.div>
@@ -213,7 +230,7 @@ function Sertifikasi() {
             <SertifikasiSkeleton count={sertifikatData.length || 3} />
           ) : (
             <m.div
-              key={`cert-grid-${searchTerm}-${activeCategory}-${currentItems[0]?._id || 'empty'}`}
+              key={`cert-grid-${searchTerm}-${activeCategory}-${currentItems[0]?._id || "empty"}`}
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
               variants={containerVariants}
               initial="hidden"
@@ -239,7 +256,8 @@ function Sertifikasi() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-base-200/90 via-base-200/20 to-transparent opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                       <button className="btn btn-primary rounded-full shadow-lg scale-90 group-hover:scale-100 group-focus:scale-100 transition-transform duration-300">
-                        <Icon icon="mdi:eye" className="w-5 h-5 mr-1" /> Lihat Detail
+                        <Icon icon="mdi:eye" className="w-5 h-5 mr-1" /> Lihat
+                        Detail
                       </button>
                     </div>
                   </figure>
@@ -248,7 +266,9 @@ function Sertifikasi() {
                     <h3 className="card-title text-lg font-display font-bold text-base-content line-clamp-2 leading-tight">
                       {cert.title}
                     </h3>
-                    <p className="text-sm font-bold text-primary">{cert.issuer}</p>
+                    <p className="text-sm font-bold text-primary">
+                      {cert.issuer}
+                    </p>
 
                     <div className="mt-2 pt-4 border-t border-base-content/5">
                       <span className="text-[11px] font-black uppercase tracking-wider px-3 py-1.5 bg-base-300 text-base-content border border-base-content/20 rounded-md inline-block">
@@ -274,33 +294,46 @@ function Sertifikasi() {
               {selectedCert?.title || "Detail Sertifikat"}
             </h3>
             <form method="dialog">
-              <button className="btn btn-sm btn-circle btn-ghost bg-base-300 hover:bg-error hover:text-white">✕</button>
+              <button className="btn btn-sm btn-circle btn-ghost bg-base-300 hover:bg-error hover:text-white">
+                ✕
+              </button>
             </form>
           </div>
 
           <div className="w-full bg-base-300/20 flex items-center justify-center p-4 sm:p-6 min-h-[40vh]">
-            {selectedCert && (
+            {selectedCert &&
               (() => {
-                const fileToShow = selectedCert.fileUrl || selectedCert.imageUrl;
-                const isPdf = selectedCert.type === "pdf" || fileToShow?.toLowerCase().includes(".pdf");
+                const fileToShow =
+                  selectedCert.fileUrl || selectedCert.imageUrl;
+                const isPdf =
+                  selectedCert.type === "pdf" ||
+                  fileToShow?.toLowerCase().includes(".pdf");
 
                 if (isPdf) {
                   return (
                     <div className="w-full h-[60vh] sm:h-[75vh] bg-white rounded-xl overflow-hidden shadow-lg border border-base-content/40">
                       <Worker workerUrl={workerUrl}>
                         <div style={{ height: "100%", width: "100%" }}>
-                          <Viewer fileUrl={fileToShow} plugins={[defaultLayoutPluginInstance]} theme={themeMode} defaultScale={1} />
+                          <Viewer
+                            fileUrl={fileToShow}
+                            plugins={[defaultLayoutPluginInstance]}
+                            theme={themeMode}
+                            defaultScale={1}
+                          />
                         </div>
                       </Worker>
                     </div>
                   );
                 } else {
                   return (
-                    <img src={fileToShow} alt={selectedCert.title} className="w-full h-auto max-h-[70vh] object-contain mx-auto rounded-xl shadow-lg border border-base-content/40 bg-white" />
+                    <img
+                      src={fileToShow}
+                      alt={selectedCert.title}
+                      className="w-full h-auto max-h-[70vh] object-contain mx-auto rounded-xl shadow-lg border border-base-content/40 bg-white"
+                    />
                   );
                 }
-              })()
-            )}
+              })()}
           </div>
         </div>
 
