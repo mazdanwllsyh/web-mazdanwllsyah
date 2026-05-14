@@ -40,7 +40,7 @@ function Footer() {
   const siteData = useSiteStore((state) => state.siteData);
   const currentYear = new Date().getFullYear();
 
-  const availableLinks = siteData.contactLinks;
+  const availableLinks = siteData?.contactLinks || {};
 
   return (
     <>

@@ -61,7 +61,7 @@ function Skills() {
 
   return (
     <div
-      className="bg-base-100 min-h-[auto] lg:min-h-screen flex flex-col items-center justify-center py-16 lg:py-0 scroll-mt-8 lg:scroll-mt-12"
+      className="bg-base-100 min-h-[auto] lg:min-h-screen flex flex-col items-center justify-center py-16 lg:py-0 scroll-mt-15 lg:scroll-mt-22"
       id="skills"
     >
       <div className="w-full max-w-6xl mx-auto px-0 lg:px-4">

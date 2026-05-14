@@ -14,7 +14,7 @@ export default defineConfig({
             fontFamily: {
               sans: [
                 '"SF UI Text"',
-                '"SF Pro Text"', 
+                '"SF Pro Text"',
                 "system-ui",
                 "-apple-system",
                 "BlinkMacSystemFont",
@@ -22,11 +22,7 @@ export default defineConfig({
                 "Roboto",
                 "sans-serif",
               ],
-              display: [
-                '"SF UI Display"',
-                '"SF Pro Display"', 
-                "sans-serif",
-              ],
+              display: ['"SF UI Display"', '"SF Pro Display"', "sans-serif"],
             },
           },
         },
@@ -59,16 +55,7 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks(id) {
-          if (id.includes("node_modules")) {
-            if (id.includes("framer-motion")) return "vendor-framer";
-            if (id.includes("@react-pdf") || id.includes("pdfjs-dist"))
-              return "vendor-pdf";
-            if (id.includes("react/") || id.includes("react-dom/"))
-              return "vendor-react";
-            return "vendor-core";
-          }
-        },
+        manualChunks(id) {},
       },
     },
   },

@@ -138,7 +138,6 @@ function Hero() {
                 className="flex flex-col space-y-4"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                // Ikon sosial media desktop muncul paling akhir
                 transition={{ delay: 1.6, duration: 1, ease: "easeOut" }}
               >
                 {socialLinkConfig.filter((link) => availableLinks[link.key]).map((link) => (

@@ -50,6 +50,7 @@ export const initialHardSkills = [
   { id: 45, icon: "vscode-icons:file-type-powerpoint", name: "Ms. PowerPoint" },
   { id: 46, icon: "logos:visual-studio-code", name: "VS Code" },
   { id: 47, icon: "logos:postman-icon", name: "Postman" },
+  { id: 48, icon: "bxl:motion-js", name: "Motion" },
 ];
 
 export const categories = [
