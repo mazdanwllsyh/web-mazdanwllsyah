@@ -81,7 +81,7 @@ function AppLandingPage() {
         <LazyMotion features={domAnimation}>
           <Header />
 
-          <main className="flex-grow pt-24 lg:pb-12 w-full flex flex-col items-center">
+          <main className="flex-grow pt-18 xl:pb-8 w-full flex flex-col items-center">
             <div className="w-[92%] md:w-[88%] lg:w-[85%] max-w-7xl">
               <Suspense fallback={null}>
                 <Routes key={location.pathname}>

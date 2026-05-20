@@ -11,16 +11,18 @@ const containerVariants = {
     opacity: 1,
     transition: {
       staggerChildren: 0.15,
-      delayChildren: 0.2
-    }
-  }
+      delayChildren: 0.2,
+    },
+  },
 };
-
 
 const GallerySkeleton = ({ count = 3 }) => (
   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl mx-auto hover:cursor-wait">
     {Array.from({ length: count }).map((_, index) => (
-      <div key={index} className="card bg-base-200 border border-base-content/40 shadow-xl overflow-hidden">
+      <div
+        key={index}
+        className="card bg-base-200 border border-base-content/40 shadow-xl overflow-hidden"
+      >
         <div className="skeleton h-56 w-full rounded-none"></div>
         <div className="flex justify-center -mt-5 relative z-10 gap-3">
           <div className="skeleton h-10 w-24 rounded-full"></div>
@@ -38,11 +40,15 @@ const GallerySkeleton = ({ count = 3 }) => (
 );
 
 const shuffleArray = (array) => {
-  let currentIndex = array.length, randomIndex;
+  let currentIndex = array.length,
+    randomIndex;
   while (currentIndex !== 0) {
     randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex--;
-    [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex],
+      array[currentIndex],
+    ];
   }
   return array;
 };
@@ -72,11 +78,14 @@ function Gallery() {
       (proj) =>
         proj.title.toLowerCase().includes(lower) ||
         proj.description.toLowerCase().includes(lower) ||
-        proj.tags?.toLowerCase().includes(lower)
+        proj.tags?.toLowerCase().includes(lower),
     );
   }, [searchTerm, shuffledProjects]);
 
-  const { currentItems, PaginationComponent } = usePagination(filteredProjects, { sm: 2, md: 4, lg: 6 });
+  const { currentItems, PaginationComponent } = usePagination(
+    filteredProjects,
+    { sm: 2, md: 3, xl: 6 },
+  );
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 1000);
@@ -117,8 +126,12 @@ function Gallery() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-2 tracking-tight">Galeri Proyek</h2>
-          <p className="text-base md:text-lg text-base-content">Mahakarya dan studi kasus terbaru saya</p>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-2 tracking-tight">
+            Galeri Proyek
+          </h2>
+          <p className="text-base md:text-lg text-base-content">
+            Mahakarya dan studi kasus terbaru saya
+          </p>
         </m.div>
 
         {!isProjectsLoading && !loading && (
@@ -141,7 +154,10 @@ function Gallery() {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="input input-bordered w-full rounded-2xl bg-base-200/50 pl-10 focus:bg-base-100 transition-colors"
               />
-              <Icon icon="mdi:magnify" className="absolute left-4 top-1/2 -translate-y-1/2 opacity-40 w-5 h-5" />
+              <Icon
+                icon="mdi:magnify"
+                className="absolute left-4 top-1/2 -translate-y-1/2 opacity-40 w-5 h-5"
+              />
             </div>
           </m.div>
         )}
@@ -150,8 +166,8 @@ function Gallery() {
           <GallerySkeleton count={projects.length || 3} />
         ) : (
           <m.div
-            key={`grid-${searchTerm}-${currentItems[0]?._id || 'empty'}`}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            key={`grid-${searchTerm}-${currentItems[0]?._id || "empty"}`}
+            className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -164,7 +180,12 @@ function Gallery() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.1 }}
-                transition={{ type: "spring", stiffness: 100, damping: 20, delay: index * 0.3 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 100,
+                  damping: 20,
+                  delay: index * 0.3,
+                }}
               >
                 <figure className="relative h-56 w-full overflow-hidden rounded-t-3xl border-b border-base-content/10 bg-base-300">
                   <img
@@ -177,35 +198,51 @@ function Gallery() {
                 </figure>
 
                 <div className="flex justify-center gap-3 -mt-5 relative z-10 px-2">
-                  {(!project.demoUrl || project.demoUrl === "#") && (!project.sourceUrl || project.sourceUrl === "#") ? (
-                    <div className="tooltip tooltip-bottom tooltip-warning cursor-help" data-tip="Proyek masih tahap pengembangan">
+                  {(!project.demoUrl || project.demoUrl === "#") &&
+                  (!project.sourceUrl || project.sourceUrl === "#") ? (
+                    <div
+                      className="tooltip tooltip-bottom tooltip-warning cursor-help"
+                      data-tip="Proyek masih tahap pengembangan"
+                    >
                       <div className="badge badge-warning shadow-md py-3 px-4 font-bold gap-2 text-xs border border-base-content/40">
-                        <Icon icon="mdi:progress-wrench" className="w-4 h-4" /> Pengembangan
+                        <Icon icon="mdi:progress-wrench" className="w-4 h-4" />{" "}
+                        Pengembangan
                       </div>
                     </div>
                   ) : (
                     <>
                       {project.demoUrl && project.demoUrl !== "#" && (
-                        <div className="tooltip tooltip-bottom tooltip-primary" data-tip="Lihat Live Demo">
+                        <div
+                          className="tooltip tooltip-bottom tooltip-primary"
+                          data-tip="Lihat Live Demo"
+                        >
                           <a
                             href={project.demoUrl}
                             target="_blank"
                             rel="noreferrer"
                             className="btn btn-sm bg-base-100 text-base-content hover:bg-primary hover:text-primary-content hover:border-primary shadow-md rounded-full border border-base-content/20 px-4 transition-all"
                           >
-                            <Icon icon="mdi:external-link" className="w-4 h-4" /> Demo
+                            <Icon
+                              icon="mdi:external-link"
+                              className="w-4 h-4"
+                            />{" "}
+                            Demo
                           </a>
                         </div>
                       )}
                       {project.sourceUrl && project.sourceUrl !== "#" && (
-                        <div className="tooltip tooltip-bottom tooltip-secondary" data-tip="Lihat Source Code">
+                        <div
+                          className="tooltip tooltip-bottom tooltip-secondary"
+                          data-tip="Lihat Source Code"
+                        >
                           <a
                             href={project.sourceUrl}
                             target="_blank"
                             rel="noreferrer"
                             className="btn btn-sm bg-base-100 text-base-content hover:bg-secondary hover:text-secondary-content hover:border-secondary shadow-md rounded-full border border-base-content/20 px-4 transition-all"
                           >
-                            <Icon icon="mdi:github" className="w-4 h-4" /> Source
+                            <Icon icon="mdi:github" className="w-4 h-4" />{" "}
+                            Source
                           </a>
                         </div>
                       )}
@@ -224,7 +261,10 @@ function Gallery() {
 
                   <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-base-content/5">
                     {project.tags?.split(",").map((tag) => (
-                      <span key={tag} className="text-[11px] font-black tracking-wider px-2 py-1 bg-base-300 text-base-content border border-base-content/40 rounded-md">
+                      <span
+                        key={tag}
+                        className="text-[11px] font-black tracking-wider px-2 py-1 bg-base-300 text-base-content border border-base-content/40 rounded-md"
+                      >
                         {tag.trim()}
                       </span>
                     ))}

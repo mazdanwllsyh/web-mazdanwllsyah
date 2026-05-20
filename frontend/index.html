@@ -124,12 +124,6 @@
         --spinner-override: #66cc8a;
       }
 
-      html[data-theme="garden"] .loading-container {
-        background-color: #e9e7e7 !important;
-        color: #1f2937 !important;
-        --spinner-override: #5c7f67;
-      }
-
       html[data-theme="light"] .loading-container {
         background-color: #ffffff !important;
         color: #1f2937 !important;
@@ -184,6 +178,25 @@
         --spinner-override: #d926a9;
       }
 
+      /* TEMA BARU */
+      html[data-theme="nord"] .loading-container {
+        background-color: #eceff4 !important;
+        color: #2e3440 !important;
+        --spinner-override: #5e81ac;
+      }
+
+      html[data-theme="bumblebee"] .loading-container {
+        background-color: #ffffff !important;
+        color: #291334 !important;
+        --spinner-override: #e0a82e;
+      }
+
+      html[data-theme="caramellatte"] .loading-container {
+        background-color: #f3e8dd !important;
+        color: #3d261d !important;
+        --spinner-override: #c28a50;
+      }
+
       .loading-container {
         display: flex;
         flex-direction: column;
@@ -195,39 +208,59 @@
           system-ui,
           -apple-system,
           sans-serif;
-
         background-color: var(--bg-loading);
         color: var(--text-loading);
-        transition: background-color 0.2s ease;
+        transition: background-color 0.4s ease;
       }
 
       .loading-spinner {
-        height: 3rem;
-        width: 3rem;
+        height: 3.5rem;
+        width: 3.5rem;
         border-radius: 50%;
-        background-color: var(--spinner-override, var(--spinner-color));
-        animation: pulse 0.9s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        box-shadow: 0 0 15px var(--spinner-override, var(--spinner-color));
+        border: 4px solid rgba(150, 150, 150, 0.2);
+        border-top-color: var(--spinner-override, var(--spinner-color));
+        animation: spin 1s cubic-bezier(0.55, 0.085, 0.68, 0.53) infinite;
+        margin-bottom: 1rem;
       }
 
       .loading-text {
-        margin-top: 1.5rem;
-        font-weight: 600;
-        font-size: 0.9rem;
-        letter-spacing: 0.05em;
+        font-weight: 700;
+        font-size: 0.95rem;
+        letter-spacing: 0.08em;
         text-transform: uppercase;
         opacity: 0.8;
+        animation: pulseText 2s ease-in-out infinite;
       }
 
-      @keyframes pulse {
+      /* Utilitas buat Screen Reader (ARIA) */
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes pulseText {
         0%,
         100% {
-          opacity: 1;
-          transform: scale(1);
+          opacity: 0.5;
         }
         50% {
-          opacity: 0.4;
-          transform: scale(0.85);
+          opacity: 1;
         }
       }
     </style>
@@ -235,9 +268,10 @@
 
   <body>
     <div id="root">
-      <div class="loading-container">
-        <span class="loading-spinner" aria-label="Loading"></span>
-        <p class="loading-text">Memuat Data...</p>
+      <div class="loading-container" role="status" aria-live="polite">
+        <span class="loading-spinner" aria-hidden="true"></span>
+        <p class="loading-text" aria-hidden="true">Menyiapkan Tampilan...</p>
+        <span class="sr-only">Harap tunggu, portofolio sedang dimuat.</span>
       </div>
     </div>
 

@@ -76,7 +76,7 @@ function Sidebar() {
     <div className="menu p-4 w-[280px] min-h-screen bg-base-100 border-r border-base-content/10 flex flex-col justify-between z-50 shadow-2xl lg:shadow-none">
       <div>
         <a href="/" className="flex justify-start items-center mb-8 px-2 gap-4 mt-2 hover:opacity-80 transition-opacity cursor-pointer">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-secondary text-primary-content flex items-center justify-center font-black text-2xl shadow-lg shadow-primary/30">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-accent to-primary text-primary-content flex items-center justify-center font-black text-2xl shadow-lg shadow-primary/30">
             {siteData?.brandName ? siteData.brandNameShort.charAt(0).toUpperCase() : "M"}
           </div>
           <div className="flex flex-col items-start overflow-hidden">

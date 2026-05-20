@@ -1,38 +1,43 @@
 import React, { useEffect, useMemo } from "react";
 import { Icon } from "@iconify/react";
 import { m } from "framer-motion";
-import { usePortfolioStore } from "../../stores/portfolioStore";
+import { usePortfolioStore, initialHardSkills } from "../../stores/portfolioStore";
 
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.15, 
-      delayChildren: 0.2     
+      staggerChildren: 0.08,
+      delayChildren: 0.2,
     }
   }
 };
 
 const itemVariants = {
-  hidden: { y: 30, opacity: 0 },
+  hidden: { y: 20, opacity: 0, scale: 0.9 },
   visible: {
     y: 0,
     opacity: 1,
+    scale: 1,
     transition: {
-      duration: 0.8, 
-      ease: [0.25, 0.1, 0.25, 1] 
+      type: "spring",
+      stiffness: 100,
+      damping: 15
     }
   }
 };
 
-const getLevelPercentage = (level) => {
-  const l = level?.toLowerCase() || "";
-  if (l.includes("expert") || l.includes("advanced") || l.includes("lanjut") || l.includes("mahir")) return "90%";
-  if (l.includes("intermediate") || l.includes("menengah")) return "70%";
-  if (l.includes("beginner") || l.includes("dasar") || l.includes("pemula")) return "45%";
-  return "60%";
-};
+const categoryOrder = [
+  "Bahasa Pemrograman",
+  "Framework & Library",
+  "Styling & UI",
+  "State Management",
+  "Database",
+  "Cloud & Deploy",
+  "Tools & Lainnya",
+  "IDE & Office"
+];
 
 function Skills() {
   const fetchSkillsData = usePortfolioStore((state) => state.fetchSkillsData);
@@ -47,7 +52,24 @@ function Skills() {
     }
   }, [fetchSkillsData, skillsData]);
 
-  const displayedHardSkills = useMemo(() => skillsData?.hardSkills || [], [skillsData]);
+  const displayedHardSkills = useMemo(() => {
+    return (skillsData?.hardSkills || []).map((dbSkill) => {
+      const masterSkill = initialHardSkills.find((s) => s.name === dbSkill.name);
+      return masterSkill ? { ...dbSkill, icon: masterSkill.icon, category: masterSkill.category || "Lainnya" } : { ...dbSkill, category: "Lainnya" };
+    });
+  }, [skillsData]);
+
+  const groupedHardSkills = useMemo(() => {
+    const groups = {};
+    displayedHardSkills.forEach(skill => {
+      if (!groups[skill.category]) {
+        groups[skill.category] = [];
+      }
+      groups[skill.category].push(skill);
+    });
+    return groups;
+  }, [displayedHardSkills]);
+
   const displayedSoftSkills = useMemo(() => skillsData?.softSkills || [], [skillsData]);
 
   if (isSkillsLoading) {
@@ -61,89 +83,119 @@ function Skills() {
 
   return (
     <div
-      className="bg-base-100 min-h-[auto] lg:min-h-screen flex flex-col items-center justify-center py-16 lg:py-0 scroll-mt-15 lg:scroll-mt-22"
+      className="bg-base-100 min-h-[auto] xl:min-h-screen flex flex-col items-center justify-center py-16 scroll-mt-15 lg:scroll-mt-22"
       id="skills"
     >
-      <div className="w-full max-w-6xl mx-auto px-0 lg:px-4">
+      <div className="w-full max-w-6xl mx-auto px-4 lg:px-4">
         <m.div
           className="text-center mb-12"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.5 }}
         >
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-2 tracking-tight">Skills</h2>
           <p className="text-base md:text-lg text-base-content/60">Teknologi dan kompetensi profesional saya</p>
         </m.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+
           <m.div
-            className="lg:col-span-8 space-y-6"
+            className="lg:col-span-8 space-y-10"
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.1 }}
           >
-            <div className="flex items-center gap-3 mb-4 px-2 lg:px-0">
+            <div className="flex items-center gap-3">
               <div className="p-2 bg-primary/10 rounded-lg">
                 <Icon icon="solar:code-bold-duotone" className="w-6 h-6 text-primary" />
               </div>
               <h3 className="text-2xl font-bold font-display uppercase tracking-wider text-base-content/80">Hard Skills</h3>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 px-2 lg:px-0">
-              {displayedHardSkills.map((skill) => (
-                <m.div
-                  key={skill.name}
-                  variants={itemVariants}
-                  whileHover={{ y: -5 }}
-                  whileTap={{ scale: 0.95 }}
-                  tabIndex={0}
-                  className="p-4 rounded-2xl bg-base-200 border border-base-content/10 flex items-center gap-4 hover:border-primary hover:bg-base-100 focus:border-primary focus:bg-base-100 cursor-pointer group shadow-sm"
-                >
-                  <div className="w-12 h-12 shrink-0 flex items-center justify-center rounded-xl bg-base-300 group-hover:bg-primary/5 group-focus:bg-primary/5 transition-colors">
-                    <Icon icon={skill.icon} className="w-8 h-8" />
-                  </div>
-                  <div className="flex flex-col min-w-0">
-                    <span className="font-bold font-headings text-sm leading-tight break-words">{skill.name}</span>
-                    <span className="text-[13px] font-black opacity-40 mt-1 tracking-tighter">{skill.level || "Expert"}</span>
-                  </div>
-                </m.div>
-              ))}
-            </div>
+            {Object.keys(groupedHardSkills).length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10">
+                {categoryOrder.map((category) => {
+                  const skills = groupedHardSkills[category];
+                  if (!skills || skills.length === 0) return null;
+
+                  return (
+                    <div key={category} className="space-y-4">
+                      <div className="flex items-center gap-4">
+                        <h4 className="font-bold text-[11px] md:text-xs tracking-widest uppercase opacity-50 whitespace-nowrap">{category}</h4>
+                        <div className="flex-1 h-[1px] bg-base-content/10"></div>
+                      </div>
+
+                      <div className="flex items-center gap-2 md:gap-3">
+                        {skills.map((skill) => (
+                          <m.div
+                            key={skill.name}
+                            variants={itemVariants}
+                            tabIndex={0}
+                            className="relative h-12 w-12 md:h-14 md:w-14 hover:w-44 focus:w-44 md:hover:w-48 md:focus:w-48 rounded-2xl bg-base-200 border border-base-content/10 flex items-center overflow-hidden cursor-pointer shadow-sm group transition-[width,background-color,border-color] duration-300 ease-in-out hover:border-primary hover:bg-base-100 focus:border-primary"
+                          >
+                            <div className="min-w-[3rem] md:min-w-[3.5rem] h-full flex items-center justify-center shrink-0">
+                              <Icon icon={skill.icon} className="w-6 h-6 md:w-8 md:h-8 group-hover:scale-110 transition-transform duration-300 drop-shadow-sm" />
+                            </div>
+
+                            <div className="flex flex-col whitespace-nowrap opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-300 delay-100 pr-3">
+                              <span className="font-bold font-headings text-[13px] md:text-sm text-base-content leading-tight">
+                                {skill.name}
+                              </span>
+                              <span className="text-[9px] md:text-[10px] font-black tracking-widest uppercase text-primary">
+                                {skill.level || "Expert"}
+                              </span>
+                            </div>
+                          </m.div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="italic opacity-40 text-sm">Belum ada hard skills.</div>
+            )}
           </m.div>
 
           <m.div
-            className="lg:col-span-4 space-y-6"
+            className="lg:col-span-4 space-y-6 lg:sticky lg:top-32"
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
+            viewport={{ once: true, amount: 0.2 }}
           >
-            <div className="flex items-center gap-3 mb-4 px-2 lg:px-0">
+            <div className="flex items-center gap-3 mb-4">
               <div className="p-2 bg-secondary/10 rounded-lg">
                 <Icon icon="vscode-icons:file-type-skill" className="w-6 h-6 text-secondary" />
               </div>
               <h3 className="text-2xl font-bold font-display uppercase tracking-wider text-base-content/80">Soft Skills</h3>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3 px-2 lg:px-0">
-              {displayedSoftSkills.map((skill, index) => (
-                <m.div
-                  key={index}
-                  variants={itemVariants}
-                  whileHover={{ x: 5 }}
-                  whileTap={{ scale: 0.95 }}
-                  tabIndex={0}
-                  className="flex items-center gap-2 p-4 rounded-2xl bg-base-200 border border-base-content/10 hover:border-secondary focus:border-secondary transition-all duration-300 shadow-sm cursor-pointer group"
-                >
-                  <Icon
-                    icon="line-md:check-all"
-                    className="w-0 h-6 opacity-0 text-secondary flex-shrink-0 group-hover:w-6 group-hover:opacity-100 group-focus:w-6 group-focus:opacity-100 transition-all duration-300"
-                  />
-                  <span className="font-bold text-sm md:text-base leading-tight break-words transition-colors duration-300 group-hover:text-secondary group-focus:text-secondary">{skill}</span>
-                </m.div>
-              ))}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
+              {displayedSoftSkills.length > 0 ? (
+                displayedSoftSkills.map((skill, index) => (
+                  <m.div
+                    key={index}
+                    variants={itemVariants}
+                    whileHover={{ x: 5 }}
+                    whileTap={{ scale: 0.95 }}
+                    tabIndex={0}
+                    className="flex items-center gap-3 p-4 rounded-2xl bg-base-200 border border-base-content/10 hover:border-secondary focus:border-secondary transition-colors duration-300 shadow-sm cursor-pointer group"
+                  >
+                    <Icon
+                      icon="line-md:check-all"
+                      className="w-0 h-6 opacity-0 text-secondary flex-shrink-0 group-hover:w-6 group-hover:opacity-100 transition-[width,opacity] duration-300"
+                    />
+                    <span className="font-bold text-sm md:text-base leading-tight break-words group-hover:text-secondary transition-colors duration-300">
+                      {skill}
+                    </span>
+                  </m.div>
+                ))
+              ) : (
+                <div className="italic opacity-40 text-sm">Belum ada soft skills.</div>
+              )}
             </div>
           </m.div>
 

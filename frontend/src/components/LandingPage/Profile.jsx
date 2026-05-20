@@ -431,7 +431,7 @@ function Profile() {
                           disabled={isUpdating}
                         >
                           {isUpdating ? (
-                            <span className="loading loading-spinner"></span>
+                            <span className="loading loading-ring loading-sm"></span>
                           ) : (
                             <Icon icon="mdi:content-save" className="mr-2" />
                           )}

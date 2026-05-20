@@ -161,7 +161,7 @@ function RegisterPage() {
                 className="btn btn-primary w-full font-bold text-base"
                 disabled={isLoading}
               >
-                {isLoading ? <span className="loading loading-spinner"></span> : "Register"}
+                {isLoading ? <span className="loading loading-ring loading-sm"></span> : "Register"}
               </button>
             </div>
             <p className="text-center text-sm mt-3">

@@ -150,7 +150,7 @@ function VerificationPage() {
               disabled={isVerifying || code.length !== 6}
             >
               {isVerifying ? (
-                <span className="loading loading-spinner"></span>
+                <span className="loading loading-ring loading-sm"></span>
               ) : (
                 <Icon icon="mdi:check-decagram" className="mr-2" />
               )}
@@ -159,7 +159,6 @@ function VerificationPage() {
           </div>
         </form>
 
-        {/* --- Area Kirim Ulang (Di luar form utama) --- */}
         <div className="card-body pt-0 text-center">
           <div className="divider my-0"></div>
           <p className="text-sm mt-4">Tidak menerima kode?</p>
@@ -170,7 +169,7 @@ function VerificationPage() {
             disabled={isResending}
           >
             {isResending ? (
-              <span className="loading loading-spinner"></span>
+              <span className="loading loading-ring loading-sm"></span>
             ) : (
               <Icon icon="mdi:send-clock-outline" className="mr-2" />
             )}

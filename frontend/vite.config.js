@@ -29,7 +29,6 @@ export default defineConfig({
         daisyui: {
           themes: [
             "emerald",
-            "garden",
             "light",
             "corporate",
             "synthwave",
@@ -39,6 +38,9 @@ export default defineConfig({
             "night",
             "dim",
             "abyss",
+            "bumblebee",
+            "caramellatte",
+            "nord",
           ],
         },
       },

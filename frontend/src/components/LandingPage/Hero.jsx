@@ -77,12 +77,12 @@ function Hero() {
   }, [rawSequence, isAnimationReady]);
 
   const techIcons = [
-    { icon: "logos:html-5", position: "top-[-1.5rem] left-1/2 -translate-x-1/2" },
-    { icon: "logos:css-3", position: "top-[25%] right-[-2rem]" },
-    { icon: "logos:javascript", position: "bottom-[25%] right-[-1.5rem]" },
-    { icon: "logos:tailwindcss-icon", position: "bottom-[-1.5rem] left-1/2 -translate-x-1/2" },
-    { icon: "logos:nodejs", position: "bottom-[25%] left-[-2rem]" },
-    { icon: "logos:react", position: "top-[25%] left-[-1.5rem]" },
+    { icon: "simple-icons:axios", position: "top-[-1.5rem] left-1/2 -translate-x-1/2" },
+    { icon: "skill-icons:expressjs-light", position: "top-[25%] right-[-2rem]" },
+    { icon: "logos:react", position: "bottom-[25%] right-[-1.5rem]" },
+    { icon: "logos:nodejs-icon", position: "bottom-[-1.5rem] left-1/2 -translate-x-1/2" },
+    { icon: "devicon-plain:zustand", position: "bottom-[25%] left-[-2rem]" }, 
+    { icon: "logos:daisyui-icon", position: "top-[25%] left-[-1.5rem]" }, 
   ];
 
   const availableLinks = siteData?.contactLinks || {};

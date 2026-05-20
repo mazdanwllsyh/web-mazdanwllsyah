@@ -26,7 +26,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       position="bottom-center"
       reverseOrder={false}
       toastOptions={{
-        duration: 3000,
+        duration: 3400,
       }}
     />
 

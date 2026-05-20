@@ -188,7 +188,7 @@ function EditSkills() {
                         className="hover:scale-125 transition-transform"
                       >
                         {isDeleting === index ? (
-                          <span className="loading loading-spinner loading-xs"></span>
+                          <span className="loading loading-ring loading-xs"></span>
                         ) : (
                           <Icon icon="solar:close-circle-bold" className="w-4 h-4 text-error" />
                         )}

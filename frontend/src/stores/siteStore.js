@@ -2,7 +2,15 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import instance from "../utils/axios";
 
-const lightThemes = ["emerald", "garden", "light", "corporate"];
+const lightThemes = [
+  "emerald",
+  "light",
+  "corporate",
+  "bumblebee",
+  "cupcake",
+  "caramellatte",
+  "nord",
+];
 const darkThemes = [
   "synthwave",
   "dark",
@@ -37,17 +45,17 @@ const getInitialTheme = () => {
     if (storedTheme) return storedTheme;
 
     const osPrefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)"
+      "(prefers-color-scheme: dark)",
     ).matches;
     return osPrefersDark ? "night" : "emerald";
   }
-  return "emerald"; 
+  return "emerald";
 };
 
 export const useSiteStore = create(
   persist(
     (set, get) => ({
-      theme: getInitialTheme(), 
+      theme: getInitialTheme(),
 
       initTheme: () => {
         const currentTheme = get().theme;
@@ -63,13 +71,14 @@ export const useSiteStore = create(
         if (isCurrentLight) {
           newTheme = darkThemes[Math.floor(Math.random() * darkThemes.length)];
         } else {
-          newTheme = lightThemes[Math.floor(Math.random() * lightThemes.length)];
+          newTheme =
+            lightThemes[Math.floor(Math.random() * lightThemes.length)];
         }
 
         document.documentElement.setAttribute("data-theme", newTheme);
         localStorage.setItem("theme", newTheme);
         set({ theme: newTheme });
-        
+
         return newTheme;
       },
 
@@ -109,7 +118,7 @@ export const useSiteStore = create(
             formData,
             {
               headers: { "Content-Type": "multipart/form-data" },
-            }
+            },
           );
           set({ siteData: response.data });
           return response.data;
@@ -126,7 +135,7 @@ export const useSiteStore = create(
             formData,
             {
               headers: { "Content-Type": "multipart/form-data" },
-            }
+            },
           );
           set({ siteData: response.data });
           return response.data;
@@ -159,6 +168,6 @@ export const useSiteStore = create(
           document.documentElement.setAttribute("data-theme", state.theme);
         }
       },
-    }
-  )
+    },
+  ),
 );

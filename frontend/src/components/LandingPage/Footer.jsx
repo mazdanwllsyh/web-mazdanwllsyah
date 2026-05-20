@@ -44,62 +44,64 @@ function Footer() {
 
   return (
     <>
-      <footer className="py-5 bg-base-200 text-base-content rounded border-t-2 border-base-300 grid-cols-1 grid md:grid-cols-3 md:gap-3 place-items-center mx-auto w-full items-start gap-6">
-        <aside>
-          <p className="text-xl font-bold font-display text-center md:text-start">
-            {siteData.brandNameShort}
-          </p>
-          <a
-            href="https://bejalen.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-primary hover:underline transition-colors"
-          >
-            {siteData.location}
-          </a>
-        </aside>
+      <footer className="py-10 bg-base-200 text-base-content rounded-t-4xl border-t-2 border-base-300 w-full">
+        <div className="max-w-6xl mx-auto px-4 w-full grid grid-cols-1 xl:grid-cols-3 gap-8 place-items-center xl:place-items-start items-start">
+          <aside className="flex flex-col items-center xl:items-start w-full">
+            <p className="text-2xl font-bold font-display text-center xl:text-start mb-2">
+              {siteData.brandNameShort}
+            </p>
+            <a
+              href="https://bejalen.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-primary hover:underline transition-colors text-center xl:text-left"
+            >
+              {siteData.location}
+            </a>
+          </aside>
 
-        <nav className="space-y-4">
-          <p className="font-bold text-center">Contact Me</p>
-          <div className="flex justify-center gap-4 w-35 md:w-auto md:flex-nowrap">
-            {socialLinkConfig
-              .filter((link) => availableLinks[link.key])
-              .map((link) => {
-                const handle = availableLinks[link.key];
-                const fullUrl = link.baseUrl + handle;
-                return (
-                  <a
-                    key={link.key}
-                    href={fullUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label={link.label}
-                    className="hover:text-primary transition-colors duration-200"
-                  >
-                    <Icon icon={link.icon} className="w-6 h-6" />
-                  </a>
-                );
-              })}
-          </div>
-        </nav>
+          <nav className="flex flex-col items-center space-y-4 w-full">
+            <p className="font-bold text-center">Contact Me</p>
+            <div className="flex justify-center gap-4 w-full">
+              {socialLinkConfig
+                .filter((link) => availableLinks[link.key])
+                .map((link) => {
+                  const handle = availableLinks[link.key];
+                  const fullUrl = link.baseUrl + handle;
+                  return (
+                    <a
+                      key={link.key}
+                      href={fullUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label={link.label}
+                      className="hover:text-primary transition-colors duration-200"
+                    >
+                      <Icon icon={link.icon} className="w-6 h-6" />
+                    </a>
+                  );
+                })}
+            </div>
+          </nav>
 
-        <nav className="flex flex-col items-center md:items-start">
-          <Link to="/tentang" className="link link-hover">
-            Tentang Saya
-          </Link>
-          <Link to="/sertifikasi" className="link link-hover">
-            Sertifikasi
-          </Link>
-          <Link to="/donasi" className="link link-hover">
-            Donasi
-          </Link>
-        </nav>
+          <nav className="flex flex-col items-center xl:items-end w-full space-y-2">
+            <Link to="/tentang" className="link link-hover font-medium">
+              Tentang Saya
+            </Link>
+            <Link to="/sertifikasi" className="link link-hover font-medium">
+              Sertifikasi
+            </Link>
+            <Link to="/donasi" className="link link-hover font-medium">
+              Donasi
+            </Link>
+          </nav>
+        </div>
       </footer>
 
       <footer className="footer footer-center p-4 bg-base-300 text-base-content">
         <aside>
           <h3 className="font-bold text-sm text-center">
-            © 2025 - {currentYear} - All right reserved by Mazda Nawallsyah.
+            © 2025 - {currentYear} All right reserved by Mazda Nawallsyah.
           </h3>
         </aside>
       </footer>

@@ -18,8 +18,10 @@ function History() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const isEducationEmpty = !historyData.education || historyData.education.length === 0;
-    const isExperienceEmpty = !historyData.experience || historyData.experience.length === 0;
+    const isEducationEmpty =
+      !historyData.education || historyData.education.length === 0;
+    const isExperienceEmpty =
+      !historyData.experience || historyData.experience.length === 0;
 
     if (isEducationEmpty && isExperienceEmpty) {
       fetchHistoryData();
@@ -46,9 +48,10 @@ function History() {
     return () => clearTimeout(timer);
   }, [activeTab]);
 
-  const activeData = activeTab === "pendidikan"
-    ? (historyData.education || [])
-    : (historyData.experience || []);
+  const activeData =
+    activeTab === "pendidikan"
+      ? historyData.education || []
+      : historyData.experience || [];
 
   const sortedData = useMemo(() => {
     const getEndYear = (yearsString) => {
@@ -60,7 +63,7 @@ function History() {
       return yearMatch ? parseInt(yearMatch[0], 10) : 0;
     };
     return [...activeData].sort(
-      (a, b) => getEndYear(b.years) - getEndYear(a.years)
+      (a, b) => getEndYear(b.years) - getEndYear(a.years),
     );
   }, [activeData]);
 
@@ -115,14 +118,14 @@ function History() {
 
   return (
     <div
-      className="bg-base-100 min-h-[auto] lg:min-h-screen flex flex-col items-center justify-center py-16 lg:py-0 scroll-mt-12 lg:scroll-mt-24 text-base-content"
+      className="bg-base-100 min-h-[auto] lg:min-h-screen flex flex-col items-center justify-center py-16 lg:py-20 scroll-mt-12 lg:scroll-mt-18 text-base-content"
       id="histori"
     >
       <script type="application/ld+json">
         {JSON.stringify(structuredData)}
       </script>
 
-      <div className="w-full max-w-6xl mx-auto px-0 lg:px-4">
+      <div className="w-full max-w-6xl mx-auto px-4">
         <m.div
           className="text-center mb-12"
           initial={{ opacity: 0, y: 30 }}
@@ -130,7 +133,9 @@ function History() {
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-2 tracking-tight">History</h2>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-2 tracking-tight">
+            History
+          </h2>
           <p className="text-base md:text-lg text-base-content">
             Perjalanan {activeTab} saya
           </p>
@@ -144,8 +149,7 @@ function History() {
           transition={{ duration: 0.8, delay: 0.2 }}
         >
           <button
-            className={`tab tab-lg tab-bordered bg-base-200 border-primary mx-2 rounded-lg font-bold ${activeTab === "pendidikan" ? "tab-active border-2 shadow-md border-primary" : ""
-              }`}
+            className={`tab tab-lg tab-bordered bg-base-200 border-primary mx-2 rounded-lg font-bold ${activeTab === "pendidikan" ? "tab-active border-2 shadow-md border-primary" : ""}`}
             onClick={() => {
               setActiveTab("pendidikan");
               localStorage.setItem("activeHistoryTab", "pendidikan");
@@ -155,8 +159,7 @@ function History() {
             Pendidikan
           </button>
           <button
-            className={`tab tab-lg tab-bordered bg-base-200 border-primary mx-2 rounded-lg font-bold ${activeTab === "pengalaman" ? "tab-active border-2 shadow-md border-primary" : ""
-              }`}
+            className={`tab tab-lg tab-bordered bg-base-200 border-primary mx-2 rounded-lg font-bold ${activeTab === "pengalaman" ? "tab-active border-2 shadow-md border-primary" : ""}`}
             onClick={() => {
               setActiveTab("pengalaman");
               localStorage.setItem("activeHistoryTab", "pengalaman");
@@ -190,14 +193,14 @@ function History() {
                   initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true, margin: "-50px" }}
-                  transition={{ duration: 0.6, delay: 0.2 }}
-                  className={`mb-10 flex items-start gap-5 lg:gap-8 ${index % 2 === 0
-                    ? "timeline-start md:text-end flex-row-reverse md:flex-row-reverse"
-                    : "timeline-end md:text-start flex-row md:flex-row"
+                  transition={{ duration: 0.6, delay: 0.4 + index * 0.2 }}
+                  className={`mb-10 flex items-start gap-4 xl:gap-8 w-full ${index % 2 === 0
+                    ? "timeline-start md:text-end md:flex-row-reverse"
+                    : "timeline-end md:text-start flex-row"
                     }`}
                 >
                   {item.logoUrl && (
-                    <div className="avatar hidden lg:block">
+                    <div className="avatar hidden xl:block shrink-0">
                       <div className="w-20 h-20 rounded-full ring ring-secondary ring-offset-base-100 ring-offset-2">
                         <img
                           src={transformCloudinaryUrl(item.logoUrl, 128, 128)}
@@ -210,26 +213,22 @@ function History() {
                     </div>
                   )}
 
-                  <div
-                    className={`mb-3 group ${index % 2 === 0
-                      ? "timeline-start md:text-end"
-                      : "timeline-end md:text-start"
-                      }`}
-                  >
+                  <div className="w-full flex flex-col items-stretch max-w-[18rem] sm:max-w-[20rem] md:max-w-[22rem] xl:max-w-[28rem]">
                     <div
                       tabIndex={0}
-                      className="card w-[18rem] md:w-[20rem] lg:w-[28rem] bg-base-100 shadow-md border border-base-content/20 cursor-pointer transition-transform duration-200 hover:-translate-y-2 hover:border-primary hover:bg-base-200 hover:shadow-xl focus:outline-none focus-within:-translate-y-2 focus-within:border-primary focus-within:bg-base-200 focus-within:shadow-xl"
+                      className="card w-full bg-base-100 shadow-md border border-base-content/20 cursor-pointer transition-transform duration-200 hover:-translate-y-2 hover:border-primary hover:bg-base-200 hover:shadow-xl focus:outline-none focus-within:-translate-y-2 focus-within:border-primary focus-within:bg-base-200 focus-within:shadow-xl"
                     >
                       <div className="card-body p-6 md:p-8">
                         <h3 className="card-title text-xl lg:text-2xl font-bold font-display">
                           {item.institution}
                         </h3>
                         {item.detail && (
-                          <p className="text-sm md:text-base text-base-content/70 text-justify mt-2">
+                          <p className="text-sm md:text-base text-base-content/80 font-semibold text-justify mt-2">
                             {item.detail}
                           </p>
                         )}
-                        <div className="flex items-center text-sm mt-4 text-primary font-bold">
+                        
+                        <div className="flex items-center text-sm mt-4 justify-start font-semibold">
                           <Icon
                             icon="mdi:calendar-blank-outline"
                             className="w-5 h-5 mr-1"
