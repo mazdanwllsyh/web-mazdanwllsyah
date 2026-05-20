@@ -4,107 +4,99 @@ import instance from "../utils/axios";
 
 export const initialHardSkills = [
   // 01 Languanges & Core
-  { id: 1, icon: "logos:html-5", name: "HTML", category: "Markup" },
-  { id: 2, icon: "logos:css-3", name: "CSS", category: "Bahasa Pemrograman" },
+  { icon: "logos:html-5", name: "HTML", category: "Markup" },
+  { icon: "logos:css-3", name: "CSS", category: "Bahasa Pemrograman" },
   {
-    id: 3,
     icon: "logos:javascript",
     name: "JavaScript",
     category: "Bahasa Pemrograman",
   },
   {
-    id: 4,
     icon: "logos:typescript-icon",
     name: "TypeScript",
     category: "Bahasa Pemrograman",
   },
-  { id: 21, icon: "logos:php", name: "PHP", category: "Bahasa Pemrograman" },
-  { id: 23, icon: "logos:go", name: "Golang", category: "Bahasa Pemrograman" },
-  { id: 67, icon: "material-icon-theme:python", name: "Python", category: "Bahasa Pemrograman" },
-  { id: 68, icon: "skill-icons:java-light", name: "Java", category: "Bahasa Pemrograman" },
+  { icon: "logos:php", name: "PHP", category: "Bahasa Pemrograman" },
+  { icon: "logos:go", name: "Golang", category: "Bahasa Pemrograman" },
+  {
+    icon: "material-icon-theme:python",
+    name: "Python",
+    category: "Bahasa Pemrograman",
+  },
+  {
+    icon: "skill-icons:java-light",
+    name: "Java",
+    category: "Bahasa Pemrograman",
+  },
 
   // 02 Frameworks & Libraries
   {
-    id: 6,
     icon: "logos:react",
     name: "React.js",
     category: "Framework & Library",
   },
-  { id: 5, icon: "logos:vue", name: "Vue.js", category: "Framework & Library" },
+  { icon: "logos:vue", name: "Vue.js", category: "Framework & Library" },
   {
-    id: 7,
     icon: "logos:angular-icon",
     name: "Angular",
     category: "Framework & Library",
   },
   {
-    id: 8,
     icon: "logos:nuxt-icon",
     name: "Nuxt.js",
     category: "Framework & Library",
   },
   {
-    id: 9,
     icon: "logos:nextjs-icon",
     name: "Next.js",
     category: "Framework & Library",
   },
   {
-    id: 10,
     icon: "logos:svelte-icon",
     name: "Svelte",
     category: "Framework & Library",
   },
   {
-    id: 11,
     icon: "skill-icons:jquery",
     name: "jQuery",
     category: "Framework & Library",
   },
   {
-    id: 22,
     icon: "logos:laravel",
     name: "Laravel",
     category: "Framework & Library",
   },
   {
-    id: 19,
     icon: "logos:nodejs-icon",
     name: "Node.js",
     category: "Framework & Library",
   },
   {
-    id: 20,
     icon: "bxl:express-js",
     name: "Express.js",
     category: "Framework & Library",
   },
   {
-    id: 55,
     icon: "material-symbols:flutter",
     name: "Flutter",
     category: "Framework & Library",
   },
   {
-    id: 56,
     icon: "material-icon-theme:kotlin",
     name: "Kotlin",
     category: "Framework & Library",
   },
   {
-    id: 56,
     icon: "material-icon-theme:nest",
     name: "NEST.js",
     category: "Framework & Library",
   },
   {
-    id: 57,
     icon: "material-icon-theme:astro",
     name: "Astro.js",
     category: "Framework & Library",
   },
   {
-    id: 58,
     icon: "material-icon-theme:django",
     name: "Django",
     category: "Framework & Library",
@@ -112,140 +104,124 @@ export const initialHardSkills = [
 
   // 03 Styling & UI Tools
   {
-    id: 12,
     icon: "logos:bootstrap",
     name: "Bootstrap CSS",
     category: "Styling & UI",
   },
   {
-    id: 13,
     icon: "logos:tailwindcss-icon",
     name: "Tailwind CSS",
     category: "Styling & UI",
   },
   {
-    id: 14,
     icon: "logos:material-ui",
     name: "Material-UI (MUI)",
     category: "Styling & UI",
   },
-  { id: 15, icon: "logos:sass", name: "Sass/SCSS", category: "Styling & UI" },
+  { icon: "logos:sass", name: "Sass/SCSS", category: "Styling & UI" },
   {
-    id: 39,
     icon: "streamline-logos:framer-logo-block",
     name: "Framer Motion",
     category: "Styling & UI",
   },
   {
-    id: 40,
     icon: "logos:greensock-icon",
     name: "GSAP",
     category: "Styling & UI",
   },
   {
-    id: 41,
     icon: "tabler:brand-threejs",
     name: "Three.js",
     category: "Styling & UI",
   },
-  { id: 48, icon: "logos:daisyui-icon", name: "DaisyUI", category: "Styling & UI" },
-  { id: 49, icon: "bxl:shadcn-ui", name: "ShadCN UI", category: "Styling & UI" },
-  { id: 50, icon: "bxl:motion-js", name: "Motion", category: "Styling & UI" },
-  { id: 66, icon: "simple-icons:primereact", name: "PrimeReact", category: "Styling & UI" },
+  { icon: "logos:daisyui-icon", name: "DaisyUI", category: "Styling & UI" },
+  { icon: "bxl:shadcn-ui", name: "ShadCN UI", category: "Styling & UI" },
+  { icon: "bxl:motion-js", name: "Motion", category: "Styling & UI" },
+  {
+    icon: "simple-icons:primereact",
+    name: "PrimeReact",
+    category: "Styling & UI",
+  },
 
   // 04 State Management
-  { id: 16, icon: "logos:redux", name: "Redux", category: "State Management" },
+  { icon: "logos:redux", name: "Redux", category: "State Management" },
   {
-    id: 17,
     icon: "devicon:zustand",
     name: "Zustand",
     category: "State Management",
   },
-  { id: 18, icon: "logos:pinia", name: "Pinia", category: "State Management" },
+  { icon: "logos:pinia", name: "Pinia", category: "State Management" },
 
   // 05 Databases
-  { id: 31, icon: "logos:mongodb-icon", name: "MongoDB", category: "Database" },
+  { icon: "logos:mongodb-icon", name: "MongoDB", category: "Database" },
   {
-    id: 32,
     icon: "logos:postgresql",
     name: "PostgreSQL",
     category: "Database",
   },
-  { id: 33, icon: "logos:mysql", name: "MySQL", category: "Database" },
+  { icon: "logos:mysql", name: "MySQL", category: "Database" },
 
   // 06 Tools & Others
   {
-    id: 24,
     icon: "dashicons:rest-api",
     name: "RESTful API",
     category: "Tools & Lainnya",
   },
   {
-    id: 42,
     icon: "logos:graphql",
     name: "GraphQL",
     category: "Tools & Lainnya",
   },
-  { id: 25, icon: "logos:git-icon", name: "Git", category: "Tools & Lainnya" },
+  { icon: "logos:git-icon", name: "Git", category: "Tools & Lainnya" },
   {
-    id: 26,
     icon: "logos:docker-icon",
     name: "Docker",
     category: "Tools & Lainnya",
   },
-  { id: 27, icon: "logos:figma", name: "Figma", category: "Tools & Lainnya" },
+  { icon: "logos:figma", name: "Figma", category: "Tools & Lainnya" },
   {
-    id: 28,
     icon: "logos:npm-icon",
     name: "npm",
     category: "Tools & Lainnya",
   },
   {
-    id: 29,
     icon: "logos:webpack",
     name: "Webpack",
     category: "Tools & Lainnya",
   },
-  { id: 30, icon: "logos:vitejs", name: "Vite", category: "Tools & Lainnya" },
-  { id: 34, icon: "logos:jest", name: "Jest", category: "Tools & Lainnya" },
+  { icon: "logos:vitejs", name: "Vite", category: "Tools & Lainnya" },
+  { icon: "logos:jest", name: "Jest", category: "Tools & Lainnya" },
   {
-    id: 35,
     icon: "logos:testing-library",
     name: "React Testing Library",
     category: "Tools & Lainnya",
   },
   {
-    id: 47,
     icon: "logos:postman-icon",
     name: "Postman",
     category: "Tools & Lainnya",
   },
   {
-    id: 51,
     icon: "lineicons:yarn",
     name: "Yarn",
     category: "Tools & Lainnya",
   },
   {
-    id: 52,
     icon: "devicon-plain:bun",
     name: "Bun",
     category: "Tools & Lainnya",
   },
   {
-    id: 53,
     icon: "material-icon-theme:pnpm",
     name: "PNPM",
     category: "Tools & Lainnya",
   },
   {
-    id: 54,
     icon: "simple-icons:pwa",
     name: "PWA",
     category: "Tools & Lainnya",
   },
   {
-    id: 60,
     icon: "material-icon-theme:babel",
     name: "Babel",
     category: "Tools & Lainnya",
@@ -253,19 +229,16 @@ export const initialHardSkills = [
 
   // 07 Cloud & Deployment
   {
-    id: 36,
     icon: "lineicons:vercel",
     name: "Vercel",
     category: "Cloud & Deploy",
   },
   {
-    id: 37,
     icon: "logos:netlify-icon",
     name: "Netlify",
     category: "Cloud & Deploy",
   },
   {
-    id: 38,
     icon: "logos:github-actions",
     name: "GitHub Actions",
     category: "Cloud & Deploy",
@@ -273,51 +246,43 @@ export const initialHardSkills = [
 
   // 08 Office & IDE
   {
-    id: 46,
     icon: "logos:visual-studio-code",
     name: "VS Code",
     category: "IDE & Office",
   },
   {
-    id: 43,
-    icon: "vscode-icons:file-type-word",
-    name: "Ms. Word",
+    icon: "material-symbols:antigravity",
+    name: "Antigravity AI IDEs",
     category: "IDE & Office",
   },
   {
-    id: 44,
-    icon: "vscode-icons:file-type-excel",
-    name: "Ms. Excel",
-    category: "IDE & Office",
-  },
-  {
-    id: 45,
-    icon: "vscode-icons:file-type-powerpoint",
-    name: "Ms. PowerPoint",
-    category: "IDE & Office",
-  },
-  {
-    id: 46,
-    icon: "logos:visual-studio-code",
-    name: "VS Code",
-    category: "IDE & Office",
-  },
-  {
-    id: 61,
     icon: "devicon:jetbrains",
     name: "JetBrains IDEs",
     category: "IDE & Office",
   },
   {
-    id: 62,
     icon: "material-icon-theme:cursor",
     name: "Cursor AI IDEs",
     category: "IDE & Office",
   },
   {
-    id: 63,
     icon: "bxl:grok",
     name: "Grok AI IDEs",
+    category: "IDE & Office",
+  },
+  {
+    icon: "vscode-icons:file-type-word",
+    name: "Ms. Word",
+    category: "IDE & Office",
+  },
+  {
+    icon: "vscode-icons:file-type-excel",
+    name: "Ms. Excel",
+    category: "IDE & Office",
+  },
+  {
+    icon: "vscode-icons:file-type-powerpoint",
+    name: "Ms. PowerPoint",
     category: "IDE & Office",
   },
 ];

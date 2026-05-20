@@ -246,38 +246,50 @@ function EditSkills() {
                     <th className="w-24 text-center">Tampil</th>
                   </THead>
                   <tbody>
-                    {paginatedSkills.map((skill) => (
-                      <TRow key={skill.id} isSelected={skill.isDisplayed}>
-                        <TCell className="text-center">
-                          <div className="inline-flex justify-center p-2 bg-base-100 rounded-lg border border-base-content/10 shadow-sm">
-                            <Icon icon={skill.icon} className="w-6 h-6" />
-                          </div>
-                        </TCell>
-                        <TCell className="font-bold text-base">{skill.name}</TCell>
-                        <TCell className="text-center">
-                          <select
-                            className={`select select-bordered select-sm w-full font-semibold ${!skill.isDisplayed ? 'opacity-40' : 'text-primary'}`}
-                            value={skill.level}
-                            onChange={(e) => handleLevelChange(skill.name, e.target.value)}
-                            disabled={!skill.isDisplayed}
-                          >
-                            {skillLevels.map((level) => (
-                              <option key={level.value} value={level.value} className="text-base-content">
-                                {level.label}
-                              </option>
-                            ))}
-                          </select>
-                        </TCell>
-                        <TCell className="text-center">
-                          <input
-                            type="checkbox"
-                            className="checkbox checkbox-primary checkbox-md rounded-xl"
-                            checked={skill.isDisplayed}
-                            onChange={(e) => handleDisplayChange(skill.name, e.target.checked)}
-                          />
-                        </TCell>
-                      </TRow>
-                    ))}
+                    {paginatedSkills.map((skill, index) => {
+                      const masterSkill = initialHardSkills.find(s => s.name === skill.name);
+                      const skillIcon = masterSkill ? masterSkill.icon : "mdi:code-tags";
+
+                      return (
+                        <TRow key={`edit-skill-${index}`}>
+                          <TCell className="text-center font-mono opacity-50">
+                            {(currentPage - 1) * limit + index + 1}
+                          </TCell>
+                          <TCell>
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-xl bg-base-200 flex items-center justify-center border border-base-content/10 shrink-0">
+                                <Icon icon={skillIcon} className="w-6 h-6 text-base-content" />
+                              </div>
+                              <span className="font-bold whitespace-nowrap">{skill.name}</span>
+                            </div>
+                          </TCell>
+                          <TCell>
+                            <select
+                              className="select select-bordered select-sm w-full font-bold bg-base-100"
+                              value={skill.level}
+                              onChange={(e) => handleLevelChange(skill.name, e.target.value)}
+                              disabled={!skill.isDisplayed}
+                            >
+                              {skillLevels.map((lvl) => (
+                                <option className="bg-base-100 text-base-content" key={lvl.value} value={lvl.value}>
+                                  {lvl.label}
+                                </option>
+                              ))}
+                            </select>
+                          </TCell>
+                          <TCell className="text-center">
+                            <label className="cursor-pointer label justify-center">
+                              <input
+                                type="checkbox"
+                                className="checkbox checkbox-success"
+                                checked={skill.isDisplayed}
+                                onChange={(e) => handleDisplayChange(skill.name, e.target.checked)}
+                              />
+                            </label>
+                          </TCell>
+                        </TRow>
+                      );
+                    })}
                     {paginatedSkills.length === 0 && (
                       <tr>
                         <td colSpan="4" className="text-center py-10 text-base-content/40 italic border-b border-base-content/5">
