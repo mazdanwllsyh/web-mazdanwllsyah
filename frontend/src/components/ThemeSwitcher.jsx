@@ -16,8 +16,10 @@ function ThemeSwitcher() {
     toast.dismiss();
     const newTheme = toggleTheme();
 
+    const formattedTheme = newTheme.toUpperCase();
+
     setTimeout(() => {
-      success(`Tema ganti ke: ${newTheme}`, {
+      success(`Tema ganti ke: "${formattedTheme}"`, {
         position: "top-right",
         id: "theme-toast"
       });

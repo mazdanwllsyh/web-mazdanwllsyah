@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useLayoutEffect,
-  Suspense,
-  lazy,
-} from "react";
+import React, { useState, useEffect, useLayoutEffect, Suspense, lazy } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Transition from "./components/Transition";
@@ -23,7 +17,7 @@ const ScrollProgressBar = () => {
 
   return (
     <motion.div
-      className="fixed top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-accent to-primary z-[99999] pointer-events-none origin-left"
+      className="fixed top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-accent to-primary z-[99998] pointer-events-none origin-left"
       style={{ scaleX, opacity }}
     />
   );
@@ -35,33 +29,51 @@ function App() {
 
   const isSiteDataLoading = useSiteStore((state) => state.isSiteDataLoading);
   const fetchSiteData = useSiteStore((state) => state.fetchSiteData);
-
   const { isUserLoading, checkUserSession } = useAuth();
 
   const [isVisualLoading, setIsVisualLoading] = useState(false);
+  const [isContentReady, setIsContentReady] = useState(false);
 
   useEffect(() => {
     fetchSiteData();
-    if (checkUserSession) {
-      checkUserSession();
-    }
+    if (checkUserSession) checkUserSession();
   }, [fetchSiteData, checkUserSession]);
 
   useLayoutEffect(() => {
     if (isDashboard) {
       setIsVisualLoading(false);
+      setIsContentReady(true);
       return;
     }
 
     setIsVisualLoading(true);
-    const timer = setTimeout(() => {
-      setIsVisualLoading(false);
-    }, 1000); 
+    setIsContentReady(false);
 
-    return () => clearTimeout(timer);
+    const transitionTimer = setTimeout(() => {
+      setIsVisualLoading(false);
+    }, 1200);
+
+    const contentTimer = setTimeout(() => {
+      setIsContentReady(true);
+    }, 1600);
+
+    return () => {
+      clearTimeout(transitionTimer);
+      clearTimeout(contentTimer);
+    };
   }, [location.pathname, isDashboard]);
 
-  const isLoadingOverlay = isSiteDataLoading || isUserLoading || (isVisualLoading && !isDashboard);
+  const isAppInitializing = isSiteDataLoading || isUserLoading;
+  const showTransition = isAppInitializing || isVisualLoading;
+
+  useEffect(() => {
+    if (isAppInitializing) {
+      setIsContentReady(false);
+    } else if (!isVisualLoading) {
+      const timer = setTimeout(() => setIsContentReady(true), 400);
+      return () => clearTimeout(timer);
+    }
+  }, [isAppInitializing, isVisualLoading]);
 
   return (
     <>
@@ -96,27 +108,26 @@ function App() {
       <ScrollProgressBar />
       <GlobalModal />
 
-      <Transition isLoading={isLoadingOverlay} />
+      <Transition isLoading={showTransition} />
 
-      <main
-        className={`transition-opacity duration-700 ease-in-out ${isLoadingOverlay ? "opacity-0 overflow-hidden" : "opacity-100"
-          }`}
-      >
-        <Suspense
-          fallback={
-            <div className="fixed inset-0 bg-base-100 z-[9999] flex items-center justify-center">
-              <span className="loading loading-ring loading-lg text-primary"></span>
-            </div>
-          }
-        >
-          <Routes>
-            <Route path="/*" element={<AppLandingPage />} />
-            <Route element={<AdminRoute />}>
-              <Route path="/dashboard/*" element={<AppDashboard />} />
-            </Route>
-          </Routes>
-        </Suspense>
-      </main>
+      {isContentReady && (
+        <main className="w-full min-h-screen">
+          <Suspense
+            fallback={
+              <div className="fixed inset-0 bg-base-100 z-[9997] flex items-center justify-center">
+                <span className="loading loading-ring loading-lg text-primary"></span>
+              </div>
+            }
+          >
+            <Routes>
+              <Route path="/*" element={<AppLandingPage />} />
+              <Route element={<AdminRoute />}>
+                <Route path="/dashboard/*" element={<AppDashboard />} />
+              </Route>
+            </Routes>
+          </Suspense>
+        </main>
+      )}
     </>
   );
 }

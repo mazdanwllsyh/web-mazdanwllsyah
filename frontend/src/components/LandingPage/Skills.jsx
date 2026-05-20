@@ -127,25 +127,29 @@ function Skills() {
                         <div className="flex-1 h-[1px] bg-base-content/10"></div>
                       </div>
 
-                      <div className="flex items-center gap-2 md:gap-3">
+                      <div className="flex flex-wrap gap-2 md:gap-3">
                         {skills.map((skill) => (
                           <m.div
                             key={skill.name}
                             variants={itemVariants}
-                            tabIndex={0}
-                            className="relative h-12 w-12 md:h-14 md:w-14 hover:w-44 focus:w-44 md:hover:w-48 md:focus:w-48 rounded-2xl bg-base-200 border border-base-content/10 flex items-center overflow-hidden cursor-pointer shadow-sm group transition-[width,background-color,border-color] duration-300 ease-in-out hover:border-primary hover:bg-base-100 focus:border-primary"
+                            className="relative w-[3rem] md:w-[3.5rem] h-12 md:h-14 shrink-0 z-10 hover:z-50 focus-within:z-50"
                           >
-                            <div className="min-w-[3rem] md:min-w-[3.5rem] h-full flex items-center justify-center shrink-0">
-                              <Icon icon={skill.icon} className="w-6 h-6 md:w-8 md:h-8 group-hover:scale-110 transition-transform duration-300 drop-shadow-sm" />
-                            </div>
+                            <div
+                              tabIndex={0}
+                              className="absolute top-0 left-0 h-12 md:h-14 w-[3rem] md:w-[3.5rem] hover:w-max focus:w-max max-w-[16rem] rounded-2xl bg-base-200 border border-base-content/10 flex items-center overflow-hidden cursor-pointer shadow-sm group transition-all duration-300 ease-in-out hover:border-primary hover:bg-base-100 focus:border-primary outline-none hover:shadow-lg focus:shadow-lg"
+                            >
+                              <div className="w-[3rem] md:w-[3.5rem] h-full flex items-center justify-center shrink-0">
+                                <Icon icon={skill.icon} className="w-6 h-6 md:w-8 md:h-8 group-hover:scale-110 group-focus:scale-110 transition-transform duration-300 drop-shadow-sm" />
+                              </div>
 
-                            <div className="flex flex-col whitespace-nowrap opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-300 delay-100 pr-3">
-                              <span className="font-bold font-headings text-[13px] md:text-sm text-base-content leading-tight">
-                                {skill.name}
-                              </span>
-                              <span className="text-[9px] md:text-[10px] font-black tracking-widest uppercase text-primary">
-                                {skill.level || "Expert"}
-                              </span>
+                              <div className="flex flex-col whitespace-nowrap opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-300 delay-100 pr-4">
+                                <span className="font-bold font-headings text-[13px] md:text-sm text-base-content leading-tight">
+                                  {skill.name}
+                                </span>
+                                <span className="text-[9px] md:text-[10px] font-black tracking-widest uppercase text-primary">
+                                  {skill.level || "Expert"}
+                                </span>
+                              </div>
                             </div>
                           </m.div>
                         ))}

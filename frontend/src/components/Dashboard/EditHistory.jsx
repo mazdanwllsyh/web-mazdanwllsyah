@@ -96,6 +96,14 @@ function EditHistory() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!type) return errorToast("Kategori Riwayat wajib dipilih!");
@@ -110,6 +118,7 @@ function EditHistory() {
     formData.append("institution", institution);
     formData.append("years", finalYears);
     formData.append("detail", detail);
+
     if (imageFile) formData.append("logoFile", imageFile);
 
     try {
@@ -134,81 +143,113 @@ function EditHistory() {
   if (isHistoryLoading) return <div className="text-center py-20"><span className="loading loading-ring loading-lg text-primary"></span></div>;
 
   return (
-    <div className="space-y-8">
-      <div className="card bg-base-100 border border-base-content/20 shadow-sm rounded-[2.5rem] overflow-hidden">
-        <div className="card-body p-0">
-          <div className="p-6 border-b border-base-content/10 bg-base-200/50 flex items-center gap-3">
-            <div className="p-2 bg-primary/10 text-primary rounded-xl"><Icon icon="mdi:timeline-plus-outline" className="w-6 h-6" /></div>
-            <h2 className="text-xl font-black font-display">{editingItemId ? "Edit Riwayat" : "Tambah Riwayat"}</h2>
+    <div className="flex flex-col xl:flex-row gap-8 items-start w-full">
+      <div className="w-full xl:w-5/12 xl:sticky xl:top-24 card bg-base-100 border border-base-content/20 shadow-sm rounded-[2.5rem] overflow-hidden">
+        <div className="p-6 border-b border-base-content/10 bg-base-200/50 flex items-center gap-3">
+          <div className="p-2 bg-primary/10 text-primary rounded-xl">
+            <Icon icon="mdi:timeline-plus-outline" className="w-6 h-6" />
+          </div>
+          <h2 className="text-xl font-black font-display">{editingItemId ? "Edit Riwayat" : "Tambah Riwayat"}</h2>
+        </div>
+
+        <form onSubmit={handleSubmit} className="p-8 space-y-6">
+          <FloatingLabelSelect
+            label="Tipe Riwayat"
+            name="type"
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+            required
+          >
+            <option value="" disabled hidden>Pilih Tipe</option>
+            <option value="education" className="bg-base-100 text-base-content">Pendidikan</option>
+            <option value="experience" className="bg-base-100 text-base-content">Pengalaman</option>
+          </FloatingLabelSelect>
+
+          <FloatingLabelInput label="Institusi / Perusahaan" value={institution} onChange={(e) => setInstitution(e.target.value)} required />
+
+          <div className="grid grid-cols-2 gap-4">
+            <FloatingLabelInput label="Mulai (Cth: 2020)" value={startDate} onChange={(e) => setStartDate(e.target.value)} required />
+            <FloatingLabelInput label="Sampai (Cth: 2024)" value={isCurrent ? "" : endDate} onChange={(e) => setEndStatus(e.target.value)} disabled={isCurrent} />
           </div>
 
-          <form onSubmit={handleSubmit} className="p-8 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <FloatingLabelSelect label="Kategori Riwayat" value={type} onChange={(e) => setType(e.target.value)} required>
-                <option value="" disabled hidden className="bg-base-100 text-base-content">-- Pilih Kategori --</option>
-                <option value="education" className="bg-base-100 text-base-content">Pendidikan</option>
-                <option value="experience" className="bg-base-100 text-base-content">Pengalaman Kerja</option>
-              </FloatingLabelSelect>
-              <FloatingLabelInput label="Institusi / Perusahaan" value={institution} onChange={(e) => setInstitution(e.target.value)} required />
-            </div>
+          <label className="label cursor-pointer justify-center gap-3 p-4 border border-base-content/20 rounded-xl hover:bg-base-200/50 transition-colors h-14">
+            <input type="checkbox" className="checkbox checkbox-primary checkbox-sm" checked={isCurrent} onChange={(e) => setIsCurrent(e.target.checked)} />
+            <span className="label-text font-bold">Masih Disini (Sekarang)</span>
+          </label>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-end">
-              <FloatingLabelInput label="Mulai (Cth: Januari 2025)" value={startDate} onChange={(e) => setStartDate(e.target.value)} required />
-              <FloatingLabelInput label="Sampai (Cth: Desember 2026)" value={isCurrent ? "" : endDate} onChange={(e) => setEndStatus(e.target.value)} disabled={isCurrent} />
-              <label className="label cursor-pointer justify-center gap-3 p-4 border border-base-content/20 rounded-xl hover:bg-base-200/50 transition-colors h-14">
-                <input type="checkbox" className="checkbox checkbox-primary checkbox-sm" checked={isCurrent} onChange={(e) => setIsCurrent(e.target.checked)} />
-                <span className="label-text font-bold">Masih Disini</span>
-              </label>
-            </div>
+          <FloatingLabelTextarea label="Detail Pekerjaan / Studi" value={detail} onChange={(e) => setDetail(e.target.value)} rows={3} />
 
-            <FloatingLabelTextarea label="Detail / Penjelasan (Apa yang kamu lakukan di sini?)" value={detail} onChange={(e) => setDetail(e.target.value)} rows={3} />
+          <div className="p-4 border border-base-content/20 rounded-2xl bg-base-100/50">
+            <label className="label-text font-bold mb-2 block opacity-60">Logo Instansi</label>
+            <input id="logo_upload" type="file" accept="image/*" onChange={handleImageChange} className="file-input file-input-sm file-input-bordered w-full" />
+            {(imagePreview || (typeof imageFile === 'string' && imageFile)) && (
+              <div className="mt-4 w-full h-32 rounded-xl border border-base-content/10 overflow-hidden bg-base-200 flex items-center justify-center p-2">
+                <img src={imagePreview || imageFile} alt="Preview Logo" className="max-h-full max-w-full object-contain" />
+              </div>
+            )}
+          </div>
 
-            <div className="flex justify-end gap-3 pt-2">
-              {editingItemId && <button type="button" className="btn btn-neutral rounded-xl" onClick={resetForm}>Batal</button>}
-              <button type="submit" className="btn btn-primary rounded-xl md:w-64" disabled={isSaving}>
-                {isSaving ? <span className="loading loading-ring loading-md"></span> : <Icon icon="mdi:content-save" className="w-5 h-5" />}
-                {isSaving ? "Menyimpan..." : "Simpan Riwayat"}
-              </button>
-            </div>
-          </form>
-        </div>
+          <div className="flex justify-end gap-3 pt-2">
+            {editingItemId && <button type="button" className="btn btn-ghost rounded-xl" onClick={resetForm}>Batal</button>}
+            <button type="submit" className="btn btn-primary rounded-xl flex-1" disabled={isSaving}>
+              {isSaving ? <span className="loading loading-ring loading-md"></span> : <Icon icon="mdi:content-save" className="w-5 h-5" />}
+              {isSaving ? "Menyimpan..." : (editingItemId ? "Simpan Perubahan" : "Simpan Riwayat")}
+            </button>
+          </div>
+        </form>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        {["education", "experience"].map((section) => (
-          <div key={section} className="card bg-base-100 border border-base-content/20 shadow-sm rounded-[2.5rem] overflow-hidden">
-            <div className="card-body p-0">
-              <div className="p-4 border-b border-base-content/10 bg-base-200/30 flex items-center gap-2">
-                <Icon icon={section === "education" ? "mdi:school" : "mdi:briefcase"} className="w-5 h-5 text-primary" />
-                <h3 className="card-title capitalize font-display">{section === "education" ? "Pendidikan" : "Pengalaman"}</h3>
+      <div className="w-full xl:w-7/12 space-y-8">
+        {["education", "experience"].map((section) => {
+          const items = sortedHistory[section];
+          if (!items || items.length === 0) return null;
+
+          return (
+            <div key={section} className="flex flex-col">
+              <div className="flex items-center gap-3 mb-4 px-2">
+                <div className={`p-2 rounded-xl ${section === 'education' ? 'bg-secondary/10 text-secondary' : 'bg-accent/10 text-accent'}`}>
+                  <Icon icon={section === "education" ? "mdi:school" : "mdi:briefcase"} className="w-6 h-6" />
+                </div>
+                <h3 className="text-xl font-bold font-display capitalize">{section === "education" ? "Pendidikan" : "Pengalaman"}</h3>
               </div>
-              <div className="p-4 space-y-4 max-h-[500px] overflow-y-auto">
-                {sortedHistory[section]?.map((item) => (
-                  <div key={item._id} className="p-4 border border-base-content/20 rounded-xl flex flex-col gap-2 hover:bg-base-200/50 transition-all group">
-                    <div className="flex justify-between items-start">
-                      <div className="flex gap-3">
-                        {item.logoUrl && <img src={item.logoUrl} className="w-10 h-10 rounded-lg object-cover border border-base-content/50" alt="logo" />}
-                        <div>
-                          <div className="font-bold">{item.institution}</div>
-                          <div className="text-xs font-bold text-primary">{item.years}</div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {items.map((item) => (
+                  <div key={item._id} className="relative group p-5 bg-base-100 border border-base-content/10 rounded-[2rem] hover:border-primary transition-all shadow-sm hover:shadow-lg flex flex-col gap-4">
+                    <div className="flex gap-4 items-start">
+                      {item.logoUrl ? (
+                        <img src={item.logoUrl} className="w-12 h-12 rounded-xl object-contain bg-base-200 p-1 border border-base-content/10 shrink-0" alt="logo" />
+                      ) : (
+                        <div className="w-12 h-12 rounded-xl bg-base-200 flex items-center justify-center border border-base-content/10 shrink-0 opacity-50">
+                          <Icon icon="mdi:image-off-outline" className="w-6 h-6" />
                         </div>
-                      </div>
-                      <div className="flex gap-1 align-top opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity mt-2 lg:mt-0">
-                        <button className="btn btn-square btn-xs btn-warning" onClick={() => handleEdit(item, section)}><Icon icon="mdi:pencil" /></button>
-                        <button className="btn btn-square btn-xs btn-error" onClick={() => handleDelete(item._id, section)}><Icon icon="mdi:delete" /></button>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-bold text-base leading-tight truncate" title={item.institution}>{item.institution}</h4>
+                        <span className="text-xs font-black text-primary mt-1 block">{item.years}</span>
                       </div>
                     </div>
+
                     {item.detail && (
-                      <div className="text-xs opacity-70 bg-base-200/50 p-2 rounded-lg font-headings font-bold">
+                      <p className="text-xs opacity-70 bg-base-200/50 p-3 rounded-xl font-medium line-clamp-3 leading-relaxed">
                         {item.detail}
-                      </div>
+                      </p>
                     )}
+
+                    <div className="absolute top-4 right-4 flex gap-2 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity bg-base-100/90 p-1 rounded-xl shadow-sm backdrop-blur-sm">
+                      <button className="btn btn-square btn-sm btn-ghost text-warning hover:bg-warning/20" onClick={() => handleEdit(item, section)}>
+                        <Icon icon="solar:pen-bold" className="w-4 h-4" />
+                      </button>
+                      <button className="btn btn-square btn-sm btn-ghost text-error hover:bg-error/20" onClick={() => handleDelete(item._id, section)}>
+                        <Icon icon="solar:trash-bin-trash-bold" className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

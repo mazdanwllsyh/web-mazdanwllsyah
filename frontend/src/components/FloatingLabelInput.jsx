@@ -141,7 +141,7 @@ export const FloatingLabelSelect = ({ label, id, value, onChange, disabled, chil
                 value={value}
                 onChange={onChange}
                 disabled={disabled}
-                className={`w-full h-14 px-4 bg-transparent rounded-xl text-base transition-all duration-300 outline-none appearance-none relative z-10
+                className={`select select-bordered w-full h-14 px-4 bg-transparent text-base transition-all duration-300 outline-none relative z-10
                            ${disabled ? 'cursor-not-allowed text-base-content/50' : 'text-base-content'} ${className}`}
                 onFocus={() => !disabled && setIsFocused(true)}
                 onBlur={() => !disabled && setIsFocused(false)}

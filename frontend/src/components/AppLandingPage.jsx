@@ -1,8 +1,7 @@
-import React, { useEffect, useState, Suspense, lazy } from "react";
+import React, { useEffect, Suspense, lazy } from "react";
 import { Routes, Route, useLocation, Navigate, Outlet } from "react-router-dom";
 import Header from "../components/LandingPage/Header";
 import ProtectedRoute from "../routes/ProtectedRoute";
-import { useSiteStore } from "../stores/siteStore";
 import { useAuth } from "../hooks/useAuth";
 
 import { LazyMotion, domAnimation } from "framer-motion";
@@ -35,32 +34,9 @@ const PublicOnlyWrapper = () => {
 
 function AppLandingPage() {
   const location = useLocation();
-  const fetchSiteData = useSiteStore((state) => state.fetchSiteData);
-  const isSiteDataLoading = useSiteStore((state) => state.isSiteDataLoading);
-  const { checkUserSession, isUserLoading } = useAuth();
-
-  const [showContent, setShowContent] = useState(false);
 
   useEffect(() => {
-    fetchSiteData();
-    checkUserSession();
-  }, [fetchSiteData, checkUserSession]);
-
-  useEffect(() => {
-    if (!isSiteDataLoading && !isUserLoading) {
-      const timer = setTimeout(() => {
-        setShowContent(true);
-      }, 600);
-      return () => clearTimeout(timer);
-    } else {
-      setShowContent(false);
-    }
-  }, [isSiteDataLoading, isUserLoading]);
-
-  useEffect(() => {
-    if (!showContent) return;
     const hash = location.hash;
-
     if (hash) {
       const scrollTimer = setTimeout(() => {
         const id = hash.replace("#", "");
@@ -68,46 +44,44 @@ function AppLandingPage() {
         if (element) {
           element.scrollIntoView({ behavior: "smooth", block: "start" });
         }
-      }, 300);
+      }, 100);
       return () => clearTimeout(scrollTimer);
     } else {
       window.scrollTo({ top: 0, behavior: "instant" });
     }
-  }, [location.hash, location.pathname, showContent]);
+  }, [location.hash, location.pathname]);
 
   return (
     <div className="flex flex-col min-h-screen overflow-x-hidden">
-      {showContent && (
-        <LazyMotion features={domAnimation}>
-          <Header />
+      <LazyMotion features={domAnimation}>
+        <Header />
 
-          <main className="flex-grow pt-18 xl:pb-8 w-full flex flex-col items-center">
-            <div className="w-[92%] md:w-[88%] lg:w-[85%] max-w-7xl">
-              <Suspense fallback={null}>
-                <Routes key={location.pathname}>
-                  <Route element={<PublicOnlyWrapper />}>
-                    <Route path="signin" element={<LoginPage />} />
-                    <Route path="signup" element={<RegisterPage />} />
-                    <Route path="verifikasi" element={<VerificationPage />} />
-                  </Route>
+        <main className="flex-grow pt-18 xl:pb-8 w-full flex flex-col items-center">
+          <div className="w-[92%] md:w-[88%] lg:w-[85%] max-w-7xl">
+            <Suspense fallback={null}>
+              <Routes key={location.pathname}>
+                <Route element={<PublicOnlyWrapper />}>
+                  <Route path="signin" element={<LoginPage />} />
+                  <Route path="signup" element={<RegisterPage />} />
+                  <Route path="verifikasi" element={<VerificationPage />} />
+                </Route>
 
-                  <Route index element={<Beranda />} />
-                  <Route path="tentang" element={<About />} />
-                  <Route path="sertifikasi" element={<Sertifikasi />} />
-                  <Route path="donasi" element={<Donasi />} />
-                  <Route path="*" element={<NotFoundRedirect />} />
+                <Route index element={<Beranda />} />
+                <Route path="tentang" element={<About />} />
+                <Route path="sertifikasi" element={<Sertifikasi />} />
+                <Route path="donasi" element={<Donasi />} />
+                <Route path="*" element={<NotFoundRedirect />} />
 
-                  <Route element={<ProtectedRoute />}>
-                    <Route path="profil" element={<Profile />} />
-                  </Route>
-                </Routes>
-              </Suspense>
-            </div>
-          </main>
+                <Route element={<ProtectedRoute />}>
+                  <Route path="profil" element={<Profile />} />
+                </Route>
+              </Routes>
+            </Suspense>
+          </div>
+        </main>
 
-          <Footer />
-        </LazyMotion>
-      )}
+        <Footer />
+      </LazyMotion>
     </div>
   );
 }

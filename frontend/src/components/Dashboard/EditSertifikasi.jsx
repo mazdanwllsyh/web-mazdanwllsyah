@@ -8,7 +8,6 @@ import { Viewer, Worker } from "@react-pdf-viewer/core";
 import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
 import { TableContainer, THead, TRow, TCell, TableFooter } from "../StylingTable";
 import FloatingLabelInput, { FloatingLabelSelect } from "../FloatingLabelInput";
-import ModalDashboard from "../ModalDashboard";
 
 const initialSertifForm = {
   title: "",
@@ -32,6 +31,7 @@ function EditSertifikat() {
   const { showConfirmSwal, showSuccessSwal } = useCustomSwals();
 
   const [sertifForm, setSertifForm] = useState(initialSertifForm);
+  const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingSertifId, setEditingSertifId] = useState(null);
   const [imageThumbFile, setImageThumbFile] = useState(null);
   const [imageThumbPreview, setImageThumbPreview] = useState("");
@@ -49,6 +49,11 @@ function EditSertifikat() {
   useEffect(() => {
     if (!sertifikatData || sertifikatData.length === 0) fetchSertifikat();
   }, [fetchSertifikat, sertifikatData.length]);
+
+  useEffect(() => {
+    import("@react-pdf-viewer/core/lib/styles/index.css");
+    import("@react-pdf-viewer/default-layout/lib/styles/index.css");
+  }, []);
 
   useEffect(() => { setCurrentPage(1); }, [searchTerm]);
 
@@ -88,7 +93,7 @@ function EditSertifikat() {
     }
   };
 
-  const handleOpenSertifModal = (sertif = null) => {
+  const toggleForm = (sertif = null) => {
     if (sertif) {
       setEditingSertifId(sertif._id);
       setSertifForm(sertif);
@@ -102,7 +107,7 @@ function EditSertifikat() {
     }
     setImageThumbFile(null);
     setMainFile(null);
-    document.getElementById("sertif_modal").showModal();
+    setIsFormOpen(!isFormOpen);
   };
 
   const handleSertifSubmit = async () => {
@@ -123,7 +128,7 @@ function EditSertifikat() {
       if (editingSertifId) await updateSertifikat(editingSertifId, formData);
       else await addSertifikat(formData);
       showSuccessSwal("Berhasil!");
-      document.getElementById("sertif_modal").close();
+      setIsFormOpen(false);
     } catch (error) {
       showErrorToast("Error", error.response?.data?.message || "Gagal menyimpan data.");
     } finally { setIsSaving(false); }
@@ -149,15 +154,83 @@ function EditSertifikat() {
     <div className="card bg-base-100 shadow-sm border border-base-content/20 rounded-[2.5rem] overflow-hidden">
       <div className="card-body p-8 md:p-10">
         <div className="flex flex-col md:flex-row justify-between gap-4 mb-6">
-          <div>
-            <h1 className="text-2xl font-black font-display flex items-center gap-3">
-              <Icon icon="ph:certificate-duotone" className="text-primary" /> Kelola Sertifikat
-            </h1>
-          </div>
-          <button className="btn btn-primary rounded-2xl shadow-lg" onClick={() => handleOpenSertifModal()}>
-            <Icon icon="mdi:plus-circle" /> Tambah Sertifikat
+          <h1 className="text-2xl font-black font-display flex items-center gap-3">
+            <Icon icon="ph:certificate-duotone" className="text-primary" /> Kelola Sertifikat
+          </h1>
+          <button className="btn btn-primary rounded-2xl shadow-lg" onClick={() => toggleForm()}>
+            <Icon icon={isFormOpen ? "mdi:close" : "mdi:plus-circle"} /> {isFormOpen ? "Batal" : "Tambah Sertifikat"}
           </button>
         </div>
+
+        {isFormOpen && (
+          <div className="mb-8 p-6 bg-base-200/50 rounded-3xl border border-base-content/10 animate-in fade-in slide-in-from-top-4">
+            <h2 className="text-lg font-bold mb-4">{editingSertifId ? "Edit Sertifikat" : "Tambah Baru"}</h2>
+            <div className="space-y-6">
+              <FloatingLabelInput label="Judul Sertifikat" name="title" value={sertifForm.title} onChange={handleInputChange} required />
+              <FloatingLabelInput label="Penerbit" name="issuer" value={sertifForm.issuer} onChange={handleInputChange} required />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 border border-base-content/20 rounded-2xl bg-base-100/50">
+                  <label className="label-text font-bold mb-2 block opacity-60">Thumbnail (Wajib)</label>
+                  <input type="file" className="file-input file-input-sm file-input-bordered w-full" onChange={handleThumbFileChange} accept="image/*" />
+                  {imageThumbPreview && (
+                    <div className="mt-4 w-full h-32 rounded-xl border border-base-content/10 overflow-hidden bg-base-200">
+                      <img src={imageThumbPreview} className="w-full h-full object-contain" alt="Thumbnail Preview" />
+                    </div>
+                  )}
+                </div>
+
+                <div className="p-4 border border-base-content/20 rounded-2xl bg-base-100/50">
+                  <label className="label-text font-bold mb-2 block opacity-60">File Asli (Wajib)</label>
+                  <input type="file" className="file-input file-input-sm file-input-bordered w-full" onChange={handleMainFileChange} accept="image/*,application/pdf" />
+                  {mainFilePreview && sertifForm.type === "image" && (
+                    <div className="mt-4 w-full h-32 rounded-xl border border-base-content/10 overflow-hidden bg-base-200">
+                      <img src={mainFilePreview} className="w-full h-full object-contain" alt="Main File Preview" />
+                    </div>
+                  )}
+                  {mainFilePreview && sertifForm.type === "pdf" && (
+                    <div className="mt-4 w-full h-32 rounded-xl border border-base-content/10 overflow-hidden bg-base-200 flex items-center justify-center">
+                      <Icon icon="mdi:file-pdf-box" className="w-12 h-12 text-error" />
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {mainFilePreview && sertifForm.type === "pdf" && (
+                <div className="p-4 border border-base-content/20 rounded-2xl">
+                  <p className="label-text font-bold mb-3 opacity-60">Pratinjau PDF Utama</p>
+                  <div className="h-[400px] rounded-xl overflow-hidden bg-base-200 border border-base-content/10">
+                    <Worker workerUrl={workerUrl}>
+                      <Viewer
+                        fileUrl={mainFilePreview}
+                        plugins={[defaultLayoutPluginInstance]}
+                        theme={themeMode}
+                      />
+                    </Worker>
+                  </div>
+                </div>
+              )}
+
+              <FloatingLabelSelect
+                label="Kategori"
+                name="category"
+                value={sertifForm.category}
+                onChange={handleInputChange}
+              >
+                {categories.filter(c => c !== "Semua").map(c => (
+                  <option key={c} value={c} className="bg-base-100">
+                    {c}
+                  </option>
+                ))}
+              </FloatingLabelSelect>
+
+              <div className="flex gap-3 justify-end">
+                <button className="btn btn-ghost" onClick={() => setIsFormOpen(false)}>Batal</button>
+                <button className="btn btn-primary" onClick={handleSertifSubmit} disabled={isSaving}>{isSaving ? "Menyimpan..." : "Simpan"}</button>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="flex justify-end mb-6">
           <div className="w-full md:w-80 relative">
@@ -179,30 +252,13 @@ function EditSertifikat() {
               {paginatedSertifikat.map((sertif, idx) => (
                 <TRow key={sertif._id}>
                   <TCell className="text-center font-mono opacity-50">{(currentPage - 1) * limit + idx + 1}</TCell>
-                  <TCell>
-                    <div className="avatar justify-center">
-                      <div className="w-20 h-14 rounded-lg border border-base-content/10 overflow-hidden"><img src={sertif.imageUrl} className="object-cover" /></div>
-                    </div>
-                  </TCell>
-                  <TCell>
-                    <div className="font-bold text-sm">{sertif.title}</div>
-                    <div className="text-xs text-primary font-bold">{sertif.issuer}</div>
-                  </TCell>
+                  <TCell><div className="avatar justify-center"><div className="w-20 h-14 rounded-lg overflow-hidden"><img src={sertif.imageUrl} className="object-cover" /></div></div></TCell>
+                  <TCell><div className="font-bold text-sm">{sertif.title}</div><div className="text-xs text-primary font-bold">{sertif.issuer}</div></TCell>
                   <TCell className="text-center"><span className="badge badge-accent font-bold text-[10px]">{sertif.category}</span></TCell>
-                  <TCell className="text-center align-middle">
+                  <TCell className="text-center">
                     <div className="flex flex-col sm:flex-row gap-2 justify-center">
-                      <button
-                        className="btn btn-xs btn-outline btn-warning hover:text-warning-content w-full sm:w-auto"
-                        onClick={() => handleOpenSertifModal(sertif)}
-                      >
-                        <Icon icon="mdi:pencil" className="w-3 h-3 mr-1" /> Edit
-                      </button>
-                      <button
-                        className="btn btn-xs btn-outline btn-error hover:text-error-content w-full sm:w-auto"
-                        onClick={() => handleSertifDelete(sertif)}
-                      >
-                        <Icon icon="mdi:delete" className="w-3 h-3 mr-1" /> Hapus
-                      </button>
+                      <button className="btn btn-xs btn-outline btn-warning" onClick={() => toggleForm(sertif)}><Icon icon="mdi:pencil" /> Edit</button>
+                      <button className="btn btn-xs btn-outline btn-error" onClick={() => handleSertifDelete(sertif)}><Icon icon="mdi:delete" /> Hapus</button>
                     </div>
                   </TCell>
                 </TRow>
@@ -211,50 +267,6 @@ function EditSertifikat() {
           </TableContainer>
           <TableFooter limit={limit} setLimit={setLimit} totalData={totalData} currentDataCount={paginatedSertifikat.length} onNext={() => setCurrentPage(p => p + 1)} onPrev={() => setCurrentPage(p => p - 1)} />
         </div>
-
-        <ModalDashboard
-          id="sertif_modal"
-          title={editingSertifId ? "Edit Sertifikat" : "Tambah Sertifikat Baru"}
-          icon="ph:certificate-duotone"
-          isSaving={isSaving}
-          onSave={handleSertifSubmit}
-          onCancel={() => document.getElementById("sertif_modal").close()}
-        >
-          <div className="space-y-6">
-            <FloatingLabelInput label="Judul Sertifikat" name="title" value={sertifForm.title} onChange={handleInputChange} required />
-            <FloatingLabelInput label="Penerbit" name="issuer" value={sertifForm.issuer} onChange={handleInputChange} required />
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 border border-base-content/20 rounded-2xl bg-base-200/20">
-                <label className="label-text font-bold mb-2 block opacity-60">Thumbnail (Image)</label>
-                <input type="file" className="file-input file-input-sm file-input-bordered w-full" onChange={handleThumbFileChange} accept="image/*" />
-                {imageThumbPreview && <img src={imageThumbPreview} className="mt-4 w-full h-24 object-cover rounded-xl border border-base-content/10 shadow-sm" />}
-              </div>
-              <div className="p-4 border border-base-content/20 rounded-2xl bg-base-200/20">
-                <label className="label-text font-bold mb-2 block opacity-60">File Asli (Image/PDF)</label>
-                <input type="file" className="file-input file-input-sm file-input-bordered w-full" onChange={handleMainFileChange} accept="image/*,application/pdf" />
-                {mainFilePreview && <div className="mt-4 p-3 bg-base-100 rounded-xl text-[10px] font-mono opacity-50 truncate border border-base-content/10 italic">Tipe: {sertifForm.type.toUpperCase()}</div>}
-              </div>
-            </div>
-
-            {mainFilePreview && (
-              <div className="p-4 border border-base-content/20 rounded-2xl">
-                <p className="label-text font-bold mb-3 opacity-60">Pratinjau File Utama</p>
-                <div className="h-[300px] rounded-xl overflow-hidden bg-base-200 border border-base-content/10">
-                  {sertifForm.type === "image" ? <img src={mainFilePreview} className="w-full h-full object-contain" /> : (
-                    <Worker workerUrl={workerUrl}>
-                      <Viewer fileUrl={mainFilePreview} plugins={[defaultLayoutPluginInstance]} theme={themeMode} />
-                    </Worker>
-                  )}
-                </div>
-              </div>
-            )}
-
-            <FloatingLabelSelect label="Kategori" name="category" value={sertifForm.category} onChange={handleInputChange}>
-              {categories.filter(c => c !== "Semua").map(c => <option className="bg-base-100 text-base-content" key={c} value={c}>{c}</option>)}
-            </FloatingLabelSelect>
-          </div>
-        </ModalDashboard>
       </div>
     </div>
   );
