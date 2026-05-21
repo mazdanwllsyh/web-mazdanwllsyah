@@ -1,27 +1,15 @@
 import React, { useState, useEffect, useLayoutEffect, Suspense, lazy } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
-import { motion, useScroll, useTransform } from "framer-motion";
 import Transition from "./components/Transition";
 import GlobalModal from "./components/GlobalModal";
 import AdminRoute from "./routes/AdminRoute";
 import { useSiteStore } from "./stores/siteStore";
 import { useAuth } from "./hooks/useAuth";
+import ErrorBoundary from "./components/ErrorBoundary";
+import CustomCursor from "./components/CustomCursor";
 
 const AppLandingPage = lazy(() => import("./components/AppLandingPage"));
 const AppDashboard = lazy(() => import("./components/AppDashboard"));
-
-const ScrollProgressBar = () => {
-  const { scrollYProgress } = useScroll();
-  const scaleX = useTransform(scrollYProgress, [0, 1], [0, 1]);
-  const opacity = useTransform(scrollYProgress, [0, 0.05, 1], [0, 1, 1]);
-
-  return (
-    <motion.div
-      className="fixed top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-accent to-primary z-[99998] pointer-events-none origin-left"
-      style={{ scaleX, opacity }}
-    />
-  );
-};
 
 function App() {
   const location = useLocation();
@@ -32,7 +20,7 @@ function App() {
   const { isUserLoading, checkUserSession } = useAuth();
 
   const [isVisualLoading, setIsVisualLoading] = useState(false);
-  const [isContentReady, setIsContentReady] = useState(false);
+  const [canRenderRoutes, setCanRenderRoutes] = useState(false);
 
   useEffect(() => {
     fetchSiteData();
@@ -42,38 +30,33 @@ function App() {
   useLayoutEffect(() => {
     if (isDashboard) {
       setIsVisualLoading(false);
-      setIsContentReady(true);
+      setCanRenderRoutes(true);
       return;
     }
 
     setIsVisualLoading(true);
-    setIsContentReady(false);
+    setCanRenderRoutes(false);
 
     const transitionTimer = setTimeout(() => {
       setIsVisualLoading(false);
-    }, 1200);
+    }, 1500);
 
-    const contentTimer = setTimeout(() => {
-      setIsContentReady(true);
-    }, 1600);
-
-    return () => {
-      clearTimeout(transitionTimer);
-      clearTimeout(contentTimer);
-    };
+    return () => clearTimeout(transitionTimer);
   }, [location.pathname, isDashboard]);
 
   const isAppInitializing = isSiteDataLoading || isUserLoading;
   const showTransition = isAppInitializing || isVisualLoading;
 
   useEffect(() => {
-    if (isAppInitializing) {
-      setIsContentReady(false);
-    } else if (!isVisualLoading) {
-      const timer = setTimeout(() => setIsContentReady(true), 400);
-      return () => clearTimeout(timer);
+    if (!showTransition) {
+      const safetyTimer = setTimeout(() => {
+        setCanRenderRoutes(true);
+      }, 850);
+      return () => clearTimeout(safetyTimer);
+    } else {
+      setCanRenderRoutes(false);
     }
-  }, [isAppInitializing, isVisualLoading]);
+  }, [showTransition]);
 
   return (
     <>
@@ -85,47 +68,39 @@ function App() {
           html, body {
             cursor: var(--hexagon-cursor);
             scrollbar-width: none; 
+            overflow-x: hidden;
           }
 
-          ::-webkit-scrollbar:vertical {
-            width: 0px;
-            display: none;
-          }
-          
-          ::-webkit-scrollbar:horizontal {
-            height: 6px;
-          }
-          ::-webkit-scrollbar-thumb:horizontal {
-            background-color: oklch(var(--p)); 
-            border-radius: 9999px;
-          }
-          ::-webkit-scrollbar-track:horizontal {
-            background-color: transparent;
-          }
+          ::-webkit-scrollbar:vertical { width: 0px; display: none; }
+          ::-webkit-scrollbar:horizontal { height: 6px; }
+          ::-webkit-scrollbar-thumb:horizontal { background-color: oklch(var(--p)); border-radius: 9999px; }
+          ::-webkit-scrollbar-track:horizontal { background-color: transparent; }
         `}
       </style>
 
-      <ScrollProgressBar />
+      <CustomCursor />
       <GlobalModal />
 
       <Transition isLoading={showTransition} />
 
-      {isContentReady && (
+      {canRenderRoutes && (
         <main className="w-full min-h-screen">
-          <Suspense
-            fallback={
-              <div className="fixed inset-0 bg-base-100 z-[9997] flex items-center justify-center">
-                <span className="loading loading-ring loading-lg text-primary"></span>
-              </div>
-            }
-          >
-            <Routes>
-              <Route path="/*" element={<AppLandingPage />} />
-              <Route element={<AdminRoute />}>
-                <Route path="/dashboard/*" element={<AppDashboard />} />
-              </Route>
-            </Routes>
-          </Suspense>
+          <ErrorBoundary>
+            <Suspense
+              fallback={
+                <div className="fixed inset-0 bg-base-100 z-[9997] flex items-center justify-center">
+                  <span className="loading loading-ring loading-lg text-primary"></span>
+                </div>
+              }
+            >
+              <Routes>
+                <Route path="/*" element={<AppLandingPage />} />
+                <Route element={<AdminRoute />}>
+                  <Route path="/dashboard/*" element={<AppDashboard />} />
+                </Route>
+              </Routes>
+            </Suspense>
+          </ErrorBoundary>
         </main>
       )}
     </>

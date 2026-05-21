@@ -142,6 +142,23 @@ export const initialHardSkills = [
     name: "PrimeReact",
     category: "Styling & UI",
   },
+  {
+    icon: "devicon:antdesign",
+    name: "Ant Design",
+    category: "Styling & UI",
+  },
+  {
+    icon: "simple-icons:chakraui",
+    name: "Chakra UI",
+    category: "Styling & UI",
+  },
+  { icon: "simple-icons:mantine", name: "Mantine", category: "Styling & UI" },
+  { icon: "logos:semantic-ui", name: "Semantic UI", category: "Styling & UI" },
+  {
+    icon: "devicon-plain:bulma",
+    name: "Bulma CSS",
+    category: "Styling & UI",
+  },
 
   // 04 State Management
   { icon: "logos:redux", name: "Redux", category: "State Management" },

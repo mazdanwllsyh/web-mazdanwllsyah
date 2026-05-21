@@ -156,7 +156,7 @@ function Sertifikasi() {
       />
 
       <div
-        className="bg-base-100 min-h-[auto] lg:min-h-screen flex flex-col items-center justify-center py-20 lg:py-16 text-base-content"
+        className="bg-base-100 min-h-[auto] xl:min-h-screen flex flex-col items-center justify-center py-20 lg:py-16 text-base-content"
         id="sertifikasi"
       >
         <script type="application/ld+json">

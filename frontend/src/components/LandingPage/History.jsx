@@ -118,7 +118,7 @@ function History() {
 
   return (
     <div
-      className="bg-base-100 min-h-[auto] lg:min-h-screen flex flex-col items-center justify-center py-16 lg:py-20 scroll-mt-12 lg:scroll-mt-18 text-base-content"
+      className="bg-base-100 min-h-[auto] xl:min-h-screen flex flex-col items-center justify-center py-16 lg:py-20 scroll-mt-12 lg:scroll-mt-18 text-base-content"
       id="histori"
     >
       <script type="application/ld+json">
@@ -227,7 +227,7 @@ function History() {
                             {item.detail}
                           </p>
                         )}
-                        
+
                         <div className="flex items-center text-sm mt-4 justify-start font-semibold">
                           <Icon
                             icon="mdi:calendar-blank-outline"

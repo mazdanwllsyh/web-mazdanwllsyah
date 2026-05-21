@@ -167,7 +167,7 @@ function EditHistory() {
 
           <FloatingLabelInput label="Institusi / Perusahaan" value={institution} onChange={(e) => setInstitution(e.target.value)} required />
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-2 gap-4">
             <FloatingLabelInput label="Mulai (Cth: 2020)" value={startDate} onChange={(e) => setStartDate(e.target.value)} required />
             <FloatingLabelInput label="Sampai (Cth: 2024)" value={isCurrent ? "" : endDate} onChange={(e) => setEndStatus(e.target.value)} disabled={isCurrent} />
           </div>

@@ -133,7 +133,7 @@ function Skills() {
                             key={`hard-skill-${index}`}
                             variants={itemVariants}
                             tabIndex={0}
-                            className="relative h-12 md:h-14 w-fit max-w-[3rem] md:max-w-[3.5rem] hover:max-w-[16rem] focus:max-w-[16rem] rounded-2xl bg-base-200 border border-base-content/10 flex items-center overflow-hidden cursor-pointer shadow-sm group transition-[max-width,background-color,border-color] duration-500 ease-in-out hover:border-primary hover:bg-base-100 focus:border-primary"
+                            className="relative h-12 md:h-14 w-fit max-w-[3rem] md:max-w-[3.5rem] focus:max-w-[16rem] rounded-2xl bg-base-200 border border-base-content/10 flex items-center overflow-hidden cursor-pointer shadow-sm group transition-[max-width,background-color,border-color] duration-500 ease-in-out hover:border-base-content/90 hover:bg-base-100 focus:border-base-content/30 focus:bg-base-100"
                           >
                             <div className="w-[3rem] md:w-[3.5rem] h-full flex items-center justify-center shrink-0">
                               <Icon icon={skill.icon} className="w-6 h-6 md:w-8 md:h-8 group-hover:scale-110 transition-transform duration-300 drop-shadow-sm" />

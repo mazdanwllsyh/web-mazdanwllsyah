@@ -1,4 +1,4 @@
-import React, { useEffect, Suspense, lazy } from "react";
+import React, { useEffect } from "react";
 import { Routes, Route, useLocation, Navigate, Outlet } from "react-router-dom";
 import Header from "../components/LandingPage/Header";
 import ProtectedRoute from "../routes/ProtectedRoute";
@@ -7,14 +7,14 @@ import { useAuth } from "../hooks/useAuth";
 import { LazyMotion, domAnimation } from "framer-motion";
 import Beranda from "../components/LandingPage/Beranda";
 
-const About = lazy(() => import("../components/LandingPage/About"));
-const Sertifikasi = lazy(() => import("../components/LandingPage/Sertifikasi"));
-const Profile = lazy(() => import("../components/LandingPage/Profile"));
-const LoginPage = lazy(() => import("../components/LandingPage/LoginPage"));
-const RegisterPage = lazy(() => import("../components/LandingPage/RegisterPage"));
-const VerificationPage = lazy(() => import("./LandingPage/VerificationPage"));
-const Donasi = lazy(() => import("./LandingPage/Donasi"));
-const Footer = lazy(() => import("./LandingPage/Footer"));
+const About = React.lazy(() => import("../components/LandingPage/About"));
+const Sertifikasi = React.lazy(() => import("../components/LandingPage/Sertifikasi"));
+const Profile = React.lazy(() => import("../components/LandingPage/Profile"));
+const LoginPage = React.lazy(() => import("../components/LandingPage/LoginPage"));
+const RegisterPage = React.lazy(() => import("../components/LandingPage/RegisterPage"));
+const VerificationPage = React.lazy(() => import("./LandingPage/VerificationPage"));
+const Donasi = React.lazy(() => import("./LandingPage/Donasi"));
+const Footer = React.lazy(() => import("./LandingPage/Footer"));
 
 function NotFoundRedirect() {
   const location = useLocation();
@@ -38,14 +38,14 @@ function AppLandingPage() {
   useEffect(() => {
     const hash = location.hash;
     if (hash) {
-      const scrollTimer = setTimeout(() => {
+      const timer = setTimeout(() => {
         const id = hash.replace("#", "");
         const element = document.getElementById(id);
         if (element) {
           element.scrollIntoView({ behavior: "smooth", block: "start" });
         }
-      }, 100);
-      return () => clearTimeout(scrollTimer);
+      }, 0); 
+      return () => clearTimeout(timer);
     } else {
       window.scrollTo({ top: 0, behavior: "instant" });
     }
@@ -58,7 +58,7 @@ function AppLandingPage() {
 
         <main className="flex-grow pt-18 xl:pb-8 w-full flex flex-col items-center">
           <div className="w-[92%] md:w-[88%] lg:w-[85%] max-w-7xl">
-            <Suspense fallback={null}>
+            <React.Suspense fallback={null}>
               <Routes key={location.pathname}>
                 <Route element={<PublicOnlyWrapper />}>
                   <Route path="signin" element={<LoginPage />} />
@@ -76,7 +76,7 @@ function AppLandingPage() {
                   <Route path="profil" element={<Profile />} />
                 </Route>
               </Routes>
-            </Suspense>
+            </React.Suspense>
           </div>
         </main>
 

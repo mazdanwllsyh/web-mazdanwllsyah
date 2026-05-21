@@ -170,22 +170,30 @@ function EditSertifikat() {
               <FloatingLabelInput label="Penerbit" name="issuer" value={sertifForm.issuer} onChange={handleInputChange} required />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-4 border border-base-content/20 rounded-2xl bg-base-100/50">
+                <div className="p-4 border border-base-content/20 rounded-2xl bg-base-100/50 flex flex-col">
                   <label className="label-text font-bold mb-2 block opacity-60">Thumbnail (Wajib)</label>
                   <input type="file" className="file-input file-input-sm file-input-bordered w-full" onChange={handleThumbFileChange} accept="image/*" />
                   {imageThumbPreview && (
-                    <div className="mt-4 w-full h-32 rounded-xl border border-base-content/10 overflow-hidden bg-base-200">
-                      <img src={imageThumbPreview} className="w-full h-full object-contain" alt="Thumbnail Preview" />
+                    <div className="mt-4 w-full rounded-xl border border-base-content/10 overflow-hidden bg-base-200 p-2 flex items-center justify-center min-h-32">
+                      <img
+                        src={imageThumbPreview}
+                        className="w-full h-auto max-h-[60vh] object-contain rounded-lg"
+                        alt="Thumbnail Preview"
+                      />
                     </div>
                   )}
                 </div>
 
-                <div className="p-4 border border-base-content/20 rounded-2xl bg-base-100/50">
+                <div className="p-4 border border-base-content/20 rounded-2xl bg-base-100/50 flex flex-col">
                   <label className="label-text font-bold mb-2 block opacity-60">File Asli (Wajib)</label>
                   <input type="file" className="file-input file-input-sm file-input-bordered w-full" onChange={handleMainFileChange} accept="image/*,application/pdf" />
                   {mainFilePreview && sertifForm.type === "image" && (
-                    <div className="mt-4 w-full h-32 rounded-xl border border-base-content/10 overflow-hidden bg-base-200">
-                      <img src={mainFilePreview} className="w-full h-full object-contain" alt="Main File Preview" />
+                    <div className="mt-4 w-full rounded-xl border border-base-content/10 overflow-hidden bg-base-200 p-2 flex items-center justify-center min-h-32">
+                      <img
+                        src={mainFilePreview}
+                        className="w-full h-auto max-h-[80vh] object-contain rounded-lg"
+                        alt="Main File Preview"
+                      />
                     </div>
                   )}
                   {mainFilePreview && sertifForm.type === "pdf" && (
@@ -199,7 +207,7 @@ function EditSertifikat() {
               {mainFilePreview && sertifForm.type === "pdf" && (
                 <div className="p-4 border border-base-content/20 rounded-2xl">
                   <p className="label-text font-bold mb-3 opacity-60">Pratinjau PDF Utama</p>
-                  <div className="h-[400px] rounded-xl overflow-hidden bg-base-200 border border-base-content/10">
+                  <div className="h-[80vh] rounded-xl overflow-hidden bg-base-200 border border-base-content/10">
                     <Worker workerUrl={workerUrl}>
                       <Viewer
                         fileUrl={mainFilePreview}

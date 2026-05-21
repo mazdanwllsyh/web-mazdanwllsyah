@@ -111,7 +111,7 @@ function Gallery() {
   return (
     <div
       ref={sectionRef}
-      className="bg-base-100 min-h-[auto] my-12 lg:min-h-screen flex flex-col items-center justify-center py-16 lg:py-20 scroll-mt-8 lg:scroll-mt-12 text-base-content"
+      className="bg-base-100 min-h-[auto] my-12 xl:min-h-screen flex flex-col items-center justify-center py-16 lg:py-20 scroll-mt-8 lg:scroll-mt-12 text-base-content"
       id="galeri"
     >
       <script type="application/ld+json">
@@ -199,7 +199,7 @@ function Gallery() {
 
                 <div className="flex justify-center gap-3 -mt-5 relative z-10 px-2">
                   {(!project.demoUrl || project.demoUrl === "#") &&
-                  (!project.sourceUrl || project.sourceUrl === "#") ? (
+                    (!project.sourceUrl || project.sourceUrl === "#") ? (
                     <div
                       className="tooltip tooltip-bottom tooltip-warning cursor-help"
                       data-tip="Proyek masih tahap pengembangan"

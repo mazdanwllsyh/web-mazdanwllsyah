@@ -48,7 +48,7 @@ function Donasi() {
 
   return (
     <div
-      className="bg-base-100 min-h-[auto] lg:min-h-screen flex flex-col items-center justify-center py-16 lg:py-0 scroll-mt-16 lg:scroll-mt-24 text-base-content"
+      className="bg-base-100 min-h-[auto] xl:min-h-screen flex flex-col items-center justify-center py-16 lg:py-0 scroll-mt-16 lg:scroll-mt-24 text-base-content"
       id="donasi"
     >
       <SeoHelmet
@@ -101,8 +101,8 @@ function Donasi() {
                   whileTap={{ scale: 0.95 }}
                   onClick={() => handleSelectMethod("gopay")}
                   className={`card shadow-sm p-4 flex flex-col items-center justify-center transition-all duration-300 rounded-3xl border-2 ${selectedMethod === "gopay"
-                      ? "bg-base-200 border-primary shadow-lg"
-                      : "border-base-content/10 bg-base-100 hover:border-primary/50"
+                    ? "bg-base-200 border-primary shadow-lg"
+                    : "border-base-content/10 bg-base-100 hover:border-primary/50"
                     }`}
                 >
                   {/* FIX LOGO: Dibungkus container bg-white agar logo GoPay (hitam) selalu terlihat */}
@@ -121,8 +121,8 @@ function Donasi() {
                   whileTap={{ scale: 0.95 }}
                   onClick={() => handleSelectMethod("dana")}
                   className={`card shadow-sm p-4 flex flex-col items-center justify-center transition-all duration-300 rounded-3xl border-2 ${selectedMethod === "dana"
-                      ? "bg-base-200 border-info shadow-lg"
-                      : "border-base-content/10 bg-base-100 hover:border-info/50"
+                    ? "bg-base-200 border-info shadow-lg"
+                    : "border-base-content/10 bg-base-100 hover:border-info/50"
                     }`}
                 >
                   <div className="bg-white p-2 rounded-xl shadow-inner w-full flex justify-center items-center h-16">

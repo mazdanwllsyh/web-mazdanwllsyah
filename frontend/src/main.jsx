@@ -12,14 +12,10 @@ import { Analytics } from "@vercel/analytics/react";
 import "@react-pdf-viewer/core/lib/styles/index.css";
 import "@react-pdf-viewer/default-layout/lib/styles/index.css";
 
-function AppWrapper() {
-  return <App />;
-}
-
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
-      <AppWrapper />
+      <App />
     </BrowserRouter>
 
     <Toaster

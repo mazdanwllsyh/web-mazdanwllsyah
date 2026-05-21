@@ -129,7 +129,7 @@ function About() {
   };
 
   return (
-    <div className="bg-base-100 min-h-[auto] lg:min-h-screen flex flex-col items-center justify-center py-12 lg:py-0 scroll-mt-8 lg:scroll-mt-12 text-base-content" id="tentang">
+    <div className="bg-base-100 min-h-[auto] xl:min-h-screen flex flex-col items-center justify-center py-12 lg:py-0 scroll-mt-8 lg:scroll-mt-12 text-base-content" id="tentang">
       <SeoHelmet />
 
       <div className="w-full max-w-6xl mx-auto px-4 lg:px-4">
