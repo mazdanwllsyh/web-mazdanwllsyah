@@ -101,6 +101,16 @@ export const initialHardSkills = [
     name: "Django",
     category: "Framework & Library",
   },
+  {
+    icon: "cib:flask",
+    name: "Flask",
+    category: "Framework & Library",
+  },
+  {
+    icon: "devicon:inertiajs",
+    name: "Inertia.js",
+    category: "Framework & Library",
+  },
 
   // 03 Styling & UI Tools
   {
@@ -119,23 +129,8 @@ export const initialHardSkills = [
     category: "Styling & UI",
   },
   { icon: "logos:sass", name: "Sass/SCSS", category: "Styling & UI" },
-  {
-    icon: "streamline-logos:framer-logo-block",
-    name: "Framer Motion",
-    category: "Styling & UI",
-  },
-  {
-    icon: "logos:greensock-icon",
-    name: "GSAP",
-    category: "Styling & UI",
-  },
-  {
-    icon: "tabler:brand-threejs",
-    name: "Three.js",
-    category: "Styling & UI",
-  },
   { icon: "logos:daisyui-icon", name: "DaisyUI", category: "Styling & UI" },
-  { icon: "bxl:shadcn-ui", name: "ShadCN UI", category: "Styling & UI" },
+  { icon: "bxl:shadcn-ui", name: "Shadcn UI", category: "Styling & UI" },
   { icon: "bxl:motion-js", name: "Motion", category: "Styling & UI" },
   {
     icon: "simple-icons:primereact",
@@ -154,6 +149,21 @@ export const initialHardSkills = [
   },
   { icon: "simple-icons:mantine", name: "Mantine", category: "Styling & UI" },
   { icon: "logos:semantic-ui", name: "Semantic UI", category: "Styling & UI" },
+  {
+    icon: "streamline-logos:framer-logo-block",
+    name: "Framer Motion",
+    category: "Styling & UI",
+  },
+  {
+    icon: "logos:greensock-icon",
+    name: "GSAP",
+    category: "Styling & UI",
+  },
+  {
+    icon: "tabler:brand-threejs",
+    name: "Three.js",
+    category: "Styling & UI",
+  },
   {
     icon: "devicon-plain:bulma",
     name: "Bulma CSS",
