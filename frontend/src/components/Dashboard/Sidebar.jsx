@@ -6,32 +6,11 @@ import { useAuth } from "../../hooks/useAuth";
 
 export const menuItems = [
   { name: "Beranda", icon: "mdi:home-outline", path: "/dashboard" },
-  {
-    name: "Data Saya",
-    icon: "mdi:database-edit-outline",
-    path: "/dashboard/sitedata",
-  },
-  {
-    name: "Landing Page",
-    icon: "material-symbols:page-menu-ios-rounded",
-    path: "/dashboard/configuration",
-  },
-  {
-    name: "Edit Galeri",
-    icon: "mdi:image-multiple-outline",
-    path: "/dashboard/galeriedit",
-  },
-  {
-    name: "Edit Sertifikat",
-    icon: "ph:certificate",
-    path: "/dashboard/sertifikatsaya",
-  },
-  {
-    name: "Data Pengguna dan Editor",
-    icon: "solar:shield-user-bold-duotone",
-    path: "/dashboard/adminuser",
-    role: "superAdmin",
-  },
+  { name: "Data Saya", icon: "mdi:database-edit-outline", path: "/dashboard/sitedata" },
+  { name: "Landing Page", icon: "material-symbols:page-menu-ios-rounded", path: "/dashboard/configuration" },
+  { name: "Edit Galeri", icon: "mdi:image-multiple-outline", path: "/dashboard/galeriedit" },
+  { name: "Edit Sertifikat", icon: "ph:certificate", path: "/dashboard/sertifikatsaya" },
+  { name: "Data Pengguna dan Editor", icon: "solar:shield-user-bold-duotone", path: "/dashboard/adminuser", role: "superAdmin" },
 ];
 
 const NavItem = ({ to, icon, label }) => {
@@ -40,106 +19,104 @@ const NavItem = ({ to, icon, label }) => {
       to={to}
       end={to === "/dashboard"}
       className={({ isActive }) =>
-        `group flex items-center gap-3.5 px-4 py-3 rounded-2xl transition-all duration-300 ease-in-out font-medium
-        ${isActive
-          ? "bg-primary text-primary-content shadow-md shadow-primary/20"
-          : "text-base-content hover:bg-primary/10 hover:text-primary"
+        `flex items-center gap-4 px-4 py-3.5 rounded-2xl font-headings font-bold text-sm tracking-tight transition-all duration-300 group ${isActive
+          ? "bg-gradient-to-br from-accent to-primary text-base-100/85 shadow-md shadow-primary/20 scale-[1.01]"
+          : "text-base-content/70 hover:bg-base-200 hover:text-base-content hover:translate-x-1"
         }`
       }
     >
-      {({ isActive }) => (
-        <>
-          <div className="flex-none relative">
-            <Icon
-              icon={icon}
-              className={`w-5 h-5 transition-transform duration-300 group-hover:scale-110 ${isActive ? "text-primary-content" : "opacity-70 group-hover:opacity-100"
-                }`}
-            />
-          </div>
-          <span className="font-display font-bold text-sm flex-1 truncate">{label}</span>
-        </>
-      )}
+      <Icon icon={icon} className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" />
+      <span>{label}</span>
     </NavLink>
   );
 };
 
 function Sidebar() {
   const siteData = useSiteStore((state) => state.siteData);
-  const { handleSignOut, user } = useAuth();
+  const { user, signOut } = useAuth();
 
-  const filteredMenu = menuItems.filter((item) => {
-    if (item.role === "superAdmin") return user?.role === "superAdmin";
-    return true;
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const allowedMenuItems = menuItems.filter((item) => {
+    if (!item.role) return true;
+    return user?.role === item.role;
   });
 
   return (
-    <div className="menu p-4 w-[280px] min-h-screen bg-base-100 border-r border-base-content/10 flex flex-col justify-between z-50 shadow-2xl lg:shadow-none">
-      <div>
-        <a href="/" className="flex justify-start items-center mb-8 px-2 gap-4 mt-2 hover:opacity-80 transition-opacity cursor-pointer">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-accent to-primary text-primary-content flex items-center justify-center font-black text-2xl shadow-lg shadow-primary/30">
-            {siteData?.brandName ? siteData.brandNameShort.charAt(0).toUpperCase() : "M"}
+    <div className="w-80 h-full min-h-screen lg:h-screen bg-base-100 border-r border-base-content/10 flex flex-col justify-between p-6 overflow-hidden select-none shrink-0">
+      <div className="flex flex-col flex-1 overflow-hidden">
+        <div className="flex items-center gap-3.5 px-2 pb-6 border-b border-base-content/5 shrink-0">
+          <div className="avatar">
+            <a href="/" className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent to-primary flex items-center justify-center shadow-md shadow-primary/20">
+              <div>
+                <span className="font-display font-semibold text-lg text-black dark:text-white">
+                  {siteData?.brandName ? siteData.brandName.charAt(0).toUpperCase() : "Vx"}
+                </span>
+              </div>
+            </a>
           </div>
-          <div className="flex flex-col items-start overflow-hidden">
-            <span className="text-xl font-display font-black text-base-content truncate w-full tracking-tight">
-              {siteData?.brandName || "Portfolio"}
+          <div>
+            <span className="font-display font-semibold text-lg tracking-tight block leading-none">
+              {siteData?.brandName || "webMazda.N"}
             </span>
-            <span className="text-primary font-bold text-[10px] tracking-widest uppercase mt-0.5">
-              Admin Panel
+            <span className="text-[10px] font-semibold tracking-widest text-primary uppercase mt-1 block">
+              Panel Kontrol
             </span>
           </div>
-        </a>
+        </div>
 
-        <ul className="space-y-2">
-          {filteredMenu.map((item) => (
-            <li key={item.path}>
-              <NavItem to={item.path} icon={item.icon} label={item.name} />
-            </li>
+        <nav className="flex flex-col gap-2 mt-6 overflow-y-auto custom-scrollbar px-2 flex-1">
+          {allowedMenuItems.map((item) => (
+            <NavItem key={item.path} to={item.path} icon={item.icon} label={item.name} />
           ))}
-        </ul>
+        </nav>
       </div>
 
-      <div className="mt-auto pt-4 space-y-3">
-        <div className="border-t border-base-content/10 my-4"></div>
-        <div className="flex flex-col gap-2 pb-2">
-          <Link
-            to="/profil"
-            className="flex items-center gap-3 bg-base-200/50 hover:bg-base-200 px-3 py-3 rounded-2xl border border-base-content/5 transition-colors w-full group"
-          >
-            <div className="avatar">
-              <div className="w-10 h-10 rounded-xl border border-base-content/10 overflow-hidden shadow-sm">
-                {user?.profilePicture ? (
-                  <img
-                    src={user.profilePicture}
-                    alt="Profile"
-                    className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-primary/10 text-primary flex items-center justify-center font-black font-display text-lg group-hover:bg-primary group-hover:text-primary-content transition-colors">
-                    <span>{user?.fullName ? user.fullName.charAt(0).toUpperCase() : "A"}</span>
-                  </div>
-                )}
-              </div>
+      <div className="flex flex-col gap-4 pt-4 border-t border-base-content/5 shrink-0 bg-base-100">
+        <Link
+          to="/profil"
+          className="flex items-center gap-4 p-3 bg-base-200/50 hover:bg-base-200 rounded-2xl border border-base-content/5 transition-all duration-300 group"
+        >
+          <div className="avatar placeholder group-hover:scale-105 transition-transform">
+            <div className="w-11 h-11 rounded-xl overflow-hidden bg-base-300 border border-base-content/10 flex items-center justify-center">
+              {user?.avatarUrl || user?.profilePicture || user?.avatar || user?.image ? (
+                <img
+                  src={user?.avatarUrl || user?.profilePicture || user?.avatar || user?.image}
+                  alt="Avatar"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full bg-primary/10 text-primary flex items-center justify-center font-black font-display text-lg">
+                  <span>{user?.fullName ? user.fullName.charAt(0).toUpperCase() : "A"}</span>
+                </div>
+              )}
             </div>
-            <div className="flex-1 overflow-hidden">
-              <div className="font-bold font-display text-sm text-base-content truncate">
-                {user?.fullName || "Admin User"}
-              </div>
-              <div className="text-[10px] text-primary font-extrabold truncate uppercase tracking-wider mt-0.5">
-                {user?.role === "superAdmin" ? "Super Admin" : "Editor"}
-              </div>
+          </div>
+          <div className="flex-1 overflow-hidden">
+            <div className="font-bold font-display text-sm text-base-content truncate">
+              {user?.fullName || "Admin User"}
             </div>
-          </Link>
+            <div className="text-[10px] text-primary font-extrabold truncate uppercase tracking-wider mt-0.5">
+              {user?.role === "superAdmin" ? "Super Admin" : "Editor"}
+            </div>
+          </div>
+        </Link>
 
-          <button
-            type="button"
-            className="btn btn-error w-full text-base-100 rounded-2xl shadow-sm hover:shadow-md hover:shadow-error/20 transition-all duration-300 flex items-center justify-center gap-2"
-            onClick={handleSignOut}
-            title="Logout"
-          >
-            <Icon icon="lucide:log-out" className="w-5 h-5" />
-            <span className="font-bold text-sm tracking-wide">Keluar Sistem</span>
-          </button>
-        </div>
+        <button
+          type="button"
+          className="btn btn-error w-full text-base-100 rounded-2xl shadow-sm hover:shadow-md hover:shadow-error/20 transition-all duration-300 flex items-center justify-center gap-2"
+          onClick={handleSignOut}
+          title="Logout"
+        >
+          <Icon icon="lucide:log-out" className="w-5 h-5" />
+          <span className="font-bold text-sm tracking-wide">Logout Sistem</span>
+        </button>
       </div>
     </div>
   );
