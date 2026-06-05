@@ -38,9 +38,15 @@ function LoginPage() {
   const handleLoginSuccess = (user) => {
     cleanupGoogleOneTap();
     login(user);
-    const isAdmin = user.role === "admin" || user.role === "superAdmin";
-    const destination = isAdmin ? "/dashboard" : "/profil";
-    navigate(destination);
+
+    const from = location.state?.from;
+
+    if (from) {
+      navigate(from);
+    } else {
+      const isAdmin = user.role === "admin" || user.role === "superAdmin";
+      navigate(isAdmin ? "/dashboard" : "/profil");
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -99,8 +105,8 @@ function LoginPage() {
   }, []);
 
   useEffect(() => {
-    let isMounted = true; 
-    let timeoutId; 
+    let isMounted = true;
+    let timeoutId;
 
     const initializeGoogle = () => {
       if (!isMounted) return;
@@ -137,9 +143,9 @@ function LoginPage() {
     initializeGoogle();
 
     return () => {
-      isMounted = false; 
-      if (timeoutId) clearTimeout(timeoutId); 
-      cleanupGoogleOneTap(); 
+      isMounted = false;
+      if (timeoutId) clearTimeout(timeoutId);
+      cleanupGoogleOneTap();
     };
   }, [location.pathname]);
 

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Icon } from '@iconify/react';
 
-const FloatingLabelInput = ({ label, id, type = 'text', value, onChange, readOnly, disabled, className = '', rightElement, ...props }) => {
+const FloatingLabelInput = ({ label, id, type = 'text', value, onChange, readOnly, disabled, className = '', rightElement, alwaysFloat = false, ...props }) => {
     const [isFocused, setIsFocused] = useState(false);
 
     const alwaysFloatTypes = ['date', 'time', 'datetime-local', 'month', 'week'];
-    const labelShouldFloat = alwaysFloatTypes.includes(type) || isFocused || String(value || '').length > 0 || value === 0;
+    const labelShouldFloat = alwaysFloat || alwaysFloatTypes.includes(type) || isFocused || String(value || '').length > 0 || value === 0;
 
     const isNotEditable = readOnly || disabled;
 

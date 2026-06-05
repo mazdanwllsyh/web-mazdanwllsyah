@@ -60,8 +60,8 @@ function Gallery() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (projects.length === 0) fetchProjects();
-  }, [fetchProjects, projects.length]);
+    fetchProjects();
+  }, [fetchProjects]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const sectionRef = useRef(null);
@@ -92,21 +92,34 @@ function Gallery() {
     return () => clearTimeout(timer);
   }, []);
 
-  const structuredData = {
+  const structuredData = useMemo(() => ({
     "@context": "https://schema.org",
     "@type": "ItemList",
-    itemListElement: currentItems.map((project, index) => ({
+    "name": "Portofolio Proyek",
+    "itemListElement": currentItems.map((project, index) => ({
       "@type": "ListItem",
-      position: index + 1,
-      item: {
+      "position": index + 1,
+      "item": {
         "@type": "CreativeWork",
-        name: project.title,
-        description: project.description,
-        image: project.imageUrl,
-        url: project.demoUrl !== "#" ? project.demoUrl : window.location.href,
+        "name": project.title,
+        "description": project.description,
+        "image": project.imageUrl,
+        "url": project.demoUrl !== "#" ? project.demoUrl : window.location.href,
       },
     })),
-  };
+  }), [currentItems]);
+
+  useEffect(() => {
+    let script = document.getElementById("structured-data-gallery");
+    if (!script) {
+      script = document.createElement("script");
+      script.id = "structured-data-gallery";
+      script.type = "application/ld+json";
+      document.head.appendChild(script);
+    }
+    script.innerHTML = JSON.stringify(structuredData);
+    return () => { if (script) script.remove(); };
+  }, [structuredData]);
 
   return (
     <div
@@ -114,9 +127,6 @@ function Gallery() {
       className="bg-base-100 min-h-[auto] my-12 xl:min-h-screen flex flex-col items-center justify-center py-16 lg:py-20 scroll-mt-8 lg:scroll-mt-12 text-base-content"
       id="galeri"
     >
-      <script type="application/ld+json">
-        {JSON.stringify(structuredData)}
-      </script>
 
       <div className="w-full max-w-6xl mx-auto px-4 lg:px-4">
         <m.div
@@ -127,7 +137,7 @@ function Gallery() {
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-2 tracking-tight">
-            Galeri Proyek
+            Galeri <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-primary">Proyek</span>
           </h2>
           <p className="text-base md:text-lg text-base-content">
             Mahakarya dan studi kasus terbaru saya

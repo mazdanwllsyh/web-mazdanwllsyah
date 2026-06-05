@@ -43,8 +43,8 @@ function DataSaya() {
     () =>
       formData.typeAnimationSequenceString
         ? formData.typeAnimationSequenceString
-            .split(",")
-            .filter((s) => s.trim() !== "")
+          .split(",")
+          .filter((s) => s.trim() !== "")
         : [],
     [formData.typeAnimationSequenceString],
   );
@@ -77,9 +77,15 @@ function DataSaya() {
     }
   };
 
+  const [isDragging, setIsDragging] = useState(false);
+
   const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
+    e.preventDefault();
+    setIsDragging(false);
+
+    const file = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
     if (!file) return;
+
     setIsUpdating("uploading");
     const imageFormData = new FormData();
     imageFormData.append("profileImage", file);
@@ -90,8 +96,18 @@ function DataSaya() {
       errorToast("Gagal upload gambar.");
     } finally {
       setIsUpdating(null);
-      e.target.value = "";
+      if (e.target && e.target.value) e.target.value = "";
     }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
   };
 
   const handleDeleteImage = async (index, imageUrl) => {
@@ -290,26 +306,35 @@ function DataSaya() {
               </div>
 
               <div className="p-6 space-y-6">
-                <div className="form-control">
-                  <label className="label cursor-pointer p-4 border-2 border-dashed border-base-300 rounded-2xl hover:border-primary hover:bg-primary/5 transition-all w-full group">
-                    <div className="flex flex-col items-center gap-2 w-full">
-                      <Icon
-                        icon="solar:cloud-upload-bold-duotone"
-                        className="w-10 h-10 text-base-content/20 group-hover:text-primary transition-colors"
+                {formData.profileImages.length < 3 && (
+                  <div className="form-control">
+                    <label
+                      onDragOver={handleDragOver}
+                      onDragLeave={handleDragLeave}
+                      onDrop={handleImageUpload}
+                      className={`label cursor-pointer p-4 border-2 border-dashed rounded-2xl transition-all w-full group
+                        ${isDragging ? 'border-primary bg-primary/10' : 'border-base-300 hover:border-primary hover:bg-primary/5'}
+                      `}
+                    >
+                      <div className="flex flex-col items-center gap-2 w-full pointer-events-none">
+                        <Icon
+                          icon="solar:cloud-upload-bold-duotone"
+                          className={`w-10 h-10 transition-colors ${isDragging ? 'text-primary' : 'text-base-content/20 group-hover:text-primary'}`}
+                        />
+                        <span className={`text-xs font-bold ${isDragging ? 'text-primary' : 'text-base-content/40 group-hover:text-base-content'}`}>
+                          Klik atau Drop Gambar ke Sini
+                        </span>
+                      </div>
+                      <input
+                        type="file"
+                        className="hidden"
+                        onChange={handleImageUpload}
+                        disabled={isUpdating !== null}
+                        accept="image/*"
                       />
-                      <span className="text-xs font-bold text-base-content/40 group-hover:text-base-content">
-                        Klik untuk Upload Gambar
-                      </span>
-                    </div>
-                    <input
-                      type="file"
-                      className="hidden"
-                      onChange={handleImageUpload}
-                      disabled={isUpdating !== null}
-                      accept="image/*"
-                    />
-                  </label>
-                </div>
+                    </label>
+                  </div>
+                )}
 
                 <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
                   {formData.profileImages.map((imageUrl, index) => (

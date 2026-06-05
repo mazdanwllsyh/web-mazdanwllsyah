@@ -18,10 +18,10 @@ const socialLinkConfig = [
 const techIcons = [
   { id: "react", icon: "logos:react", position: "top-[-5%] left-1/2 -translate-x-1/2" },
   { id: "nodejs", icon: "logos:nodejs-icon", position: "top-[15%] right-[-5%]" },
-  { id: "express", icon: "simple-icons:express", position: "bottom-[15%] right-[-5%]", customClass: "text-base-content" },
-  { id: "zustand", icon: "devicon:zustand", position: "bottom-[-5%] left-1/2 -translate-x-1/2" },
-  { id: "daisyui", icon: "logos:daisyui-icon", position: "bottom-[15%] left-[-5%]" },
-  { id: "axios", icon: "simple-icons:axios", position: "top-[15%] left-[-5%]", customClass: "text-[#5A29E4]" },
+  { id: "html", icon: "logos:html-5", position: "bottom-[15%] right-[-5%]", customClass: "text-base-content" },
+  { id: "daisyui", icon: "logos:daisyui-icon", position: "bottom-[-5%] left-1/2 -translate-x-1/2" },
+  { id: "css", icon: "logos:css-3", position: "bottom-[15%] left-[-5%]" },
+  { id: "zustand", icon: "devicon:zustand", position: "top-[15%] left-[-5%]", customClass: "text-[#5A29E4]" },
 ];
 
 const textContainerVariants = {
@@ -80,6 +80,18 @@ function Hero() {
     "description": siteData?.aboutParagraph || "Portofolio pribadi Mazda Nawallsyah",
   }), [siteData, profileImages, availableLinks]);
 
+  useEffect(() => {
+    let script = document.getElementById("structured-data-hero");
+    if (!script) {
+      script = document.createElement("script");
+      script.id = "structured-data-hero";
+      script.type = "application/ld+json";
+      document.head.appendChild(script);
+    }
+    script.innerHTML = JSON.stringify(structuredData);
+    return () => { if (script) script.remove(); };
+  }, [structuredData]);
+
   return (
     <div className="hero bg-base-100 flex items-center justify-center pt-10 pb-16 lg:py-0 min-h-[auto] xl:min-h-screen scroll-mt-12" id="home">
       <SeoHelmet
@@ -88,10 +100,6 @@ function Hero() {
         imageUrl={profileImages.length > 0 ? profileImages[currentImgIndex] : "/default-avatar.png"}
         url="/"
       />
-
-      <script type="application/ld+json">
-        {JSON.stringify(structuredData)}
-      </script>
 
       <div className="hero-content flex flex-col lg:flex-row-reverse items-center justify-between w-full max-w-6xl mx-auto px-0 lg:px-4">
 
@@ -112,7 +120,6 @@ function Hero() {
               </m.div>
             ))}
 
-            {/* Tambahan overflow-hidden di bawah ini */}
             <div className="mask mask-hexagon w-full h-full bg-base-300 relative z-10 transition-transform duration-700 hover:scale-105 overflow-hidden">
               {!imageLoaded && <div className="absolute inset-0 skeleton w-full h-full"></div>}
 

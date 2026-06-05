@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { HashLink } from "react-router-hash-link";
 import { Icon } from "@iconify/react";
-import { m } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import SeoHelmet from "../SEOHelmet";
 import { useSiteStore } from "../../stores/siteStore";
 import { useProjectStore } from "../../stores/projectStore";
 import { usePortfolioStore } from "../../stores/portfolioStore";
+import { transformCloudinaryUrl } from "../../utils/imageHelper";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -20,206 +21,197 @@ const itemVariants = {
   visible: { y: 0, opacity: 1, transition: { duration: 0.6, ease: "easeOut" } }
 };
 
-function About() {
-  const [loading, setLoading] = useState(true);
+const slideVariants = {
+  initial: { opacity: 0, scale: 0.95, filter: "blur(8px)" },
+  animate: {
+    opacity: 1,
+    scale: 1,
+    filter: "blur(0px)",
+    transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] }
+  },
+  exit: {
+    opacity: 0,
+    scale: 1.05,
+    filter: "blur(8px)",
+    transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] }
+  }
+};
 
+function About() {
   const fetchHistoryData = usePortfolioStore((state) => state.fetchHistoryData);
   const fetchSertifikat = usePortfolioStore((state) => state.fetchSertifikat);
+  const fetchSkillsData = usePortfolioStore((state) => state.fetchSkillsData);
   const fetchProjects = useProjectStore((state) => state?.fetchProjects);
 
   const siteData = useSiteStore((state) => state.siteData);
   const historyData = usePortfolioStore((state) => state.historyData);
   const sertifikatData = usePortfolioStore((state) => state.sertifikatData);
-  const projects = useProjectStore((state) => state?.projects || []);
+  const skillsData = usePortfolioStore((state) => state.skillsData);
+  const projects = useProjectStore((state) => state?.projects) || [];
 
-  const profileImages = siteData?.profileImages || [];
+  const isHistoryLoading = usePortfolioStore((state) => state.isHistoryLoading);
+  const isSertifikatLoading = usePortfolioStore((state) => state.isSertifikatLoading);
+  const isSkillsLoading = usePortfolioStore((state) => state.isSkillsLoading);
+  const isProjectsLoading = useProjectStore((state) => state?.isProjectsLoading);
+
   const [currentIndices, setCurrentIndices] = useState([0, 1, 2]);
 
   useEffect(() => {
-    const isHistoryEmpty = (!historyData.education || historyData.education.length === 0) &&
-      (!historyData.experience || historyData.experience.length === 0);
-    if (isHistoryEmpty) fetchHistoryData();
-    if (!projects || projects.length === 0) fetchProjects();
-    if (!sertifikatData || sertifikatData.length === 0) fetchSertifikat();
-  }, [fetchHistoryData, fetchProjects, fetchSertifikat, historyData, projects, sertifikatData]);
+    fetchHistoryData();
+    fetchSertifikat();
+    fetchSkillsData();
+    if (fetchProjects) fetchProjects();
+  }, [fetchHistoryData, fetchSertifikat, fetchSkillsData, fetchProjects]);
+
+  const profileImages = siteData?.profileImages || [];
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 2800);
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    if (profileImages.length > 1 && !loading) {
-      const intervalId = setInterval(() => {
+    if (profileImages.length > 1) {
+      const interval = setInterval(() => {
         setCurrentIndices((prev) => [
           (prev[0] + 1) % profileImages.length,
           (prev[1] + 1) % profileImages.length,
           (prev[2] + 1) % profileImages.length,
         ]);
-      }, 7700);
-      return () => clearInterval(intervalId);
+      }, 12000);
+      return () => clearInterval(interval);
     }
-  }, [profileImages.length, loading]);
+  }, [profileImages.length]);
 
-  const PhotoSkeleton = () => (
-    <div className="flex flex-col items-center lg:items-center w-full hover:cursor-wait">
-      <div className="skeleton w-64 h-80 md:w-80 md:h-96 rounded-2xl shadow-lg mb-4"></div>
-    </div>
-  );
-  const ButtonSkeleton = () => (
-    <div className="skeleton h-12 w-48 rounded-2xl mx-auto lg:mx-0 hover:cursor-wait"></div>
-  );
-  const TextSkeleton = () => (
-    <div className="space-y-4 mb-6 w-full">
-      <div className="skeleton h-10 w-3/4 mx-auto lg:mx-0 hover:cursor-wait"></div>
-    </div>
-  );
-  const ParagraphSkeleton = () => (
-    <div className="space-y-3 py-6 w-full hover:cursor-wait">
-      <div className="skeleton h-4 w-full"></div>
-      <div className="skeleton h-4 w-full"></div>
-      <div className="skeleton h-4 w-5/6 mx-auto lg:mx-0"></div>
-    </div>
-  );
-  const StatsSkeleton = () => (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6 w-full">
-      {Array.from({ length: 3 }).map((_, i) => (
-        <div key={i} className="card bg-base-100 shadow-md border border-base-content/20 p-4 rounded-3xl text-center">
-          <div className="space-y-3 flex flex-col items-center hover:cursor-wait">
-            <div className="skeleton h-10 w-10 rounded-full"></div>
-            <div className="skeleton h-6 w-1/2"></div>
-            <div className="skeleton h-4 w-3/4"></div>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
+  const totalSkillsCount = useMemo(() => {
+    return Object.values(skillsData || {}).flat().length;
+  }, [skillsData]);
 
-  const stats = useMemo(() => {
-    return [
-      {
-        icon: "mdi:briefcase-check",
-        value: `${historyData.experience?.length || 0}`,
-        label: "Pengalaman",
-        link: "/#histori",
-        tooltip: "Lihat riwayat pengalaman saya"
-      },
-      {
-        icon: "mdi:flask",
-        value: `${projects?.length || 0}`,
-        label: "Proyek",
-        link: "/#galeri",
-        tooltip: "Jelajahi galeri proyek saya"
-      },
-      {
-        icon: "mdi:certificate",
-        value: `${sertifikatData?.length || 0}`,
-        label: "Sertifikat",
-        link: "/sertifikasi",
-        tooltip: "Cek koleksi sertifikat & lisensi"
-      },
-    ];
-  }, [historyData, projects, sertifikatData]);
+  const stats = useMemo(() => [
+    { icon: "solar:folder-bold-duotone", value: isProjectsLoading ? "..." : projects.length, label: "Proyek", link: "/#galeri", tooltip: "Total Proyek yang telah dikerjakan" },
+    { icon: "solar:diploma-bold-duotone", value: isSertifikatLoading ? "..." : sertifikatData.length, label: "Sertifikat", link: "/sertifikasi", tooltip: "Sertifikasi Profesional" },
+    { icon: "solar:case-bold-duotone", value: isHistoryLoading ? "..." : historyData?.experience?.length || 0, label: "Pengalaman", link: "/#histori", tooltip: "Pengalaman Kerja/Organisasi" },
+    { icon: "solar:star-ring-bold-duotone", value: isSkillsLoading ? "..." : totalSkillsCount, label: "Keahlian", link: "/#skills", tooltip: "Total Teknologi yang Dikuasai" }
+  ], [projects.length, sertifikatData.length, historyData, totalSkillsCount, isProjectsLoading, isSertifikatLoading, isHistoryLoading, isSkillsLoading]);
 
-  const handleStatClick = (label) => {
-    if (label === "Pengalaman") {
-      localStorage.setItem("activeHistoryTab", "pengalaman");
-      window.dispatchEvent(new Event("changeHistoryTab"));
+  const cleanDescription = siteData?.aboutParagraph
+    ? siteData.aboutParagraph.replace(/<[^>]*>?/gm, '').substring(0, 150) + "..."
+    : "Kenali lebih dekat Mazda Nawallsyah, seorang Front-End Developer MERN Stack yang berfokus pada pembuatan antarmuka responsif dan optimal.";
+
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    "mainEntity": {
+      "@type": "Person",
+      "name": siteData?.brandNameShort || "Mazda Nawallsyah",
+      "jobTitle": siteData?.jobTitle || "Front-End Developer",
+      "description": cleanDescription,
+      "image": profileImages?.[0] || ""
     }
   };
 
-  return (
-    <div className="bg-base-100 min-h-[auto] xl:min-h-screen flex flex-col items-center justify-center py-12 lg:py-0 scroll-mt-8 lg:scroll-mt-12 text-base-content" id="tentang">
-      <SeoHelmet />
+  useEffect(() => {
+    let script = document.getElementById("structured-data-about");
+    if (!script) {
+      script = document.createElement("script");
+      script.id = "structured-data-about";
+      script.type = "application/ld+json";
+      document.head.appendChild(script);
+    }
+    script.innerHTML = JSON.stringify(structuredData);
 
-      <div className="w-full max-w-6xl mx-auto px-4 lg:px-4">
-        {loading ? (
-          <div className="flex flex-col items-center lg:grid lg:grid-cols-2 lg:gap-10 lg:items-center w-full">
-            <div className="py-8 flex flex-col items-center lg:items-start order-2 lg:order-none lg:col-start-1 lg:row-start-1 lg:row-span-3 w-full"><PhotoSkeleton /></div>
-            <div className="w-full order-1 lg:order-none lg:col-start-2 text-center lg:text-left"><TextSkeleton /></div>
-            <div className="w-full order-3 lg:order-none lg:col-start-2 text-center lg:text-left"><ParagraphSkeleton /></div>
-            <div className="flex justify-center items-center order-4 lg:hidden mt-2 w-full"><ButtonSkeleton /></div>
-            <div className="w-full order-5 lg:order-none lg:col-start-2 mt-2"><StatsSkeleton /></div>
-          </div>
-        ) : (
-          <m.div
-            className="flex flex-col items-center lg:grid lg:grid-cols-2 lg:gap-10 lg:items-center"
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-          >
-            <m.div variants={itemVariants} className="py-8 flex flex-col items-center lg:items-start order-2 lg:order-none lg:col-start-1 lg:row-start-1 lg:row-span-3">
-              <div className="relative w-64 h-80 md:w-80 md:h-96">
-                {profileImages.length > 2 && (
-                  <div className="card absolute inset-0 bg-base-300 shadow-xl transform -rotate-6 translate-x-2 translate-y-4 overflow-hidden border border-base-content/30 rounded-2xl transition-transform duration-700 hover:-rotate-12">
-                    <figure className="h-full w-full">
-                      <img src={profileImages[currentIndices[2]]} alt="bg3" className="w-full h-full object-cover grayscale opacity-60" />
-                    </figure>
-                  </div>
-                )}
-                {profileImages.length > 1 && (
-                  <div className="card absolute inset-0 bg-base-200 shadow-xl transform rotate-6 -translate-x-2 translate-y-2 overflow-hidden border border-base-content/30 rounded-2xl transition-transform duration-700 hover:rotate-12">
-                    <figure className="h-full w-full">
-                      <img src={profileImages[currentIndices[1]]} alt="bg2" className="w-full h-full object-cover grayscale opacity-80" />
-                    </figure>
-                  </div>
-                )}
-                {profileImages.length > 0 && (
-                  <div className="card absolute inset-0 bg-base-100 shadow-2xl z-10 overflow-hidden border border-base-content/30 rounded-2xl group transition-transform duration-500 hover:scale-105">
-                    <figure className="h-full w-full">
-                      <img src={profileImages[currentIndices[0]]} alt="main" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                    </figure>
+    return () => {
+      if (script) script.remove();
+    };
+  }, [structuredData]);
+
+  return (
+    <div className="bg-base-100 min-h-[auto] xl:min-h-screen flex flex-col items-center justify-center py-16 lg:py-20 scroll-mt-12 lg:scroll-mt-18 text-base-content relative overflow-hidden" id="tentang">
+      <SeoHelmet
+        title="Tentang Saya"
+        description={cleanDescription}
+        url="/tentang"
+      />
+
+      <div className="w-full max-w-6xl mx-auto px-4 z-10">
+        <m.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-center"
+        >
+          <m.div variants={itemVariants} className="w-full lg:w-5/12 flex justify-center relative">
+            <div className="relative w-64 h-80 sm:w-72 sm:h-96 md:w-80 md:h-[28rem] lg:w-[22rem] lg:h-[30rem] xl:w-[24rem] xl:h-[34rem] group cursor-pointer">
+              {profileImages.length > 2 && (
+                <div className="absolute inset-0 bg-base-300 shadow-xl transform -rotate-6 translate-x-4 translate-y-4 overflow-hidden border border-base-content/20 rounded-[2.5rem] transition-all duration-1000 group-hover:-rotate-12 group-hover:translate-x-6 group-hover:translate-y-6">
+                  <img src={transformCloudinaryUrl(profileImages[currentIndices[2]], 600, 800)} className="w-full h-full object-cover grayscale opacity-40" alt="bg3" />
+                </div>
+              )}
+              {profileImages.length > 1 && (
+                <div className="absolute inset-0 bg-base-200 shadow-xl transform rotate-6 -translate-x-3 translate-y-2 overflow-hidden border border-base-content/20 rounded-[2.5rem] transition-all duration-1000 group-hover:rotate-12 group-hover:-translate-x-5 group-hover:translate-y-4">
+                  <img src={transformCloudinaryUrl(profileImages[currentIndices[1]], 600, 800)} className="w-full h-full object-cover grayscale opacity-70" alt="bg2" />
+                </div>
+              )}
+              <div className="absolute inset-0 bg-base-100 shadow-2xl z-10 overflow-hidden border border-base-content/20 rounded-[2.5rem] transition-transform duration-700 group-hover:scale-105">
+                {profileImages.length > 0 ? (
+                  <AnimatePresence mode="wait">
+                    <m.img
+                      key={currentIndices[0]}
+                      src={transformCloudinaryUrl(profileImages[currentIndices[0]], 600, 800)}
+                      variants={slideVariants}
+                      initial="initial"
+                      animate="animate"
+                      exit="exit"
+                      className="w-full h-full object-cover"
+                      alt="Tentang Mazda Nawallsyah"
+                    />
+                  </AnimatePresence>
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-base-content/50">
+                    <Icon icon="mdi:image-off-outline" className="w-16 h-16 opacity-50" />
                   </div>
                 )}
               </div>
-            </m.div>
+            </div>
+          </m.div>
 
-            <m.div variants={itemVariants} className="w-full order-1 lg:order-none lg:col-start-2 text-center lg:text-left">
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display tracking-tight mb-2">
-                Tentang Saya
+          <div className="w-full lg:w-7/12 flex flex-col">
+            <m.div variants={itemVariants} className="mb-6 lg:mb-8 text-center lg:text-left">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-black font-display text-base-content leading-tight">
+                Tentang <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-primary">Saya</span>
               </h2>
             </m.div>
 
-            <m.div variants={itemVariants} className="w-full order-3 lg:order-none lg:col-start-2 text-center lg:text-left">
-              <p className="py-4 lg:py-6 text-base md:text-lg text-base-content/80 text-justify leading-relaxed break-words">
-                {siteData.aboutParagraph || "Paragraf tentang Saya akan muncul di sini."}
-              </p>
+            <m.div variants={itemVariants} className="prose prose-base md:prose-lg max-w-none text-base-content/80 text-justify mb-10 leading-relaxed font-medium">
+              {siteData?.aboutParagraph ? (
+                <div dangerouslySetInnerHTML={{ __html: siteData.aboutParagraph }} />
+              ) : (
+                <p className="italic opacity-60">Sedang memuat informasi tentang saya...</p>
+              )}
             </m.div>
 
-            <m.div variants={itemVariants} className="flex justify-center items-center order-4 lg:hidden mt-2">
-              <HashLink to="/sertifikasi" className="btn btn-secondary rounded-2xl shadow-lg group flex lg:hidden px-8">
-                Sertifikasi Saya
-                <Icon icon="mdi:arrow-right" className="w-5 h-5 ml-1 group-hover:translate-x-1 transition-transform" />
-              </HashLink>
-            </m.div>
-
-            <m.div variants={itemVariants} className="w-full order-5 lg:order-none lg:col-start-2 mt-2">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
+            <m.div variants={itemVariants} className="mt-auto">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 w-full">
                 {stats.map((stat) => (
                   <m.div
                     key={stat.label}
-                    whileHover={{ y: -5 }}
+                    whileHover={{ y: -8, scale: 1.02 }}
                     whileTap={{ scale: 0.95 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
                     className="tooltip tooltip-bottom w-full cursor-pointer"
                     data-tip={stat.tooltip}
                   >
                     <HashLink
                       to={stat.link}
                       smooth={stat.link.startsWith("/#")}
-                      onClick={() => handleStatClick(stat.label)}
-                      className="card bg-base-100 shadow-sm border border-base-content/30 p-5 rounded-3xl text-center hover:shadow-xl transition-all duration-300 hover:bg-base-200 hover:border-primary group focus:outline-none w-full h-full flex flex-col justify-center items-center"
+                      className="card bg-base-100 shadow-sm border border-base-content/20 p-5 rounded-3xl text-center flex flex-col justify-center items-center w-full h-full"
                     >
-                      <Icon icon={stat.icon} className="w-8 h-8 md:w-10 md:h-10 text-primary mb-3 group-hover:scale-110 transition-transform" />
+                      <Icon icon={stat.icon} className="w-8 h-8 md:w-10 md:h-10 text-primary mb-3" />
                       <div className="text-2xl md:text-3xl font-bold font-display">{stat.value}</div>
-                      <div className="text-sm text-base-content/70 font-semibold uppercase tracking-wider mt-1">{stat.label}</div>
+                      <div className="text-xs text-base-content/70 font-semibold uppercase tracking-wider mt-1">{stat.label}</div>
                     </HashLink>
                   </m.div>
                 ))}
               </div>
             </m.div>
-
-          </m.div>
-        )}
+          </div>
+        </m.div>
       </div>
     </div>
   );

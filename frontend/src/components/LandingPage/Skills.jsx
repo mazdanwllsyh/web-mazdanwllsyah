@@ -45,12 +45,8 @@ function Skills() {
   const isSkillsLoading = usePortfolioStore((state) => state.isSkillsLoading);
 
   useEffect(() => {
-    const isHardEmpty = !skillsData?.hardSkills || skillsData.hardSkills.length === 0;
-    const isSoftEmpty = !skillsData?.softSkills || skillsData.softSkills.length === 0;
-    if (isHardEmpty && isSoftEmpty) {
-      fetchSkillsData();
-    }
-  }, [fetchSkillsData, skillsData]);
+    fetchSkillsData();
+  }, [fetchSkillsData]);
 
   const displayedHardSkills = useMemo(() => {
     return (skillsData?.hardSkills || []).map((dbSkill) => {
@@ -72,6 +68,33 @@ function Skills() {
 
   const displayedSoftSkills = useMemo(() => skillsData?.softSkills || [], [skillsData]);
 
+  const structuredData = useMemo(() => {
+    const allSkills = categoryOrder.flatMap(cat => skillsData[cat] || []);
+    return {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "Keahlian Mazda Nawallsyah",
+      "itemListElement": allSkills.map((skill, index) => ({
+        "@type": "ListItem",
+        "position": index + 1,
+        "name": skill.name || skill
+      }))
+    };
+  }, [skillsData]);
+
+  useEffect(() => {
+    let script = document.getElementById("structured-data-skills");
+    if (!script) {
+      script = document.createElement("script");
+      script.id = "structured-data-skills";
+      script.type = "application/ld+json";
+      document.head.appendChild(script);
+    }
+    script.innerHTML = JSON.stringify(structuredData);
+    return () => { if (script) script.remove(); };
+  }, [structuredData]);
+
+  
   if (isSkillsLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">

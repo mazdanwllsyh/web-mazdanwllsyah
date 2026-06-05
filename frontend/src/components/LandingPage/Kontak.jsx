@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import { toast } from "react-hot-toast";
-import { m } from "framer-motion";
+import { m, LazyMotion, domAnimation } from "framer-motion";
 import { useSiteStore } from "../../stores/siteStore";
 import { useAuth } from "../../hooks/useAuth";
 import FloatingLabelInput, { FloatingLabelTextarea } from "../FloatingLabelInput";
@@ -10,13 +11,20 @@ const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.1 }
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.1
+    }
   }
 };
 
 const itemVariants = {
-  hidden: { y: 20, opacity: 0 },
-  visible: { y: 0, opacity: 1, transition: { duration: 0.5, ease: "easeOut" } }
+  hidden: { y: 30, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: { type: "spring", stiffness: 85, damping: 15, mass: 1 }
+  }
 };
 
 function Kontak() {
@@ -85,89 +93,173 @@ function Kontak() {
     }
   };
 
+  const structuredData = useMemo(() => ({
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "name": "Hubungi Saya",
+    "description": "Halaman kontak Mazda Nawallsyah",
+    "mainEntity": {
+      "@type": "Person",
+      "name": siteData?.brandNameShort || "Mazda Nawallsyah",
+      "email": siteData?.contactLinks?.email || "",
+      "sameAs": Object.values(siteData?.contactLinks || {}).filter(Boolean)
+    }
+  }), [siteData]);
+
+  useEffect(() => {
+    let script = document.getElementById("structured-data-kontak");
+    if (!script) {
+      script = document.createElement("script");
+      script.id = "structured-data-kontak";
+      script.type = "application/ld+json";
+      document.head.appendChild(script);
+    }
+    script.innerHTML = JSON.stringify(structuredData);
+    return () => { if (script) script.remove(); };
+  }, [structuredData]);
+
   const isFormDisabled = selectedMethod === "telegram";
   const isFormValid = !isFormDisabled && nama.trim().length >= 5 && emailForm.trim().length >= 8 && pesan.trim().length >= 25;
 
+  const navigate = useNavigate();
+  const [hoveredContact, setHoveredContact] = useState(null);
+
+  const maskContact = (text, type) => {
+    if (!text) return "";
+    if (type === "email") {
+      const [name, domain] = text.split("@");
+      if (!domain) return text;
+      return `${name.substring(0, 2)}${"*".repeat(Math.max(name.length - 2, 3))}@${domain}`;
+    } else if (type === "whatsapp" || type === "phone") {
+      return text.substring(0, 4) + "-****-***" + text.substring(text.length - 2);
+    } else if (type === "telegram") {
+      return text.substring(0, 2) + "***" + text.substring(text.length - 2);
+    }
+    return "******";
+  };
+
   return (
-    <div
-      className="bg-base-100 min-h-[auto] my-12 xl:min-h-screen flex flex-col items-center justify-center py-8 xl:py-12 scroll-mt-8 lg:scroll-mt-14 text-base-content"
-      id="kontak"
-    >
-      <div className="w-full max-w-6xl mx-auto px-4">
-        <m.div
-          className="text-center mb-12"
-          initial={{ opacity: 0, y: -20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-2 tracking-tight">Hubungi Saya</h2>
-          <p className="text-base md:text-lg text-base-content/60">Mari berdiskusi tentang proyek hebat Anda</p>
-        </m.div>
-
-        <div className="w-full">
+    <LazyMotion features={domAnimation}>
+      <div
+        className="bg-base-100 min-h-[auto] my-12 xl:min-h-screen flex flex-col items-center justify-center py-8 xl:py-12 scroll-mt-8 lg:scroll-mt-14 text-base-content"
+        id="kontak"
+      >
+        <div className="w-full max-w-6xl mx-auto px-4">
           <m.div
-            className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8 w-full mb-8"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
+            className="text-center mb-12"
+            initial={{ opacity: 0, y: -30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ type: "spring", stiffness: 70, damping: 20 }}
           >
-            {[
-              { id: "email", icon: "mdi:email-outline", label: "Email", color: "text-primary", border: "border-primary", data: siteData.contactLinks?.email },
-              { id: "whatsapp", icon: "mdi:whatsapp", label: "WhatsApp", color: "text-success", border: "border-success", data: siteData.contactLinks?.whatsapp },
-              { id: "telegram", icon: "mdi:telegram", label: "Telegram", color: "text-info", border: "border-info", data: `@${siteData.contactLinks?.telegram}` }
-            ].map((method) => (
-              <m.div
-                key={method.id}
-                variants={itemVariants}
-                whileHover={{ y: -5 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setSelectedMethod(method.id)}
-                className={`card shadow-sm p-6 flex flex-col items-center text-center space-y-2 border-2 cursor-pointer duration-300 rounded-3xl ${selectedMethod === method.id ? `${method.border} bg-base-200/80 shadow-md` : "border-base-content/10 bg-base-100"
-                  }`}
-              >
-                <Icon icon={method.icon} className={`w-12 h-12 ${method.color}`} />
-                <h3 className="font-bold font-display text-lg">{method.label}</h3>
-                <p className="text-xs text-base-content/60 break-all">{method.data}</p>
-              </m.div>
-            ))}
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-2 tracking-tight">Hubungi <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-primary">Saya</span></h2>
+            <p className="text-base md:text-lg text-base-content/60">Mari berdiskusi tentang proyek hebat Anda</p>
           </m.div>
 
-          <m.div
-            className="card w-full shadow-lg p-6 md:p-10 border border-base-content/40 bg-base-100 rounded-[2.5rem]"
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-          >
-            <h3 className="text-2xl font-bold font-display mb-8 text-center uppercase tracking-widest text-base-content/80">
-              Kirim Pesan
-            </h3>
-            <form className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <FloatingLabelInput id="contactNama" label="Nama Lengkap" value={nama} onChange={(e) => setNama(e.target.value)} disabled={isFormDisabled} />
-                <FloatingLabelInput id="contactEmail" label="Alamat Email" type="email" value={emailForm} onChange={(e) => setEmailForm(e.target.value)} disabled={isFormDisabled} />
-              </div>
+          <div className="w-full">
+            <m.div
+              className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8 w-full mb-8"
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+            >
+              {[
+                { id: "email", icon: "mdi:email-outline", label: "Email", color: "text-primary", border: "border-primary", data: siteData.contactLinks?.email },
+                { id: "whatsapp", icon: "mdi:whatsapp", label: "WhatsApp", color: "text-success", border: "border-success", data: siteData.contactLinks?.whatsapp },
+                { id: "telegram", icon: "mdi:telegram", label: "Telegram", color: "text-info", border: "border-info", data: siteData.contactLinks?.telegram }
+              ].map((method) => {
+                if (!method.data) return null;
+                const isHoveredOrFocused = hoveredContact === method.id;
+                const displayData = isHoveredOrFocused || method.id === "email" ? method.data : maskContact(method.data, method.id);
 
-              <FloatingLabelTextarea id="contactPesan" label="Pesan atau Pertanyaan" value={pesan} onChange={(e) => setPesan(e.target.value)} disabled={isFormDisabled} rows={4} required={!isFormDisabled} />
+                return (
+                  <m.div
+                    key={method.id}
+                    layout
+                    variants={itemVariants}
+                    whileHover={{ y: -6, scale: 1.02 }}
+                    whileTap={{ scale: 0.96 }}
+                    onMouseEnter={() => setHoveredContact(method.id)}
+                    onMouseLeave={() => setHoveredContact(null)}
+                    onClick={() => setSelectedMethod(method.id)}
+                    tabIndex={0}
+                    onFocus={() => setHoveredContact(method.id)}
+                    onBlur={() => setHoveredContact(null)}
+                    className={`card shadow-sm p-6 flex flex-col items-center text-center space-y-2 cursor-pointer transition-colors duration-300 rounded-3xl outline-none ${selectedMethod === method.id ? `border-2 ${method.border} bg-base-200/80 shadow-md` : "border border-base-content/40 bg-base-100"}`}
+                  >
+                    <Icon icon={method.icon} className={`w-12 h-12 ${method.color}`} />
+                    <h3 className="font-bold font-display text-lg">{method.label}</h3>
+                    <m.p layout className="text-xs text-base-content/60 break-all font-text">
+                      {displayData}
+                    </m.p>
+                  </m.div>
+                );
+              })}
+            </m.div>
 
-              <m.button
-                type="button"
-                whileHover={selectedMethod && (isFormDisabled || isFormValid) ? { scale: 1.01 } : {}}
-                whileTap={selectedMethod && (isFormDisabled || isFormValid) ? { scale: 0.98 } : {}}
-                onClick={handleSendMessage}
-                className={`btn btn-lg w-full rounded-2xl font-bold shadow-lg transition-all ${!selectedMethod ? "btn-disabled" : isFormDisabled ? "btn-info text-base-100" : isFormValid ? "btn-primary" : "btn-disabled"
-                  }`}
-              >
-                {getButtonText()}
-                <Icon icon={selectedMethod === "telegram" ? "mdi:open-in-new" : "mdi:send"} className="w-5 h-5 ml-2" />
-              </m.button>
-            </form>
-          </m.div>
+            <m.div
+              className="card w-full shadow-lg p-6 md:p-10 border border-base-content/40 bg-base-100 rounded-[2.5rem]"
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ type: "spring", stiffness: 60, damping: 20, delay: 0.2 }}
+            >
+              <h3 className="text-2xl font-bold font-display mb-8 text-center uppercase tracking-widest text-base-content/80">
+                Kirim Pesan
+              </h3>
+              <form className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FloatingLabelInput
+                    id="contactNama"
+                    label="Nama Lengkap"
+                    value={nama}
+                    onChange={(e) => setNama(e.target.value)}
+                    disabled={isFormDisabled}
+                    alwaysFloat={true}
+                  />
+
+                  <FloatingLabelInput
+                    id="contactEmail"
+                    label="Alamat Email"
+                    type="email"
+                    value={emailForm}
+                    onChange={(e) => setEmailForm(e.target.value)}
+                    disabled={isFormDisabled}
+                    alwaysFloat={true}
+                    onDoubleClick={() => navigate("/signin", { state: { from: "/#kontak" } })}
+                    title="Klik 1x untuk mengetik, Klik 2x untuk menuju halaman Login"
+                  />
+                </div>
+
+                <FloatingLabelTextarea
+                  id="contactPesan"
+                  label="Pesan atau Pertanyaan"
+                  value={pesan}
+                  onChange={(e) => setPesan(e.target.value)}
+                  disabled={isFormDisabled}
+                  rows={4}
+                  required={!isFormDisabled}
+                  alwaysFloat={true}
+                />
+
+                <m.button
+                  type="button"
+                  whileHover={selectedMethod && (isFormDisabled || isFormValid) ? { scale: 1.02 } : {}}
+                  whileTap={selectedMethod && (isFormDisabled || isFormValid) ? { scale: 0.97 } : {}}
+                  onClick={handleSendMessage}
+                  className={`btn btn-lg w-full rounded-2xl font-bold shadow-lg ${!selectedMethod ? "btn-disabled" : isFormDisabled ? "btn-info text-base-100" : isFormValid ? "btn-primary" : "btn-disabled"
+                    }`}
+                >
+                  {getButtonText()}
+                  <Icon icon={selectedMethod === "telegram" ? "mdi:open-in-new" : "mdi:send"} className="w-5 h-5 ml-2" />
+                </m.button>
+              </form>
+            </m.div>
+          </div>
         </div>
       </div>
-    </div>
+    </LazyMotion>
   );
 }
 

@@ -18,15 +18,8 @@ function History() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const isEducationEmpty =
-      !historyData.education || historyData.education.length === 0;
-    const isExperienceEmpty =
-      !historyData.experience || historyData.experience.length === 0;
-
-    if (isEducationEmpty && isExperienceEmpty) {
-      fetchHistoryData();
-    }
-  }, [fetchHistoryData, historyData.education, historyData.experience]);
+    fetchHistoryData();
+  }, [fetchHistoryData]);
 
   useEffect(() => {
     const handleTabChange = () => {

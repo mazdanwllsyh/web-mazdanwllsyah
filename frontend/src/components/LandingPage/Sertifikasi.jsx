@@ -62,10 +62,8 @@ function Sertifikasi() {
   }, []);
 
   useEffect(() => {
-    if (!sertifikatData || sertifikatData.length === 0) {
-      fetchSertifikat();
-    }
-  }, [fetchSertifikat, sertifikatData.length]);
+    fetchSertifikat();
+  }, [fetchSertifikat]);
 
   const themeMode = useSiteStore((state) => state.getThemeMode());
   const categories = [
@@ -124,28 +122,36 @@ function Sertifikasi() {
 
   const handleCloseModal = () => setSelectedCert(null);
 
-  const structuredData = {
+  const structuredData = useMemo(() => ({
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: "Sertifikasi & Penghargaan",
-    description:
-      "Koleksi sertifikat profesional dan pencapaian akademis Mazda Nawallsyah",
-    itemListElement: sertifikatData.map((cert, index) => ({
+    "name": "Sertifikasi dan Penghargaan",
+    "itemListElement": currentItems.map((cert, index) => ({
       "@type": "ListItem",
-      position: index + 1,
-      item: {
+      "position": index + 1,
+      "item": {
         "@type": "EducationalOccupationalCredential",
-        name: cert.title,
-        credentialCategory: "Certificate",
-        recognizedBy: {
+        "name": cert.title,
+        "recognizedBy": {
           "@type": "Organization",
-          name: cert.issuer,
+          "name": cert.issuer
         },
-        image: cert.imageUrl,
-        url: window.location.href,
-      },
-    })),
-  };
+        "credentialCategory": cert.category
+      }
+    }))
+  }), [currentItems]);
+
+  useEffect(() => {
+    let script = document.getElementById("structured-data-sertifikasi");
+    if (!script) {
+      script = document.createElement("script");
+      script.id = "structured-data-sertifikasi";
+      script.type = "application/ld+json";
+      document.head.appendChild(script);
+    }
+    script.innerHTML = JSON.stringify(structuredData);
+    return () => { if (script) script.remove(); };
+  }, [structuredData]);
 
   return (
     <>
@@ -159,9 +165,6 @@ function Sertifikasi() {
         className="bg-base-100 min-h-[auto] xl:min-h-screen flex flex-col items-center justify-center py-20 lg:py-16 text-base-content"
         id="sertifikasi"
       >
-        <script type="application/ld+json">
-          {JSON.stringify(structuredData)}
-        </script>
 
         <div className="w-full max-w-6xl mx-auto px-4 lg:px-4">
           <m.div
@@ -171,7 +174,7 @@ function Sertifikasi() {
             transition={{ duration: 0.6, delay: 0.3 }}
           >
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-2 tracking-tight">
-              Sertifikasi
+              Sertifikat <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-primary">Saya</span>
             </h2>
             <p className="text-base md:text-lg text-base-content/60">
               Beberapa sertifikat dan lisensi yang telah saya peroleh
