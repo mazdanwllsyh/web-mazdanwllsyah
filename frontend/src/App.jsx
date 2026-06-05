@@ -11,6 +11,8 @@ import CustomCursor from "./components/CustomCursor";
 const AppLandingPage = lazy(() => import("./components/AppLandingPage"));
 const AppDashboard = lazy(() => import("./components/AppDashboard"));
 
+const isBot = /bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent);
+
 function App() {
   const location = useLocation();
   const isDashboard = location.pathname.startsWith("/dashboard");
@@ -29,6 +31,12 @@ function App() {
 
   useLayoutEffect(() => {
     if (isDashboard) {
+      setIsVisualLoading(false);
+      setCanRenderRoutes(true);
+      return;
+    }
+
+    if (isBot) {
       setIsVisualLoading(false);
       setCanRenderRoutes(true);
       return;
