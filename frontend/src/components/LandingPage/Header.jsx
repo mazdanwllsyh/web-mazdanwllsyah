@@ -10,17 +10,48 @@ function Header() {
   const location = useLocation();
   const siteData = useSiteStore((state) => state.siteData);
   const [isScrolled, setIsScrolled] = useState(false);
-  const { user, handleSignOut } = useAuth();
 
+  const [activeSection, setActiveSection] = useState("#home");
+
+  const { user, handleSignOut } = useAuth();
   const isAdmin = user && (user.role === "admin" || user.role === "superAdmin");
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
+
+      const sections = ["#home", "#histori", "#skills", "#galeri", "#kontak"];
+      let currentActive = activeSection;
+
+      for (const section of sections) {
+        const element = document.querySelector(section);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          if (rect.top <= 150 && rect.bottom >= 150) {
+            currentActive = section;
+          }
+        }
+      }
+
+      if (currentActive !== activeSection) {
+        setActiveSection(currentActive);
+      }
     };
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [activeSection]);
+
+  const scrollWithOffset = (el) => {
+    const headerOffset = 55; 
+    const elementPosition = el.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.scrollY - headerOffset;
+
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: "smooth"
+    });
+  };
 
   const navLinks = [
     { to: "/#home", text: "Beranda", icon: "mdi:home" },
@@ -35,11 +66,10 @@ function Header() {
       className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ease-in-out ${isScrolled ? "py-4" : "py-0"}`}
     >
       <header
-        className={`mx-auto transition-all duration-500 ease-in-out ${
-          isScrolled
+        className={`mx-auto transition-all duration-500 ease-in-out ${isScrolled
             ? "w-[92%] max-w-6xl rounded-full border border-base-content/10 bg-base-100/70 backdrop-blur-md shadow-lg py-2 px-6 mt-3"
             : "w-[92%] max-w-6xl bg-transparent py-4 px-2"
-        }`}
+          }`}
       >
         <div className="flex items-center justify-between">
           <div className="flex-1">
@@ -60,21 +90,18 @@ function Header() {
           <nav className="hidden xl:flex items-center gap-1 bg-base-200/50 p-1 rounded-full border border-base-content/5">
             {navLinks.map((link) => {
               const isAtHome = location.pathname === "/";
-              const isActive =
-                isAtHome &&
-                (location.hash === link.to.replace("/", "") ||
-                  (location.hash === "" && link.to === "/#home"));
+              
+              const isActive = isAtHome && activeSection === link.to.replace("/", "");
 
               return (
                 <HashLink
                   key={link.to}
                   to={link.to}
-                  smooth
-                  className={`px-5 py-2 rounded-full text-sm font-bold transition-all duration-300 ${
-                    isActive
-                      ? "bg-gradient-to-br from-accent to-primary text-base-100/85 shadow-md shadow-primary/20 scale-105"
+                  scroll={(el) => scrollWithOffset(el)}
+                  className={`px-5 py-2 rounded-full text-sm font-bold transition-all duration-300 ${isActive
+                      ? "bg-gradient-to-br from-accent to-primary text-primary-content shadow-md shadow-primary/20 scale-105"
                       : "text-base-content hover:bg-primary/10 hover:text-primary"
-                  }`}
+                    }`}
                 >
                   {link.text}
                 </HashLink>
@@ -164,15 +191,12 @@ function Header() {
               >
                 {navLinks.map((link) => {
                   const isAtHome = location.pathname === "/";
-                  const isActive =
-                    isAtHome &&
-                    (location.hash === link.to.replace("/", "") ||
-                      (location.hash === "" && link.to === "/#home"));
+                  const isActive = isAtHome && activeSection === link.to.replace("/", "");
                   return (
                     <li key={link.to}>
                       <HashLink
                         to={link.to}
-                        smooth
+                        scroll={(el) => scrollWithOffset(el)}
                         className={`font-bold py-3 ${isActive ? "bg-primary/10 text-primary" : ""}`}
                       >
                         <Icon

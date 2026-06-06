@@ -8,18 +8,18 @@ const defaultImageUrl =
 const siteUrl = "https://mazdaweb.bejalen.com";
 
 const pageTitles = {
-  "/": "Mazda Nawallsyah's Web",
-  "/tentang": "Tentang Saya",
-  "/sertifikasi": "Sertifikat yang dimiliki",
-  "/donasi": "Donasi Yuk",
+  "/": "Beranda",
+  "/tentang": "Tentang",
+  "/sertifikasi": "Sertifikasi",
+  "/donasi": "Donasi",
 };
 
 const sectionTitles = {
   "#home": "Beranda",
-  "#histori": "Riwayat Hidup",
-  "#skills": "Kemampuan yang dimiliki",
-  "#galeri": "Galeri Proyek",
-  "#kontak": "Kontak Saya",
+  "#histori": "Riwayat Karir",
+  "#skills": "Keahlian",
+  "#galeri": "Portofolio",
+  "#kontak": "Kontak",
 };
 
 function SeoHelmet({ title, description, imageUrl, url }) {
@@ -44,23 +44,23 @@ function SeoHelmet({ title, description, imageUrl, url }) {
 
   const pageTitle =
     activeSection || title
-      ? `${activeSection || title} | ${siteData.brandNameShort} (Front-End Developer Portfolio)`
-      : `${siteData.brandNameShort} - MERN Stack Developer Enthusiast`;
+      ? `${activeSection || title} — ${siteData.brandNameShort} | Frontend Developer`
+      : `Mazda Nawallsyah — Frontend Developer`;
 
   const dynamicDescription = useMemo(() => {
     if (description) return description;
 
     const fullAbout = siteData?.aboutParagraph || "";
-
     let baseDesc = "";
+
     if (pathname === "/tentang") {
-      baseDesc = fullAbout.substring(0, 250);
+      baseDesc = fullAbout.substring(0, 200);
     } else {
       const firstSentence = fullAbout.split(".")[0];
-      baseDesc = firstSentence ? firstSentence + "." : `Portofolio ${siteData.brandName}.`;
+      baseDesc = firstSentence ? firstSentence + "." : `Portofolio resmi ${siteData.brandName}.`;
     }
 
-    return `${baseDesc} Wisudawan S1 - Teknik Informatika USM 74. Dikenal sebagai Mazda Nawallsyah or Milord de Rafford a.k.a Mazda Bejalen.`;
+    return `${baseDesc} Menghadirkan pengalaman pengguna (UX) yang optimal dan antarmuka (UI) modern menggunakan teknologi React.js dan ekosistem MERN Stack.`;
   }, [description, siteData, pathname]);
 
   const pageImage = imageUrl || defaultImageUrl;
@@ -68,41 +68,31 @@ function SeoHelmet({ title, description, imageUrl, url }) {
   const keywordsList = [
     "Mazda Nawallsyah",
     "Nawallsyah",
-    "MERN Stack Enthusiast",
-    "G.211.21.0082",
-    "G211210082",
-    "Milord de Rafford",
-    "Mas mas Ambarawa",
     "Mazda Bejalen",
-    "MERN Mazda",
     "Frontend Developer",
-    "Fresh Graduate Universitas Semarang",
-    "Teknik Informatika USM"
+    "React.js Developer",
+    "Portofolio Mazda",
+    "MERN Stack",
+    "Web Developer Ambarawa",
+    "Frontend Engineer"
   ].join(", ");
 
   const schemaPerson = {
     "@context": "https://schema.org",
     "@type": "Person",
-    "name": siteData.brandNameShort,
-    "alternateName": ["Nawallsyah", "Milord de Rafford", "Rafford", "Mas mas Ambarawa", "Mazda Bejalen"],
-    "identifier": "G.211.21.0082",
-    "jobTitle": siteData.jobTitle,
+    "name": "Mazda Nawallsyah",
+    "alternateName": "Nawallsyah",
+    "jobTitle": "Frontend Web Developer",
     "image": pageImage,
-    "alumniOf": {
-      "@type": "CollegeOrUniversity",
-      "name": "Universitas Semarang (USM)"
-    },
     "url": siteUrl,
-    "description": dynamicDescription
+    "description": "Seorang Frontend Web Developer yang berfokus pada pengembangan aplikasi modern dengan React.js."
   };
 
   return (
     <>
       <title>{pageTitle}</title>
       <meta name="description" content={dynamicDescription} />
-
       <meta name="keywords" content={keywordsList} />
-
       <link rel="canonical" href={canonicalUrl} />
       <meta name="robots" content="index, follow" />
 
@@ -111,7 +101,7 @@ function SeoHelmet({ title, description, imageUrl, url }) {
       <meta property="og:description" content={dynamicDescription} />
       <meta property="og:image" content={pageImage} />
       <meta property="og:url" content={canonicalUrl} />
-      <meta property="og:site_name" content={siteData.brandNameShort} />
+      <meta property="og:site_name" content="Mazda Nawallsyah Portfolio" />
 
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={pageTitle} />

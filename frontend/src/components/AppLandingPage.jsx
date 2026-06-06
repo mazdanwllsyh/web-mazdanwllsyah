@@ -1,11 +1,15 @@
-import React, { useEffect } from "react";
-import { Routes, Route, useLocation, Navigate, Outlet } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Routes, Route, useLocation, Navigate, Outlet, Link } from "react-router-dom";
 import Header from "../components/LandingPage/Header";
 import ProtectedRoute from "../routes/ProtectedRoute";
 import { useAuth } from "../hooks/useAuth";
+import { Icon } from "@iconify/react";
 
-import { LazyMotion, domAnimation } from "framer-motion";
+import { LazyMotion, domAnimation, m } from "framer-motion";
 import Beranda from "../components/LandingPage/Beranda";
+
+const FABDonate = React.lazy(() => import("../components/FABDonate"));
+const ScrollToTop = React.lazy(() => import("../components/ScrollToTop"));
 
 const About = React.lazy(() => import("../components/LandingPage/About"));
 const Sertifikasi = React.lazy(() => import("../components/LandingPage/Sertifikasi"));
@@ -42,14 +46,17 @@ function AppLandingPage() {
         const id = hash.replace("#", "");
         const element = document.getElementById(id);
         if (element) {
-          element.scrollIntoView({ behavior: "smooth", block: "start" });
+          const headerOffset = 55; 
+          const elementPosition = element.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.scrollY - headerOffset;
+          window.scrollTo({ top: offsetPosition, behavior: "smooth" });
         }
-      }, 0); 
+      }, 650);
       return () => clearTimeout(timer);
     } else {
       window.scrollTo({ top: 0, behavior: "instant" });
     }
-  }, [location.hash, location.pathname]);
+  }, [location.pathname]); 
 
   return (
     <div className="flex flex-col min-h-screen overflow-x-hidden">
@@ -79,6 +86,11 @@ function AppLandingPage() {
             </React.Suspense>
           </div>
         </main>
+
+        <React.Suspense fallback={null}>
+          <FABDonate />
+          <ScrollToTop />
+        </React.Suspense>
 
         <Footer />
       </LazyMotion>

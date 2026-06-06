@@ -111,7 +111,7 @@ function History() {
 
   return (
     <div
-      className="bg-base-100 min-h-[auto] xl:min-h-screen flex flex-col items-center justify-center py-16 lg:py-20 scroll-mt-12 lg:scroll-mt-18 text-base-content"
+      className="bg-base-100 min-h-[auto] xl:min-h-screen flex flex-col items-center justify-center py-11 lg:py-18 text-base-content"
       id="histori"
     >
       <script type="application/ld+json">

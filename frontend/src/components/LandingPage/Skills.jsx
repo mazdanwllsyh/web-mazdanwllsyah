@@ -106,7 +106,7 @@ function Skills() {
 
   return (
     <div
-      className="bg-base-100 min-h-[auto] xl:min-h-screen flex flex-col items-center justify-center py-16 scroll-mt-15 lg:scroll-mt-22"
+      className="bg-base-100 min-h-[auto] xl:min-h-screen flex flex-col items-center justify-center py-10 md:py-16"
       id="skills"
     >
       <div className="w-full max-w-6xl mx-auto px-4 lg:px-4">

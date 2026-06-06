@@ -93,7 +93,7 @@ function Hero() {
   }, [structuredData]);
 
   return (
-    <div className="hero bg-base-100 flex items-center justify-center pt-10 pb-16 lg:py-0 min-h-[auto] xl:min-h-screen scroll-mt-12" id="home">
+    <div className="hero bg-base-100 flex items-center justify-center pt-10 pb-16 lg:py-0 min-h-[auto] xl:min-h-screen" id="home">
       <SeoHelmet
         title="Mazda Nawallsyah"
         description="Portofolio pribadi Mazda Nawallsyah seorang Fresh Graduate S1 - Teknik Informatika Universitas Semarang yang berfokus di Bidang Front-End Web Dev."
@@ -113,7 +113,7 @@ function Hero() {
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 0.8 + (i * 0.1), type: "spring" }}
-                className={`absolute ${tech.position} z-20 w-12 h-12 md:w-14 md:h-14 bg-base-100 rounded-xl shadow-xl border border-base-content/10 flex items-center justify-center hover:scale-125 transition-transform duration-300 hover:z-30`}
+                className={`absolute ${tech.position} z-20 w-12 h-12 md:w-14 md:h-14 bg-base-100 rounded-xl shadow-xl border border-base-content/10 flex items-center justify-center hover:scale-125 transition-transform duration-300 hover:z-30 hover:bg-gradient-to-br from-accent to-primary cursor-pointer`}
                 title={tech.id}
               >
                 <Icon icon={tech.icon} className={`w-6 h-6 md:w-8 md:h-8 ${tech.customClass || ''}`} />
@@ -203,9 +203,9 @@ function Hero() {
                   </m.p>
 
                   <m.div variants={textItemVariants}>
-                    <Link tabIndex={0} to="/tentang" className="btn btn-lg bg-base-300 font-display border-base-content/20 border-2 shadow-sm hover:shadow-primary/20 group rounded-2xl lg:px-8 transition-all">
+                    <Link tabIndex={0} to="/tentang" className="btn btn-lg bg-gradient-to-br from-accent to-primary text-primary-content font-display border-base-content/20 border-2 shadow-sm hover:shadow-primary/20 group rounded-2xl lg:px-8 transition-all">
                       Tentang Saya?
-                      <Icon icon="streamline-flex:finger-snapping" className="w-6 h-6 ml-1 group-hover:scale-110 transition-transform text-primary" focusable="false" />
+                      <Icon icon="streamline-flex:finger-snapping" className="w-6 h-6 ml-1 group-hover:scale-110 transition-transform" focusable="false" />
                     </Link>
                   </m.div>
 
