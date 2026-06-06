@@ -8,7 +8,7 @@ const defaultImageUrl =
 const siteUrl = "https://mazdaweb.bejalen.com";
 
 const pageTitles = {
-  "/": "Beranda",
+  "/": "",
   "/tentang": "Tentang",
   "/sertifikasi": "Sertifikasi",
   "/donasi": "Donasi",
@@ -44,7 +44,7 @@ function SeoHelmet({ title, description, imageUrl, url }) {
 
   const pageTitle =
     activeSection || title
-      ? `${activeSection || title} — ${siteData.brandNameShort} | Frontend Developer`
+      ? `${activeSection || title} — ${siteData.brandName} | Frontend Developer`
       : `Mazda Nawallsyah — Frontend Developer`;
 
   const dynamicDescription = useMemo(() => {

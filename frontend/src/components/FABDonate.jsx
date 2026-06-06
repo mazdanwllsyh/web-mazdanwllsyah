@@ -12,7 +12,7 @@ const FABDonate = () => {
             setIsExpanded(true);
             setTimeout(() => {
                 setIsExpanded(false);
-            }, 5500);
+            }, 6500);
         }, 15000);
 
         return () => clearInterval(interval);
@@ -31,7 +31,7 @@ const FABDonate = () => {
                     className="bg-base-300/90 shadow-xl flex flex-col items-center justify-center rounded-l-2xl border-y border-l border-white/30 py-3 px-1.5"
                     initial={false}
                     animate={{
-                        x: showFull ? 0 : "calc(95% - 1px)",
+                        x: showFull ? 0 : "calc(95% - 0px)",
                     }}
                     transition={{ type: "spring", stiffness: 300, damping: 25 }}
                 >
