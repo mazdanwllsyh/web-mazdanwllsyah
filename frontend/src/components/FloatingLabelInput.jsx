@@ -62,9 +62,10 @@ const FloatingLabelInput = ({ label, id, type = 'text', value, onChange, readOnl
     );
 };
 
-export const FloatingLabelTextarea = ({ label, id, value, onChange, readOnly, disabled, className = '', ...props }) => {
+export const FloatingLabelTextarea = ({ label, id, value, onChange, readOnly, disabled, className = '', alwaysFloat = false, ...props }) => {
     const [isFocused, setIsFocused] = useState(false);
-    const labelShouldFloat = isFocused || (value && value.toString().length > 0);
+
+    const labelShouldFloat = alwaysFloat || isFocused || (value && value.toString().length > 0);
     const isNotEditable = readOnly || disabled;
 
     return (

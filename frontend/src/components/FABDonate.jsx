@@ -12,8 +12,8 @@ const FABDonate = () => {
             setIsExpanded(true);
             setTimeout(() => {
                 setIsExpanded(false);
-            }, 6300);
-        }, 9800);
+            }, 5500);
+        }, 15000);
 
         return () => clearInterval(interval);
     }, []);
@@ -28,10 +28,10 @@ const FABDonate = () => {
         >
             <Link to="/donasi" aria-label="Support me on Buy Me a Coffee" className="block md:hidden">
                 <m.div
-                    className="bg-gradient-to-t from-accent to-primary text-primary-content shadow-xl flex flex-col items-center justify-center rounded-l-2xl border-y border-l border-white/30 py-3 px-1.5"
+                    className="bg-base-300/90 shadow-xl flex flex-col items-center justify-center rounded-l-2xl border-y border-l border-white/30 py-3 px-1.5"
                     initial={false}
                     animate={{
-                        x: showFull ? 0 : "calc(100% - 12px)",
+                        x: showFull ? 0 : "calc(95% - 1px)",
                     }}
                     transition={{ type: "spring", stiffness: 300, damping: 25 }}
                 >
@@ -47,10 +47,10 @@ const FABDonate = () => {
 
             <Link to="/donasi" aria-label="Support me on Buy Me a Coffee" className="hidden md:block">
                 <m.div
-                    className="bg-gradient-to-br from-accent to-primary text-primary-content shadow-xl flex items-center rounded-l-full cursor-pointer border-y border-l border-white/30 h-10 md:h-12 px-2 md:px-3"
+                    className="bg-base-300/75 shadow-xl flex items-center rounded-l-full cursor-pointer border-y border-l border-white/30 h-10 md:h-12 px-2 md:px-3"
                     initial={false}
                     animate={{
-                        x: showFull ? 0 : "calc(100% - 10px)",
+                        x: showFull ? 0 : "calc(100% - 3px)",
                     }}
                     transition={{ type: "spring", stiffness: 300, damping: 25 }}
                 >

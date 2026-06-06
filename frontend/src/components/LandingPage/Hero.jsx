@@ -203,7 +203,7 @@ function Hero() {
                   </m.p>
 
                   <m.div variants={textItemVariants}>
-                    <Link tabIndex={0} to="/tentang" className="btn btn-lg bg-gradient-to-br from-accent to-primary text-primary-content font-display border-base-content/20 border-2 shadow-sm hover:shadow-primary/20 group rounded-2xl lg:px-8 transition-all">
+                    <Link tabIndex={0} to="/tentang" className="btn btn-lg bg-base-300/90 font-display border-base-content/20 border-2 shadow-sm hover:shadow-primary/20 group rounded-2xl lg:px-8 transition-all">
                       Tentang Saya?
                       <Icon icon="streamline-flex:finger-snapping" className="w-6 h-6 ml-1 group-hover:scale-110 transition-transform" focusable="false" />
                     </Link>
