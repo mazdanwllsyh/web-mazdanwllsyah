@@ -33,15 +33,7 @@ const NavItem = ({ to, icon, label }) => {
 
 function Sidebar() {
   const siteData = useSiteStore((state) => state.siteData);
-  const { user, signOut } = useAuth();
-
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const { user, handleSignOut } = useAuth();
 
   const allowedMenuItems = menuItems.filter((item) => {
     if (!item.role) return true;
