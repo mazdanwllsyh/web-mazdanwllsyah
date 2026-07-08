@@ -51,6 +51,7 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       injectRegister: "script",
+      includeAssets: ['favicon.ico', 'robots.txt', 'sitemap.xml'],
       devOptions: {
         enabled: true,
       },
