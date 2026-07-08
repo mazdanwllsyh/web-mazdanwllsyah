@@ -50,6 +50,7 @@ export default defineConfig({
     visualizer({ open: true }),
     VitePWA({
       registerType: "autoUpdate",
+      injectRegister: "script",
       devOptions: {
         enabled: true,
       },
