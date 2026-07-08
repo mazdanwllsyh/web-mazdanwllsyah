@@ -11,7 +11,7 @@ function Header() {
   const siteData = useSiteStore((state) => state.siteData);
   const [isScrolled, setIsScrolled] = useState(false);
 
-  const [activeSection, setActiveSection] = useState("#home");
+  const [activeSection, setActiveSection] = useState(location.hash || "#home");
 
   const { user, handleSignOut } = useAuth();
   const isAdmin = user && (user.role === "admin" || user.role === "superAdmin");
@@ -43,7 +43,7 @@ function Header() {
   }, [activeSection]);
 
   const scrollWithOffset = (el) => {
-    const headerOffset = 55; 
+    const headerOffset = 55;
     const elementPosition = el.getBoundingClientRect().top;
     const offsetPosition = elementPosition + window.scrollY - headerOffset;
 
@@ -67,8 +67,8 @@ function Header() {
     >
       <header
         className={`mx-auto transition-all duration-500 ease-in-out ${isScrolled
-            ? "w-[92%] max-w-6xl rounded-full border border-base-content/10 bg-base-100/70 backdrop-blur-md shadow-lg py-2 px-6 mt-3"
-            : "w-[92%] max-w-6xl bg-transparent py-4 px-2"
+          ? "w-[92%] max-w-6xl rounded-full border border-base-content/10 bg-base-100/70 backdrop-blur-md shadow-lg py-2 px-6 mt-3"
+          : "w-[92%] max-w-6xl bg-transparent py-4 px-2"
           }`}
       >
         <div className="flex items-center justify-between">
@@ -90,8 +90,11 @@ function Header() {
           <nav className="hidden xl:flex items-center gap-1 bg-base-200/50 p-1 rounded-full border border-base-content/5">
             {navLinks.map((link) => {
               const isAtHome = location.pathname === "/";
-              
-              const isActive = isAtHome && activeSection === link.to.replace("/", "");
+
+              const isActive = isAtHome && (
+                activeSection === link.to.replace("/", "") ||
+                (activeSection === "#home" && link.to === "/#home")
+              );
 
               return (
                 <HashLink
@@ -99,8 +102,8 @@ function Header() {
                   to={link.to}
                   scroll={(el) => scrollWithOffset(el)}
                   className={`px-5 py-2 rounded-full text-sm font-bold transition-all duration-300 ${isActive
-                      ? "bg-gradient-to-br from-accent to-primary text-primary-content shadow-md shadow-primary/20 scale-105"
-                      : "text-base-content hover:bg-primary/10 hover:text-primary"
+                    ? "bg-gradient-to-br from-accent to-primary text-primary-content shadow-md shadow-primary/20 scale-105"
+                    : "text-base-content hover:bg-primary/10 hover:text-primary"
                     }`}
                 >
                   {link.text}

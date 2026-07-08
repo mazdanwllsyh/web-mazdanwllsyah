@@ -26,14 +26,48 @@
           }
 
           document.documentElement.setAttribute("data-theme", initialTheme);
+
+          const metaThemeColor = document.getElementById("theme-color-meta");
+          if (metaThemeColor) {
+            metaThemeColor.setAttribute(
+              "content",
+              initialTheme === "night" ? "#0f1729" : "#10b981",
+            );
+          }
         } catch (e) {
           console.log("Theme detection failed", e);
         }
       })();
     </script>
 
+    <title>Mazda Nawallsyah — Frontend Developer</title>
+    <meta
+      name="description"
+      content="Portofolio resmi Mazda Nawallsyah, seorang Frontend Web Developer yang berfokus pada pengembangan antarmuka pengguna modern dan interaktif dengan ekosistem React.js."
+    />
+    <meta
+      name="keywords"
+      content="Mazda Nawallsyah, Nawallsyah, Portofolio Mazda, Frontend Developer, React Developer, Shahclyffe, MERN Stack Developer, Ambarawa, Mazda Bejalen, Web Developer Indonesia"
+    />
     <meta name="author" content="Mazda Nawallsyah" />
-    <meta name="theme-color" content="#10b981" />
+    <meta name="theme-color" id="theme-color-meta" content="#10b981" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Mazda Nawallsyah",
+        "alternateName": [
+          "Portofolio Mazda",
+          "Nawallsyah",
+          "Shahclyffe",
+          "Rafford",
+          "VOXELIX"
+        ],
+        "url": "https://mazdaweb.bejalen.com/"
+      }
+    </script>
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://mazdaweb.bejalen.com/" />
@@ -211,7 +245,6 @@
         animation: pulseText 2s ease-in-out infinite;
       }
 
-      /* Utilitas buat Screen Reader (ARIA) */
       .sr-only {
         position: absolute;
         width: 1px;
