@@ -13,6 +13,12 @@ dist
 dist-ssr
 *.local
 
+# PWA & Build files
+dist/
+sw.js
+workbox-*.js
+index.html.js
+
 # Environment Variables 
 .env
 .env.*
