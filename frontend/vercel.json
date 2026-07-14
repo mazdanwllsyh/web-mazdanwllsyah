@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "cleanUrls": true,
   "headers": [
     {
       "source": "/assets/(.*)",
@@ -21,6 +22,18 @@
     }
   ],
   "rewrites": [
+    {
+      "source": "/tentang",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/sertifikasi",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/donasi",
+      "destination": "/index.html"
+    },
     {
       "source": "/(.*)",
       "destination": "/index.html"

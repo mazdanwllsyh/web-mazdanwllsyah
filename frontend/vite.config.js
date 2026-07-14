@@ -3,11 +3,6 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { visualizer } from "rollup-plugin-visualizer";
 import { VitePWA } from "vite-plugin-pwa";
-import path from "path";
-import { createRequire } from "module";
-
-const require = createRequire(import.meta.url);
-const prerender = require("vite-plugin-prerender");
 
 export default defineConfig({
   base: "/",
@@ -70,7 +65,7 @@ export default defineConfig({
             sizes: "480x480",
           },
           {
-            src: "https://res.cloudinary.com/dr7olcn4r/image/upload/c_fill,h_768,w_768/v1761388118/croppedsebelumgembuldanmenjadijawir_cdep6a.png",
+            src: "https://res.cloudinary.com/dr7olcn4r/image/upload/c_fill,h_768,w_768/w1761388118/croppedsebelumgembuldanmenjadijawir_cdep6a.png",
             type: "image/png",
             sizes: "768x768",
             purpose: "any maskable",
@@ -81,11 +76,6 @@ export default defineConfig({
         theme_color: "#10b981",
         background_color: "#0f1729",
       },
-    }),
-    prerender({
-      staticDir: path.join(process.cwd(), "dist"),
-      routes: ["/", "/tentang", "/sertifikasi", "/donasi"],
-      renderer: "@renderer-puppeteer",
     }),
   ],
   server: {
