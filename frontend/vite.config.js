@@ -3,6 +3,11 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { visualizer } from "rollup-plugin-visualizer";
 import { VitePWA } from "vite-plugin-pwa";
+import path from "path";
+import { createRequire } from "module";
+
+const require = createRequire(import.meta.url);
+const prerender = require("vite-plugin-prerender");
 
 export default defineConfig({
   base: "/",
@@ -51,7 +56,7 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       injectRegister: "script",
-      includeAssets: ['favicon.ico', 'robots.txt', 'sitemap.xml'],
+      includeAssets: ["favicon.ico", "robots.txt", "sitemap.xml"],
       devOptions: {
         enabled: true,
       },
@@ -76,6 +81,11 @@ export default defineConfig({
         theme_color: "#10b981",
         background_color: "#0f1729",
       },
+    }),
+    prerender({
+      staticDir: path.join(process.cwd(), "dist"),
+      routes: ["/", "/tentang", "/sertifikasi", "/donasi"],
+      renderer: "@renderer-puppeteer",
     }),
   ],
   server: {

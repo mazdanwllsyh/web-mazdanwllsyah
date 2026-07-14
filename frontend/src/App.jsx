@@ -56,6 +56,11 @@ function App() {
   const showTransition = isAppInitializing || isVisualLoading;
 
   useEffect(() => {
+    if (isBot) {
+      setCanRenderRoutes(true); 
+      return;
+    }
+
     if (!showTransition) {
       const safetyTimer = setTimeout(() => {
         setCanRenderRoutes(true);

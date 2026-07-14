@@ -4,6 +4,7 @@ import { m, AnimatePresence } from "framer-motion";
 
 const ScrollToTop = () => {
     const [isVisible, setIsVisible] = useState(false);
+    const [isFlying, setIsFlying] = useState(false);
 
     useEffect(() => {
         const toggleVisibility = () => {
@@ -14,6 +15,7 @@ const ScrollToTop = () => {
                 setIsVisible(true);
             } else {
                 setIsVisible(false);
+                setIsFlying(false);
             }
         };
 
@@ -21,7 +23,8 @@ const ScrollToTop = () => {
         return () => window.removeEventListener("scroll", toggleVisibility);
     }, []);
 
-    const scrollToTop = () => {
+    const handleScrollAndFly = () => {
+        setIsFlying(true);
         window.scrollTo({
             top: 0,
             behavior: "smooth",
@@ -31,19 +34,23 @@ const ScrollToTop = () => {
     return (
         <AnimatePresence>
             {isVisible && (
-                <m.button
-                    onClick={scrollToTop}
-                    initial={{ opacity: 0, scale: 0.5, y: 20 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.5, y: 20 }}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                    className="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[90] p-2.5 md:p-3.5 rounded-xl md:rounded-2xl bg-base-100/80 backdrop-blur-md border border-base-content/30 shadow-lg text-base-content hover:bg-gradient-to-br hover:from-accent hover:to-primary hover:text-primary-content transition-all group"
-                    aria-label="Scroll to top"
-                >
-                    <Icon icon="solar:alt-arrow-up-bold-duotone" className="w-5 h-5 md:w-6 md:h-6 group-hover:-translate-y-1 transition-transform duration-300" />
-                </m.button>
+                <div className="fixed bottom-6 md:bottom-8 left-0 right-0 z-[90] pointer-events-none flex justify-center w-full">
+                    <div className="w-[92%] md:w-[88%] lg:w-[85%] max-w-7xl relative flex justify-end">
+                        <m.button
+                            onClick={handleScrollAndFly}
+                            initial={{ opacity: 0, scale: 0.5, y: 50 }}
+                            animate={isFlying ? { y: -800, scale: 0.8, opacity: 0 } : { opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.5, y: 20 }}
+                            whileHover={!isFlying ? { scale: 1.1 } : {}}
+                            whileTap={!isFlying ? { scale: 0.9 } : {}}
+                            transition={isFlying ? { duration: 0.5, ease: "easeIn" } : { type: "spring", stiffness: 260, damping: 20 }}
+                            className="p-2.5 md:p-3.5 md:fixed md:bottom-8 md:right-8 xl:right-16 rounded-xl md:rounded-2xl bg-base-100/80 backdrop-blur-md border border-base-content/30 shadow-lg text-base-content hover:bg-gradient-to-br hover:from-accent hover:to-primary hover:text-primary-content transition-all group pointer-events-auto"
+                            aria-label="Scroll to top"
+                        >
+                            <Icon icon="solar:alt-arrow-up-bold-duotone" className="w-5 h-5 md:w-6 md:h-6 group-hover:-translate-y-1 transition-transform duration-300" />
+                        </m.button>
+                    </div>
+                </div>
             )}
         </AnimatePresence>
     );

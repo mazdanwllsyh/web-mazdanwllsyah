@@ -79,13 +79,18 @@ function About() {
   }, [profileImages.length]);
 
   const totalSkillsCount = useMemo(() => {
-    return Object.values(skillsData || {}).flat().length;
+    return skillsData?.hardSkills?.length || 0;
   }, [skillsData]);
+
+  const triggerHistoryTab = () => {
+    localStorage.setItem("activeHistoryTab", "pengalaman");
+    window.dispatchEvent(new Event("changeHistoryTab"));
+  };
 
   const stats = useMemo(() => [
     { icon: "solar:folder-bold-duotone", value: isProjectsLoading ? "..." : projects.length, label: "Proyek", link: "/#galeri", tooltip: "Total Proyek yang telah dikerjakan" },
     { icon: "solar:diploma-bold-duotone", value: isSertifikatLoading ? "..." : sertifikatData.length, label: "Sertifikat", link: "/sertifikasi", tooltip: "Sertifikasi Profesional" },
-    { icon: "solar:case-bold-duotone", value: isHistoryLoading ? "..." : historyData?.experience?.length || 0, label: "Pengalaman", link: "/#histori", tooltip: "Pengalaman Kerja/Organisasi" },
+    { icon: "solar:case-bold-duotone", value: isHistoryLoading ? "..." : historyData?.experience?.length || 0, label: "Pengalaman", link: "/#histori", tooltip: "Pengalaman Kerja/Organisasi", onClick: triggerHistoryTab },
     { icon: "solar:star-ring-bold-duotone", value: isSkillsLoading ? "..." : totalSkillsCount, label: "Keahlian", link: "/#skills", tooltip: "Total Teknologi yang Dikuasai" }
   ], [projects.length, sertifikatData.length, historyData, totalSkillsCount, isProjectsLoading, isSertifikatLoading, isHistoryLoading, isSkillsLoading]);
 
@@ -196,6 +201,7 @@ function About() {
                     transition={{ type: "spring", stiffness: 400, damping: 25 }}
                     className="tooltip tooltip-bottom w-full cursor-pointer"
                     data-tip={stat.tooltip}
+                    onClick={stat.onClick} // Menambahkan event dispatcher jika property onClick ada
                   >
                     <HashLink
                       to={stat.link}
