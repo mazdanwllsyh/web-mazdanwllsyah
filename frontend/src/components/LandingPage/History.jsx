@@ -4,6 +4,7 @@ import { m } from "framer-motion";
 import { usePortfolioStore } from "../../stores/portfolioStore";
 import { useSiteStore } from "../../stores/siteStore";
 import { transformCloudinaryUrl } from "../../utils/imageHelper.js";
+import { isBot } from "../../App.jsx"; 
 
 function History() {
   const fetchHistoryData = usePortfolioStore((state) => state.fetchHistoryData);
@@ -121,7 +122,7 @@ function History() {
       <div className="w-full max-w-6xl mx-auto px-4">
         <m.div
           className="text-center mb-12"
-          initial={{ opacity: 0, y: 30 }}
+          initial={isBot ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.6 }}
@@ -182,11 +183,12 @@ function History() {
                     />
                   </div>
                 </div>
+                {/* Melewati hambatan delay transisi jika dideteksi sebagai bot perayap [Citations: 37] */}
                 <m.div
-                  initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
+                  initial={isBot ? { opacity: 1, x: 0 } : { opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true, margin: "-50px" }}
-                  transition={{ duration: 0.6, delay: 0.4 + index * 0.2 }}
+                  transition={{ duration: 0.6, delay: isBot ? 0 : 0.4 + index * 0.2 }}
                   className={`mb-10 flex items-start gap-4 xl:gap-8 w-full ${index % 2 === 0
                     ? "timeline-start md:text-end md:flex-row-reverse"
                     : "timeline-end md:text-start flex-row"

@@ -7,6 +7,7 @@ import { useSiteStore } from "../../stores/siteStore";
 import { useProjectStore } from "../../stores/projectStore";
 import { usePortfolioStore } from "../../stores/portfolioStore";
 import { transformCloudinaryUrl } from "../../utils/imageHelper";
+import { isBot } from "../../App.jsx";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -136,9 +137,9 @@ function About() {
       <div className="w-full max-w-6xl mx-auto px-4 z-10">
         <m.div
           variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
+          initial={isBot ? "visible" : "hidden"}
+          whileInView={isBot ? "visible" : "visible"}
+          viewport={isBot ? { once: true } : { once: true, margin: "-100px" }}
           className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-center"
         >
           <m.div variants={itemVariants} className="w-full lg:w-5/12 flex justify-center relative">

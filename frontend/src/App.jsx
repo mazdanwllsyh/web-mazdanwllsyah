@@ -11,7 +11,7 @@ import CustomCursor from "./components/CustomCursor";
 const AppLandingPage = lazy(() => import("./components/AppLandingPage"));
 const AppDashboard = lazy(() => import("./components/AppDashboard"));
 
-const isBot = /bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent);
+export const isBot = /bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent);
 
 function App() {
   const location = useLocation();
@@ -57,7 +57,7 @@ function App() {
 
   useEffect(() => {
     if (isBot) {
-      setCanRenderRoutes(true); 
+      setCanRenderRoutes(true);
       return;
     }
 

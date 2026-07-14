@@ -6,6 +6,7 @@ import { TypeAnimation } from "react-type-animation";
 import SeoHelmet from "../SEOHelmet";
 import { m, AnimatePresence, LazyMotion, domAnimation } from "framer-motion";
 import { transformCloudinaryUrl } from "../../utils/imageHelper";
+import { isBot } from "../../App.jsx";
 
 const socialLinkConfig = [
   { key: "instagram", label: "Instagram", icon: "mdi:instagram", baseUrl: "https://instagram.com/" },
@@ -110,9 +111,9 @@ function Hero() {
             {techIcons.map((tech, i) => (
               <m.div
                 key={tech.id}
-                initial={{ scale: 0, opacity: 0 }}
+                initial={isBot ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.8 + (i * 0.1), type: "spring" }}
+                transition={{ delay: isBot ? 0 : 0.8 + (i * 0.1), type: "spring" }}
                 className={`absolute ${tech.position} z-20 w-12 h-12 md:w-14 md:h-14 bg-base-100 rounded-xl shadow-xl border border-base-content/10 flex items-center justify-center hover:scale-125 transition-transform duration-300 hover:z-30 hover:bg-gradient-to-br from-accent to-primary cursor-pointer`}
                 title={tech.id}
               >
@@ -121,19 +122,19 @@ function Hero() {
             ))}
 
             <div className="mask mask-hexagon w-full h-full bg-base-300 relative z-10 transition-transform duration-700 hover:scale-105 overflow-hidden">
-              {!imageLoaded && <div className="absolute inset-0 skeleton w-full h-full"></div>}
+              {(!imageLoaded && !isBot) && <div className="absolute inset-0 skeleton w-full h-full"></div>}
 
               <AnimatePresence mode="wait">
                 <m.img
                   key={currentImgIndex}
                   src={profileImages.length > 0 ? transformCloudinaryUrl(profileImages[currentImgIndex], 600, 600) : "/default-avatar.png"}
-                  initial={{ opacity: 0, filter: "blur(10px)" }}
+                  initial={isBot ? { opacity: 1, filter: "blur(0px)" } : { opacity: 0, filter: "blur(10px)" }}
                   animate={{ opacity: 1, filter: "blur(0px)" }}
                   exit={{ opacity: 0, filter: "blur(10px)" }}
                   transition={{ duration: 0.8 }}
                   onLoad={() => setImageLoaded(true)}
                   onError={(e) => { e.target.src = "/default-avatar.png"; setImageLoaded(true); }}
-                  className={`w-full h-full object-cover transition-opacity duration-500 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
+                  className={`w-full h-full object-cover transition-opacity duration-500 ${(imageLoaded || isBot) ? "opacity-100" : "opacity-0"}`}
                   alt="Foto Mazda Nawallsyah"
                 />
               </AnimatePresence>
@@ -143,9 +144,9 @@ function Hero() {
 
         <div className="flex flex-row items-start max-w-xl text-center lg:text-left w-full px-4 lg:px-0">
           <div className="hidden sm:flex flex-col space-y-4 mr-6 mt-3 min-w-[24px]">
-            {imageLoaded ? (
+            {(imageLoaded || isBot) ? (
               <LazyMotion features={domAnimation}>
-                <m.div className="flex flex-col space-y-4" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.8, duration: 1, ease: "easeOut" }}>
+                <m.div className="flex flex-col space-y-4" initial={isBot ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: isBot ? 0 : 0.8, duration: 1, ease: "easeOut" }}>
                   {socialLinkConfig.filter((link) => availableLinks[link.key]).map((link) => (
                     <a key={link.key} href={link.baseUrl + availableLinks[link.key]} target="_blank" rel="noopener noreferrer" aria-label={link.label} className="text-base-content/70 hover:text-primary transition-colors duration-200">
                       <Icon icon={link.icon} className="w-6 h-6 lg:w-7 lg:h-7" />
@@ -161,7 +162,7 @@ function Hero() {
           </div>
 
           <div className="w-full">
-            {!imageLoaded ? (
+            {(!imageLoaded && !isBot) ? (
               <div className="space-y-4 w-full">
                 <div className="skeleton h-10 md:h-12 lg:h-16 w-3/4 mx-auto lg:mx-0"></div>
                 <div className="skeleton h-8 md:h-10 lg:h-12 w-1/2 mx-auto lg:mx-0"></div>
@@ -174,7 +175,7 @@ function Hero() {
               </div>
             ) : (
               <LazyMotion features={domAnimation}>
-                <m.div variants={textContainerVariants} initial="hidden" animate="visible" className="flex flex-col">
+                <m.div initial={isBot ? "visible" : "hidden"} animate="visible" variants={textContainerVariants} className="flex flex-col">
                   <m.h1 variants={textItemVariants} className="text-4xl md:text-5xl lg:text-6xl font-bold font-display tracking-tight">Mazda Nawallsyah</m.h1>
 
                   <m.div variants={textItemVariants} className="w-full">

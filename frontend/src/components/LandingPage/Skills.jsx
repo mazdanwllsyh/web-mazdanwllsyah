@@ -2,6 +2,7 @@ import React, { useEffect, useMemo } from "react";
 import { Icon } from "@iconify/react";
 import { m } from "framer-motion";
 import { usePortfolioStore, initialHardSkills } from "../../stores/portfolioStore";
+import { isBot } from "../../App.jsx";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -94,7 +95,7 @@ function Skills() {
     return () => { if (script) script.remove(); };
   }, [structuredData]);
 
-  
+
   if (isSkillsLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
@@ -126,7 +127,7 @@ function Skills() {
           <m.div
             className="lg:col-span-8 space-y-10"
             variants={containerVariants}
-            initial="hidden"
+            initial={isBot ? "visible" : "hidden"}
             whileInView="visible"
             viewport={{ once: true, amount: 0.1 }}
           >

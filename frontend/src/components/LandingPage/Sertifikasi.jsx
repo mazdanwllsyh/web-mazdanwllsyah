@@ -8,6 +8,7 @@ import { useSiteStore } from "../../stores/siteStore";
 import { usePortfolioStore } from "../../stores/portfolioStore";
 import { transformCloudinaryUrl } from "../../utils/imageHelper.js";
 import SeoHelmet from "../SEOHelmet.jsx";
+import { isBot } from "../../App.jsx";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -229,14 +230,14 @@ function Sertifikasi() {
             </m.div>
           )}
 
-          {isSertifikatLoading || loading ? (
+          {isSertifikatLoading || (loading && !isBot) ? (
             <SertifikasiSkeleton count={sertifikatData.length || 3} />
           ) : (
             <m.div
               key={`cert-grid-${searchTerm}-${activeCategory}-${currentItems[0]?._id || "empty"}`}
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
               variants={containerVariants}
-              initial="hidden"
+              initial={isBot ? "visible" : "hidden"} 
               animate="visible"
               viewport={{ once: true, amount: 0.1 }}
             >
@@ -244,8 +245,9 @@ function Sertifikasi() {
                 <m.div
                   key={cert._id}
                   variants={itemVariants}
-                  whileHover={{ y: -5 }}
-                  whileTap={{ scale: 0.95 }}
+                  initial={isBot ? { opacity: 1, y: 0 } : { y: 30, opacity: 0 }} 
+                  whileHover={!isBot ? { y: -5 } : {}}
+                  whileTap={!isBot ? { scale: 0.95 } : {}}
                   tabIndex={0}
                   className="card bg-base-200 border border-base-content/40 shadow-lg overflow-hidden group transition-all duration-300 hover:border-primary hover:shadow-xl hover:shadow-primary/5 rounded-3xl cursor-pointer focus:outline-none focus:border-primary"
                   onClick={() => handleOpenModal(cert)}

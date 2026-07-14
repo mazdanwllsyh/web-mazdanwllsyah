@@ -4,6 +4,7 @@ import { m } from "framer-motion";
 import { usePagination } from "../../hooks/usePagination";
 import { useProjectStore } from "../../stores/projectStore";
 import { transformCloudinaryUrl } from "../../utils/imageHelper";
+import { isBot } from "../../App.jsx";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -171,14 +172,14 @@ function Gallery() {
           </m.div>
         )}
 
-        {isProjectsLoading || loading ? (
+        {isProjectsLoading || (loading && !isBot) ? ( 
           <GallerySkeleton count={projects.length || 3} />
         ) : (
           <m.div
             key={`grid-${searchTerm}-${currentItems[0]?._id || "empty"}`}
             className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8"
             variants={containerVariants}
-            initial="hidden"
+            initial={isBot ? "visible" : "hidden"}
             animate="visible"
             viewport={{ once: true, amount: 0.1 }}
           >
@@ -186,14 +187,14 @@ function Gallery() {
               <m.div
                 key={project._id}
                 className="card bg-base-200 border border-base-content/40 shadow-lg overflow-visible group hover:border-primary duration-300 hover:shadow-xl hover:shadow-primary/5 rounded-3xl"
-                initial={{ opacity: 0, y: 20 }}
+                initial={isBot ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.1 }}
                 transition={{
                   type: "spring",
                   stiffness: 100,
                   damping: 20,
-                  delay: index * 0.3,
+                  delay: isBot ? 0 : index * 0.3,
                 }}
               >
                 <figure className="relative h-56 w-full overflow-hidden rounded-t-3xl border-b border-base-content/10 bg-base-300">
