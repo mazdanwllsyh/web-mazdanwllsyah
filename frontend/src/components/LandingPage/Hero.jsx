@@ -18,7 +18,7 @@ const socialLinkConfig = [
 
 const techIcons = [
   { id: "react", icon: "logos:react", position: "top-[-5%] left-1/2 -translate-x-1/2" },
-  { id: "nodejs", icon: "logos:nodejs-icon", position: "top-[15%] right-[-5%]" },
+  { id: "motion", icon: "devicon:motion", position: "top-[15%] right-[-5%]" },
   { id: "html", icon: "logos:html-5", position: "bottom-[15%] right-[-5%]", customClass: "text-base-content" },
   { id: "daisyui", icon: "logos:daisyui-icon", position: "bottom-[-5%] left-1/2 -translate-x-1/2" },
   { id: "css", icon: "logos:css-3", position: "bottom-[15%] left-[-5%]" },
@@ -121,23 +121,25 @@ function Hero() {
               </m.div>
             ))}
 
-            <div className="mask mask-hexagon w-full h-full bg-base-300 relative z-10 transition-transform duration-700 hover:scale-105 overflow-hidden">
-              {(!imageLoaded && !isBot) && <div className="absolute inset-0 skeleton w-full h-full"></div>}
+            <div className="aura aura-dual mask mask-hexagon w-full h-full p-1">
+              <div className="mask mask-hexagon w-full h-full bg-base-300 relative z-10 transition-transform duration-700 hover:scale-105 overflow-hidden">
+                {(!imageLoaded && !isBot) && <div className="absolute inset-0 skeleton w-full h-full"></div>}
 
-              <AnimatePresence mode="wait">
-                <m.img
-                  key={currentImgIndex}
-                  src={profileImages.length > 0 ? transformCloudinaryUrl(profileImages[currentImgIndex], 600, 600) : "/default-avatar.png"}
-                  initial={isBot ? { opacity: 1, filter: "blur(0px)" } : { opacity: 0, filter: "blur(10px)" }}
-                  animate={{ opacity: 1, filter: "blur(0px)" }}
-                  exit={{ opacity: 0, filter: "blur(10px)" }}
-                  transition={{ duration: 0.8 }}
-                  onLoad={() => setImageLoaded(true)}
-                  onError={(e) => { e.target.src = "/default-avatar.png"; setImageLoaded(true); }}
-                  className={`w-full h-full object-cover transition-opacity duration-500 ${(imageLoaded || isBot) ? "opacity-100" : "opacity-0"}`}
-                  alt="Foto Mazda Nawallsyah"
-                />
-              </AnimatePresence>
+                <AnimatePresence mode="wait">
+                  <m.img
+                    key={currentImgIndex}
+                    src={profileImages.length > 0 ? transformCloudinaryUrl(profileImages[currentImgIndex], 600, 600) : "/default-avatar.png"}
+                    initial={isBot ? { opacity: 1, filter: "blur(0px)" } : { opacity: 0, filter: "blur(10px)" }}
+                    animate={{ opacity: 1, filter: "blur(0px)" }}
+                    exit={{ opacity: 0, filter: "blur(10px)" }}
+                    transition={{ duration: 0.8 }}
+                    onLoad={() => setImageLoaded(true)}
+                    onError={(e) => { e.target.src = "/default-avatar.png"; setImageLoaded(true); }}
+                    className={`w-full h-full object-cover transition-opacity duration-500 ${(imageLoaded || isBot) ? "opacity-100" : "opacity-0"}`}
+                    alt="Foto Mazda Nawallsyah"
+                  />
+                </AnimatePresence>
+              </div>
             </div>
           </div>
         </LazyMotion>
@@ -204,10 +206,12 @@ function Hero() {
                   </m.p>
 
                   <m.div variants={textItemVariants}>
-                    <Link tabIndex={0} to="/tentang" className="btn btn-lg bg-base-300/90 font-display border-base-content/20 border-2 shadow-sm hover:shadow-primary/20 group rounded-2xl lg:px-8 transition-all">
-                      Tentang Saya?
-                      <Icon icon="streamline-flex:finger-snapping" className="w-6 h-6 ml-1 group-hover:scale-110 transition-transform" focusable="false" />
-                    </Link>
+                    <div className="aura aura-glow rounded-2xl">
+                      <Link tabIndex={0} to="/tentang" className="btn btn-md bg-base-300/90 font-display border-base-content/20 border-2 shadow-sm hover:shadow-primary/20 group rounded-2xl lg:px-8 transition-all">
+                        Tentang Saya?
+                        <Icon icon="streamline-flex:finger-snapping" className="w-6 h-6 ml-1 group-hover:scale-110 transition-transform" focusable="false" />
+                      </Link>
+                    </div>
                   </m.div>
 
                   <m.div variants={textItemVariants} className="flex sm:hidden space-x-5 mt-8 justify-center min-h-[24px]">

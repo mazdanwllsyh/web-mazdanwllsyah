@@ -1,10 +1,11 @@
 import React, { Suspense, lazy, useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { Icon } from "@iconify/react";
-import Sidebar, { menuItems } from "../components/Dashboard/Sidebar";
+import Sidebar, { menuItems, MobileBottomNav } from "../components/Dashboard/Sidebar";
 import Transition from "./Transition";
 import ThemeSwitcher from "../components/ThemeSwitcher";
 import { useSiteStore } from "../stores/siteStore";
+import { useAuth } from "../hooks/useAuth";
 
 const DashboardBeranda = lazy(() => import("../components/Dashboard/DashboardBeranda"));
 const DataSaya = lazy(() => import("../components/Dashboard/DataSaya"));
@@ -23,6 +24,7 @@ const PageTitle = ({ title }) => {
 function AppDashboard() {
   const location = useLocation();
   const siteData = useSiteStore((state) => state.siteData);
+  const { handleSignOut } = useAuth();
 
   const getTitle = (path) => {
     const item = menuItems.find((item) => item.path === path);
@@ -32,30 +34,46 @@ function AppDashboard() {
   const currentTitle = getTitle(location.pathname);
 
   return (
-    <div className="w-full h-screen overflow-hidden bg-base-200/40 flex select-none font-text">
+    <div className="w-full h-screen overflow-hidden bg-base-200/40 flex select-none font-text relative">
       <div className="hidden lg:block h-full shrink-0">
         <Sidebar />
       </div>
 
       <div className="flex-1 h-full flex flex-col overflow-hidden">
-        <header className="w-full h-18 bg-base-100 border-b border-base-content/10 px-6 md:px-8 flex items-center justify-between shrink-0 z-30">
-          <div className="flex items-center gap-4">
-            <label htmlFor="dashboard-sidebar-drawer" className="btn btn-square btn-ghost drawer-button lg:hidden">
-              <Icon icon="material-symbols:menu-rounded" className="w-6 h-6" />
-            </label>
-            <h1 className="text-lg font-semibold font-display tracking-tight flex items-center gap-2.5">
-              <Icon icon="solar:widget-2-bold-duotone" className="text-primary w-5 h-5" />
+        <header className="w-full h-16 md:h-18 bg-base-100 border-b border-base-content/20 px-4 md:px-8 flex items-center justify-between shrink-0 z-30">
+          <div className="flex items-center gap-3.5">
+            <a
+              href="/"
+              className="lg:hidden flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-accent to-primary shadow-lg shadow-primary/20 hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-300"
+              title="Kembali ke Beranda Utama"
+            >
+              <span className="font-display font-bold text-[17px] text-white">
+                {siteData?.brandName ? siteData.brandName.charAt(0).toUpperCase() : "Vx"}
+              </span>
+            </a>
+
+            <h1 className="text-lg md:text-xl font-semibold font-display tracking-tight flex items-center gap-2.5">
+              <Icon icon="solar:widget-2-bold-duotone" className="text-primary w-5 h-5 hidden lg:block" />
               {currentTitle}
             </h1>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-1.5 md:gap-4">
             <ThemeSwitcher />
+
+            <button
+              type="button"
+              onClick={handleSignOut}
+              className="lg:hidden btn btn-sm rounded-3xl btn-error text-error-content/80 hover:bg-error/10 hover:text-error transition-all duration-300 ml-1"
+              title="Logout Sistem"
+            >
+              <Icon icon="lucide:log-out" className="w-[1.25rem] h-[1.25rem]" />
+            </button>
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto bg-base-200/30 flex flex-col justify-between custom-scrollbar">
-          <div className="p-6 md:p-8 flex-1">
+        <main className="flex-1 overflow-y-auto bg-base-200/30 flex flex-col justify-between custom-scrollbar pb-24 lg:pb-0">
+          <div className="p-5 md:p-8 flex-1">
             <Suspense fallback={<Transition isLoading={true} />}>
               <Routes>
                 <Route index element={<><PageTitle title={getTitle("/dashboard")} /><DashboardBeranda /></>} />
@@ -74,13 +92,7 @@ function AppDashboard() {
         </main>
       </div>
 
-      <div className="drawer lg:hidden absolute z-50">
-        <input id="dashboard-sidebar-drawer" type="checkbox" className="drawer-toggle" />
-        <div className="drawer-side">
-          <label htmlFor="dashboard-sidebar-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
-          <Sidebar />
-        </div>
-      </div>
+      <MobileBottomNav />
     </div>
   );
 }

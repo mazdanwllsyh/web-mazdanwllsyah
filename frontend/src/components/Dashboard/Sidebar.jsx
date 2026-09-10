@@ -8,9 +8,9 @@ export const menuItems = [
   { name: "Beranda", icon: "mdi:home-outline", path: "/dashboard" },
   { name: "Data Saya", icon: "mdi:database-edit-outline", path: "/dashboard/sitedata" },
   { name: "Landing Page", icon: "material-symbols:page-menu-ios-rounded", path: "/dashboard/configuration" },
-  { name: "Edit Galeri", icon: "mdi:image-multiple-outline", path: "/dashboard/galeriedit" },
-  { name: "Edit Sertifikat", icon: "ph:certificate", path: "/dashboard/sertifikatsaya" },
-  { name: "Data Pengguna dan Editor", icon: "solar:shield-user-bold-duotone", path: "/dashboard/adminuser", role: "superAdmin" },
+  { name: "Galeri", icon: "mdi:image-multiple-outline", path: "/dashboard/galeriedit" },
+  { name: "Sertifikat", icon: "ph:certificate", path: "/dashboard/sertifikatsaya" },
+  { name: "Pengguna", icon: "solar:shield-user-bold-duotone", path: "/dashboard/adminuser", role: "superAdmin" },
 ];
 
 const NavItem = ({ to, icon, label }) => {
@@ -30,6 +30,36 @@ const NavItem = ({ to, icon, label }) => {
     </NavLink>
   );
 };
+
+export function MobileBottomNav() {
+  const { user } = useAuth();
+
+  const allowedMenuItems = menuItems.filter((item) => {
+    if (!item.role) return true;
+    return user?.role === item.role;
+  });
+
+  return (
+    <div className="lg:hidden fixed bottom-5 left-1/2 -translate-x-1/2 w-[91%] max-w-md z-50 bg-base-100/70 backdrop-blur-xl border border-base-content/50 shadow-2xl shadow-base-300/50 rounded-full px-2 py-2 flex items-center gap-1 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+      {allowedMenuItems.map((item) => (
+        <NavLink
+          key={item.path}
+          to={item.path}
+          end={item.path === "/dashboard"}
+          className={({ isActive }) =>
+            `flex flex-col items-center justify-center min-w-[4.5rem] py-2 rounded-[1.5rem] transition-all duration-300 ${isActive
+              ? "bg-gradient-to-br from-accent to-primary text-base-100 shadow-lg shadow-primary/20 scale-103"
+              : "text-base-content/60 hover:text-base-content hover:bg-base-200/50"
+            }`
+          }
+        >
+          <Icon icon={item.icon} className="w-6 h-6 mb-1" />
+          <span className="text-[9px] font-bold tracking-wide truncate max-w-full px-1">{item.name}</span>
+        </NavLink>
+      ))}
+    </div>
+  );
+}
 
 function Sidebar() {
   const siteData = useSiteStore((state) => state.siteData);

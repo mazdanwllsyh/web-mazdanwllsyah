@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import { toast } from "react-hot-toast";
 import { m, LazyMotion, domAnimation } from "framer-motion";
@@ -34,6 +34,8 @@ function Kontak() {
   const [emailForm, setEmailForm] = useState("");
   const [pesan, setPesan] = useState("");
   const [selectedMethod, setSelectedMethod] = useState(null);
+  const [hoveredContact, setHoveredContact] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (user) {
@@ -70,6 +72,7 @@ function Kontak() {
     const encodedBody = encodeURIComponent(body);
     const encodedSubject = encodeURIComponent(subject);
     let url = "";
+
     switch (selectedMethod) {
       case "email":
         url = `mailto:${siteData.contactLinks.email}?subject=${encodedSubject}&body=${encodedBody}`;
@@ -121,9 +124,6 @@ function Kontak() {
   const isFormDisabled = selectedMethod === "telegram";
   const isFormValid = !isFormDisabled && nama.trim().length >= 5 && emailForm.trim().length >= 8 && pesan.trim().length >= 25;
 
-  const navigate = useNavigate();
-  const [hoveredContact, setHoveredContact] = useState(null);
-
   const maskContact = (text, type) => {
     if (!text) return "";
     if (type === "email") {
@@ -152,7 +152,9 @@ function Kontak() {
             viewport={{ once: true, margin: "-50px" }}
             transition={{ type: "spring", stiffness: 70, damping: 20 }}
           >
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-2 tracking-tight">Hubungi <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-primary">Saya</span></h2>
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-2 tracking-tight">
+              Hubungi <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-primary">Saya</span>
+            </h2>
             <p className="text-base md:text-lg text-base-content/60">Mari berdiskusi tentang proyek hebat Anda</p>
           </m.div>
 
@@ -170,7 +172,10 @@ function Kontak() {
                 { id: "telegram", icon: "mdi:telegram", label: "Telegram", color: "text-info", border: "border-info", data: siteData.contactLinks?.telegram }
               ].map((method) => {
                 if (!method.data) return null;
+
                 const isHoveredOrFocused = hoveredContact === method.id;
+                const isSelected = selectedMethod === method.id;
+                const showAura = isHoveredOrFocused || isSelected;
                 const displayData = isHoveredOrFocused || method.id === "email" ? method.data : maskContact(method.data, method.id);
 
                 return (
@@ -186,13 +191,19 @@ function Kontak() {
                     tabIndex={0}
                     onFocus={() => setHoveredContact(method.id)}
                     onBlur={() => setHoveredContact(null)}
-                    className={`card shadow-sm p-6 flex flex-col items-center text-center space-y-2 cursor-pointer transition-colors duration-300 rounded-3xl outline-none ${selectedMethod === method.id ? `border-2 ${method.border} bg-base-200/80 shadow-md` : "border border-base-content/40 bg-base-100"}`}
+                    className={`rounded-3xl outline-none cursor-pointer transition-all ${showAura ? `aura duration-[3500ms] ${method.color}` : ''
+                      }`}
                   >
-                    <Icon icon={method.icon} className={`w-12 h-12 ${method.color}`} />
-                    <h3 className="font-bold font-display text-lg">{method.label}</h3>
-                    <m.p layout className="text-xs text-base-content/60 break-all font-text">
-                      {displayData}
-                    </m.p>
+                    <div
+                      className={`card p-6 flex flex-col items-center text-center space-y-2 transition-colors duration-300 rounded-3xl w-full h-full text-base-content bg-base-100 ${isSelected ? `border-2 ${method.border} shadow-md` : "border border-base-content/40 shadow-sm"
+                        }`}
+                    >
+                      <Icon icon={method.icon} className={`w-12 h-12 ${method.color}`} />
+                      <h3 className="font-bold font-display text-lg">{method.label}</h3>
+                      <m.p layout className="text-xs text-base-content/60 break-all font-text">
+                        {displayData}
+                      </m.p>
+                    </div>
                   </m.div>
                 );
               })}

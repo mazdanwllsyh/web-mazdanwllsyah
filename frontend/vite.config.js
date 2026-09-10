@@ -7,6 +7,7 @@ import { VitePWA } from "vite-plugin-pwa";
 export default defineConfig({
   base: "/",
   plugins: [
+    
     tailwindcss({
       config: {
         content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
@@ -46,8 +47,11 @@ export default defineConfig({
         },
       },
     }),
+
     react(),
+
     visualizer({ open: true }),
+
     VitePWA({
       registerType: "autoUpdate",
       injectRegister: "script",
@@ -87,6 +91,7 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
+        // Code splitting
         manualChunks(id) {},
       },
     },

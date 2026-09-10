@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import { m } from "framer-motion";
 
 const FABDonate = () => {
     const [isExpanded, setIsExpanded] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
+    const location = useLocation();
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -18,6 +19,10 @@ const FABDonate = () => {
         return () => clearInterval(interval);
     }, []);
 
+    if (location.pathname === "/donasi") {
+        return null;
+    }
+
     const showFull = isExpanded || isHovered;
 
     return (
@@ -28,36 +33,44 @@ const FABDonate = () => {
         >
             <Link to="/donasi" aria-label="Support me on Buy Me a Coffee" className="block md:hidden">
                 <m.div
-                    className="bg-base-300/90 shadow-xl flex flex-col items-center justify-center rounded-l-2xl border-y border-l border-white/30 py-3 px-1.5"
                     initial={false}
                     animate={{
                         x: showFull ? 0 : "calc(95% - 0px)",
                     }}
                     transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                    className="flex"
                 >
-                    <Icon icon="simple-icons:buymeacoffee" className="w-5 h-5 shrink-0 mb-1.5" />
-                    <span
-                        className="text-[11px] tracking-widest whitespace-nowrap"
-                        style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
-                    >
-                        Buy me a Coffee
-                    </span>
+                    <div className={`rounded-l-2xl transition-all duration-[3500ms] ${isHovered || isExpanded ? 'aura aura-warning aura-glow' : ''}`}>
+                        <div className="bg-base-300/90 shadow-xl flex flex-col items-center justify-center rounded-l-2xl border-y border-l border-white/30 py-3 px-1.5 h-full w-full">
+                            <Icon icon="simple-icons:buymeacoffee" className="w-5 h-5 shrink-0 mb-1.5 text-warning" />
+                            <span
+                                className="text-[11px] tracking-widest whitespace-nowrap"
+                                style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
+                            >
+                                Buy me a Coffee
+                            </span>
+                        </div>
+                    </div>
                 </m.div>
             </Link>
 
             <Link to="/donasi" aria-label="Support me on Buy Me a Coffee" className="hidden md:block">
                 <m.div
-                    className="bg-base-300/75 shadow-xl flex items-center rounded-l-full cursor-pointer border-y border-l border-white/30 h-10 md:h-12 px-2 md:px-3"
                     initial={false}
                     animate={{
                         x: showFull ? 0 : "calc(100% - 3px)",
                     }}
                     transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                    className="flex"
                 >
-                    <Icon icon="simple-icons:buymeacoffee" className="w-5 h-5 shrink-0" />
-                    <span className="ml-2 text-sm whitespace-nowrap">
-                        Buy me a Coffee
-                    </span>
+                    <div className={`rounded-l-full transition-all duration-[3500ms] ${isHovered || isExpanded ? 'aura aura-warning aura-glow' : ''}`}>
+                        <div className="bg-base-300/75 shadow-xl flex items-center rounded-l-full cursor-pointer border-y border-l border-white/30 h-10 md:h-12 px-2 md:px-3 w-full">
+                            <Icon icon="simple-icons:buymeacoffee" className="w-5 h-5 shrink-0 text-warning" />
+                            <span className="ml-2 text-sm whitespace-nowrap">
+                                Buy me a Coffee
+                            </span>
+                        </div>
+                    </div>
                 </m.div>
             </Link>
         </div>

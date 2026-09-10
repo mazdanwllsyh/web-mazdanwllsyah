@@ -157,10 +157,10 @@ function Skills() {
                             key={`hard-skill-${index}`}
                             variants={itemVariants}
                             tabIndex={0}
-                            className="relative h-12 md:h-14 w-fit max-w-[3rem] md:max-w-[3.5rem] focus:max-w-[16rem] rounded-2xl bg-base-200 border border-base-content/10 flex items-center overflow-hidden cursor-pointer shadow-sm group transition-[max-width,background-color,border-color] duration-500 ease-in-out hover:border-base-content/90 hover:bg-base-100 focus:border-base-content/30 focus:bg-base-100"
+                            className="relative h-12 md:h-14 w-fit max-w-[3rem] md:max-w-[3.5rem] focus:max-w-[16rem] rounded-2xl bg-base-200 border border-base-content/10 flex items-center overflow-hidden cursor-pointer shadow-sm group transition-all duration-500 ease-in-out hover:border-base-content/30 hover:bg-base-100 hover:shadow-md focus:border-primary focus:bg-base-100 focus:ring-1 focus:ring-primary focus:outline-none"
                           >
                             <div className="w-[3rem] md:w-[3.5rem] h-full flex items-center justify-center shrink-0">
-                              <Icon icon={skill.icon} className="w-6 h-6 md:w-8 md:h-8 group-hover:scale-110 transition-transform duration-300 drop-shadow-sm" />
+                              <Icon icon={skill.icon} className="w-6 h-6 md:w-8 md:h-8 group-hover:scale-110 group-focus:scale-110 transition-transform duration-300 drop-shadow-sm" />
                             </div>
 
                             <div className="flex flex-col whitespace-nowrap opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-300 delay-150 pr-4">
@@ -174,7 +174,6 @@ function Skills() {
                           </m.div>
                         ))}
                       </div>
-
                     </div>
                   );
                 })}
@@ -207,13 +206,13 @@ function Skills() {
                     whileHover={{ x: 5 }}
                     whileTap={{ scale: 0.95 }}
                     tabIndex={0}
-                    className="flex items-center gap-3 p-4 rounded-2xl bg-base-200 border border-base-content/10 hover:border-secondary focus:border-secondary transition-colors duration-300 shadow-sm cursor-pointer group"
+                    className="flex items-center gap-3 p-4 rounded-2xl bg-base-200 border border-base-content/10 hover:border-secondary focus:border-secondary focus:ring-1 focus:ring-secondary focus:bg-base-100 outline-none transition-all duration-300 shadow-sm cursor-pointer group"
                   >
                     <Icon
                       icon="line-md:check-all"
-                      className="w-0 h-6 opacity-0 text-secondary flex-shrink-0 group-hover:w-6 group-hover:opacity-100 transition-[width,opacity] duration-300"
+                      className="w-0 h-6 opacity-0 text-secondary flex-shrink-0 group-hover:w-6 group-focus:w-6 group-hover:opacity-100 group-focus:opacity-100 transition-[width,opacity] duration-300"
                     />
-                    <span className="font-bold text-sm md:text-base leading-tight break-words group-hover:text-secondary transition-colors duration-300">
+                    <span className="font-bold text-sm md:text-base leading-tight break-words group-hover:text-secondary group-focus:text-secondary transition-colors duration-300">
                       {skill}
                     </span>
                   </m.div>

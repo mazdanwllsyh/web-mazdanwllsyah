@@ -56,6 +56,7 @@ function About() {
   const isProjectsLoading = useProjectStore((state) => state?.isProjectsLoading);
 
   const [currentIndices, setCurrentIndices] = useState([0, 1, 2]);
+  const [hoveredStat, setHoveredStat] = useState(null);
 
   useEffect(() => {
     fetchHistoryData();
@@ -89,10 +90,10 @@ function About() {
   };
 
   const stats = useMemo(() => [
-    { icon: "solar:folder-bold-duotone", value: isProjectsLoading ? "..." : projects.length, label: "Proyek", link: "/#galeri", tooltip: "Total Proyek yang telah dikerjakan" },
-    { icon: "solar:diploma-bold-duotone", value: isSertifikatLoading ? "..." : sertifikatData.length, label: "Sertifikat", link: "/sertifikasi", tooltip: "Sertifikasi Profesional" },
-    { icon: "solar:case-bold-duotone", value: isHistoryLoading ? "..." : historyData?.experience?.length || 0, label: "Pengalaman", link: "/#histori", tooltip: "Pengalaman Kerja/Organisasi", onClick: triggerHistoryTab },
-    { icon: "solar:star-ring-bold-duotone", value: isSkillsLoading ? "..." : totalSkillsCount, label: "Keahlian", link: "/#skills", tooltip: "Total Teknologi yang Dikuasai" }
+    { icon: "ph:folder-open-duotone", value: isProjectsLoading ? "..." : projects.length, label: "Proyek", link: "/#galeri", tooltip: "Total Proyek yang telah dikerjakan" },
+    { icon: "ph:certificate-duotone", value: isSertifikatLoading ? "..." : sertifikatData.length, label: "Sertifikat", link: "/sertifikasi", tooltip: "Sertifikasi Profesional" },
+    { icon: "ph:briefcase-metal-duotone", value: isHistoryLoading ? "..." : historyData?.experience?.length || 0, label: "Pengalaman", link: "/#histori", tooltip: "Pengalaman Kerja/Organisasi", onClick: triggerHistoryTab },
+    { icon: "ph:code-block-duotone", value: isSkillsLoading ? "..." : totalSkillsCount, label: "Keahlian", link: "/#skills", tooltip: "Total Teknologi yang Dikuasai" }
   ], [projects.length, sertifikatData.length, historyData, totalSkillsCount, isProjectsLoading, isSertifikatLoading, isHistoryLoading, isSkillsLoading]);
 
   const cleanDescription = siteData?.aboutParagraph
@@ -193,26 +194,32 @@ function About() {
             </m.div>
 
             <m.div variants={itemVariants} className="mt-auto">
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 w-full h-full">
                 {stats.map((stat) => (
                   <m.div
                     key={stat.label}
                     whileHover={{ y: -8, scale: 1.02 }}
                     whileTap={{ scale: 0.95 }}
                     transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                    className="tooltip tooltip-bottom w-full cursor-pointer"
+                    className="tooltip tooltip-bottom w-full h-full cursor-pointer flex"
                     data-tip={stat.tooltip}
-                    onClick={stat.onClick} // Menambahkan event dispatcher jika property onClick ada
+                    onClick={stat.onClick}
+                    onMouseEnter={() => setHoveredStat(stat.label)}
+                    onMouseLeave={() => setHoveredStat(null)}
+                    onFocus={() => setHoveredStat(stat.label)}
+                    onBlur={() => setHoveredStat(null)}
                   >
-                    <HashLink
-                      to={stat.link}
-                      smooth={stat.link.startsWith("/#")}
-                      className="card bg-base-100 shadow-sm border border-base-content/20 p-5 rounded-3xl text-center flex flex-col justify-center items-center w-full h-full"
-                    >
-                      <Icon icon={stat.icon} className="w-8 h-8 md:w-10 md:h-10 text-primary mb-3" />
-                      <div className="text-2xl md:text-3xl font-bold font-display">{stat.value}</div>
-                      <div className="text-xs text-base-content/70 font-semibold uppercase tracking-wider mt-1">{stat.label}</div>
-                    </HashLink>
+                    <div className={`w-full h-full rounded-3xl transition-all duration-[3500ms] ${hoveredStat === stat.label ? "aura aura-dual text-primary" : ""}`}>
+                      <HashLink
+                        to={stat.link}
+                        smooth={stat.link.startsWith("/#")}
+                        className="w-full h-full card bg-base-100 shadow-sm border border-base-content/20 p-5 rounded-3xl text-center flex flex-col justify-center items-center outline-none"
+                      >
+                        <Icon icon={stat.icon} className="w-8 h-8 md:w-10 md:h-10 text-primary mb-3" />
+                        <div className="text-2xl md:text-3xl font-bold font-display">{stat.value}</div>
+                        <div className="text-xs text-base-content/70 font-semibold uppercase tracking-wider mt-1">{stat.label}</div>
+                      </HashLink>
+                    </div>
                   </m.div>
                 ))}
               </div>

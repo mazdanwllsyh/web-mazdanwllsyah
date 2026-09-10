@@ -33,10 +33,9 @@ const itemVariants = {
 function Donasi() {
   const siteData = useSiteStore((state) => state.siteData);
   const [selectedMethod, setSelectedMethod] = useState(null);
+  const [hoveredMethod, setHoveredMethod] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // FIX: Delay sengaja diset 3000ms (3 Detik) agar kamu bisa lihat skeleton 
-  // dan transisi Framer Motion dengan sempurna setelah overlay tertutup!
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 3000);
     return () => clearTimeout(timer);
@@ -79,87 +78,113 @@ function Donasi() {
 
         <div className="max-w-lg mx-auto flex flex-col items-center">
           {loading ? (
-            /* SKELETON: Akan terlihat jelas selama 3 detik! */
             <div className="w-full space-y-8 flex flex-col items-center hover:cursor-wait">
-              <div className="grid grid-cols-2 gap-4 md:gap-6 w-full mb-8">
-                <div className="skeleton h-24 w-full rounded-3xl"></div>
-                <div className="skeleton h-24 w-full rounded-3xl"></div>
+              <div className="grid grid-cols-2 gap-3 md:gap-4 w-full mb-8">
+                <div className="skeleton h-20 md:h-24 w-full rounded-3xl"></div>
+                <div className="skeleton h-20 md:h-24 w-full rounded-3xl"></div>
               </div>
               <div className="skeleton h-80 w-full max-w-xs rounded-[2rem]"></div>
             </div>
           ) : (
             <>
               <m.div
-                className="grid grid-cols-2 gap-4 md:gap-6 w-full mb-8"
+                className="grid grid-cols-2 gap-3 md:gap-4 w-full mb-8"
                 variants={containerVariants}
                 initial="hidden"
                 animate="visible"
               >
-                <m.button
+                <m.div
                   variants={itemVariants}
                   whileHover={{ y: -5 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => handleSelectMethod("gopay")}
-                  className={`card shadow-sm p-4 flex flex-col items-center justify-center transition-all duration-300 rounded-3xl border-2 ${selectedMethod === "gopay"
-                    ? "bg-base-200 border-primary shadow-lg"
-                    : "border-base-content/10 bg-base-100 hover:border-primary/50"
+                  className={`w-full rounded-3xl transition-all duration-[3500ms] ${(hoveredMethod === "gopay" || selectedMethod === "gopay") ? "aura aura-dual text-success" : ""
                     }`}
                 >
-                  {/* FIX LOGO: Dibungkus container bg-white agar logo GoPay (hitam) selalu terlihat */}
-                  <div className="bg-white p-2 rounded-xl shadow-inner w-full flex justify-center items-center h-16">
-                    <img
-                      src="https://brandlogos.net/wp-content/uploads/2022/10/gopay-logo_brandlogos.net_gph3u.png"
-                      alt="Gopay Logo"
-                      className="h-8 md:h-10 w-auto object-contain"
-                    />
-                  </div>
-                </m.button>
+                  <button
+                    onClick={() => handleSelectMethod("gopay")}
+                    onMouseEnter={() => setHoveredMethod("gopay")}
+                    onMouseLeave={() => setHoveredMethod(null)}
+                    onFocus={() => setHoveredMethod("gopay")}
+                    onBlur={() => setHoveredMethod(null)}
+                    className={`w-full h-full card shadow-sm p-3 md:p-4 flex flex-col items-center justify-center transition-all duration-300 rounded-3xl border-2 outline-none ${selectedMethod === "gopay"
+                        ? "bg-base-200 border-success shadow-lg"
+                        : "border-base-content/10 bg-base-100 hover:border-success/50"
+                      }`}
+                  >
+                    <div className="bg-white p-1.5 md:p-2 rounded-xl shadow-inner w-full flex justify-center items-center h-12 md:h-16">
+                      <img
+                        src="https://brandlogos.net/wp-content/uploads/2022/10/gopay-logo_brandlogos.net_gph3u.png"
+                        alt="Gopay Logo"
+                        className="h-6 md:h-8 w-auto object-contain"
+                      />
+                    </div>
+                  </button>
+                </m.div>
 
-                <m.button
+                <m.div
                   variants={itemVariants}
                   whileHover={{ y: -5 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => handleSelectMethod("dana")}
-                  className={`card shadow-sm p-4 flex flex-col items-center justify-center transition-all duration-300 rounded-3xl border-2 ${selectedMethod === "dana"
-                    ? "bg-base-200 border-info shadow-lg"
-                    : "border-base-content/10 bg-base-100 hover:border-info/50"
+                  className={`w-full rounded-3xl transition-all duration-[3500ms] ${(hoveredMethod === "dana" || selectedMethod === "dana") ? "aura aura-dual text-info" : ""
                     }`}
                 >
-                  <div className="bg-white p-2 rounded-xl shadow-inner w-full flex justify-center items-center h-16">
-                    <img
-                      src="https://upload.wikimedia.org/wikipedia/commons/5/52/Dana_logo.png"
-                      alt="Dana Logo"
-                      className="h-6 md:h-8 w-auto object-contain"
-                    />
-                  </div>
-                </m.button>
+                  <button
+                    onClick={() => handleSelectMethod("dana")}
+                    onMouseEnter={() => setHoveredMethod("dana")}
+                    onMouseLeave={() => setHoveredMethod(null)}
+                    onFocus={() => setHoveredMethod("dana")}
+                    onBlur={() => setHoveredMethod(null)}
+                    className={`w-full h-full card shadow-sm p-3 md:p-4 flex flex-col items-center justify-center transition-all duration-300 rounded-3xl border-2 outline-none ${selectedMethod === "dana"
+                        ? "bg-base-200 border-info shadow-lg"
+                        : "border-base-content/10 bg-base-100 hover:border-info/50"
+                      }`}
+                  >
+                    <div className="bg-white p-1.5 md:p-2 rounded-xl shadow-inner w-full flex justify-center items-center h-12 md:h-16">
+                      <img
+                        src="https://upload.wikimedia.org/wikipedia/commons/5/52/Dana_logo.png"
+                        alt="Dana Logo"
+                        className="h-5 md:h-7 w-auto object-contain"
+                      />
+                    </div>
+                  </button>
+                </m.div>
               </m.div>
 
               <div className="w-full max-w-xs min-h-[350px] flex justify-center">
-                {/* ANIMATE PRESENCE: Membuat QR Code muncul & hilang dengan transisi Bounce! */}
                 <AnimatePresence mode="wait">
                   {selectedMethod && (
-                    <m.figure
+                    <m.div
                       key={selectedMethod}
                       initial={{ opacity: 0, scale: 0.8, y: 20 }}
                       animate={{ opacity: 1, scale: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.8, y: -20 }}
                       transition={{ duration: 0.4, type: "spring" }}
-                      className={`card w-full p-5 shadow-2xl border-2 rounded-[2rem] bg-base-100 ${selectedMethod === "gopay" ? "border-primary" : "border-info"
-                        }`}
+                      className="w-full"
                     >
-                      <div className="bg-white p-2 rounded-2xl">
-                        <SecureImage
-                          src={selectedMethod === "gopay" ? gopayQrUrl : danaQrUrl}
-                          alt={`QRIS ${selectedMethod}`}
-                          className="rounded-xl"
-                        />
+                      <div className="aura aura-rainbow duration-[3500ms] rounded-[2rem] w-full">
+                        <figure
+                          className={`card w-full p-5 shadow-2xl border-2 rounded-[2rem] bg-base-100 ${selectedMethod === "gopay" ? "border-success" :
+                              selectedMethod === "dana" ? "border-info" : "border-[#ee4d2d]"
+                            }`}
+                        >
+                          <div className="bg-white p-2 rounded-2xl">
+                            <SecureImage
+                              src={
+                                selectedMethod === "gopay" ? gopayQrUrl :
+                                  selectedMethod === "dana" ? danaQrUrl : shopeeQrUrl
+                              }
+                              alt={`QRIS ${selectedMethod}`}
+                              className="rounded-xl"
+                            />
+                          </div>
+                          <figcaption className="text-center mt-4 text-sm font-bold opacity-80 flex flex-col items-center gap-2">
+                            <Icon icon="mdi:qrcode-scan" className="w-6 h-6" />
+                            {selectedMethod === "gopay" ? "Scan dari GoPay atau Gojek" :
+                              selectedMethod === "dana" ? "Scan untuk berdonasi ke DANA" : "Scan menggunakan ShopeePay"}
+                          </figcaption>
+                        </figure>
                       </div>
-                      <figcaption className="text-center mt-4 text-sm font-bold opacity-80 flex flex-col items-center gap-2">
-                        <Icon icon="mdi:qrcode-scan" className="w-6 h-6" />
-                        {selectedMethod === "gopay" ? "Scan dari GoPay atau Gojek" : "Scan untuk berdonasi ke DANA"}
-                      </figcaption>
-                    </m.figure>
+                    </m.div>
                   )}
                 </AnimatePresence>
               </div>
