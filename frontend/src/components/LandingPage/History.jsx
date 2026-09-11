@@ -145,7 +145,7 @@ function History() {
           <div className={activeTab === "pendidikan" ? "aura aura-silver rounded-[var(--rounded-btn,0.5rem)]" : ""}>
             <button
               className={`tab h-auto py-1 px-3 sm:px-8 bg-base-200 mx-0 flex flex-row items-center justify-center gap-2.5 flex-nowrap rounded-[var(--rounded-btn,0.5rem)] font-bold transition-all duration-300 outline-none ${activeTab === "pendidikan"
-                ? "tab-active shadow-md text-primary"
+                ? "tab-active shadow-md text-base-content"
                 : "border-2 border-transparent opacity-55 hover:opacity-100 hover:text-primary/55"
                 }`}
               onClick={() => {

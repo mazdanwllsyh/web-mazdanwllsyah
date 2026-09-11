@@ -39,21 +39,21 @@ function SeoHelmet({ title, description, imageUrl, url }) {
 
   const canonicalUrl = `${siteUrl}${pathname}`;
 
-  const pageTitle = `${activeSection || title} — ${siteData.brandNameShort} | Frontend Developer`;
+  const pageTitle = `${activeSection || title || "Beranda"} — ${siteData?.brandNameShort || "Mazda N."} | Frontend Developer`;
 
   const dynamicDescription = useMemo(() => {
     if (description) return description;
     const fullAbout = siteData?.aboutParagraph || "";
     const firstSentence = fullAbout.split(".")[0];
     return pathname === "/tentang"
-      ? fullAbout.substring(0, 200)
-      : `${firstSentence ? firstSentence + "." : `Portofolio resmi ${siteData.brandName}.`} Menghadirkan pengalaman pengguna (UX) yang optimal dengan MERN Stack.`;
+      ? fullAbout.substring(0, 160)
+      : `${firstSentence ? firstSentence + "." : `Portofolio resmi ${siteData?.brandName || "Mazda"}.`} Menghadirkan pengalaman pengguna (UX) yang optimal dengan MERN Stack.`;
   }, [description, siteData, pathname]);
 
   const pageImage = imageUrl || defaultImageUrl;
   const isRootPage = pathname === "/";
 
-  const schemaPerson = {
+  const schemaPerson = useMemo(() => ({
     "@context": "https://schema.org",
     "@type": "Person",
     "name": "Mazda Nawallsyah",
@@ -67,10 +67,13 @@ function SeoHelmet({ title, description, imageUrl, url }) {
     "jobTitle": "Frontend Web Developer",
     "image": pageImage,
     "url": siteUrl,
-  };
+  }), [pageImage]);
 
   return (
     <>
+      <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="anonymous" />
+      <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+
       {!isRootPage && (
         <>
           <title>{pageTitle}</title>
@@ -85,7 +88,7 @@ function SeoHelmet({ title, description, imageUrl, url }) {
       <meta property="og:description" content={dynamicDescription} />
       <meta property="og:image" content={pageImage} />
       <meta property="og:url" content={canonicalUrl} />
-      <meta property="og:site_name" content="Mazda Nawallsyah" />
+      <meta property="og:site_name" content={siteData?.brandName || "Mazda Nawallsyah"} />
 
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={isRootPage ? "Mazda Nawallsyah — Frontend Developer" : pageTitle} />
