@@ -7,7 +7,6 @@ import { VitePWA } from "vite-plugin-pwa";
 export default defineConfig({
   base: "/",
   plugins: [
-    
     tailwindcss({
       config: {
         content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
@@ -47,17 +46,20 @@ export default defineConfig({
         },
       },
     }),
-
     react(),
-
     visualizer({ open: true }),
-
     VitePWA({
       registerType: "autoUpdate",
       injectRegister: "script",
       includeAssets: ["favicon.ico", "robots.txt", "sitemap.xml"],
       devOptions: {
         enabled: true,
+      },
+      workbox: {
+        cleanupOutdatedCaches: true,
+        clientsClaim: true,
+        skipWaiting: true,
+        globPatterns: ["**/*.{js,css,html,ico,png,svg,json,woff,woff2}"],
       },
       manifest: {
         short_name: "Shahclyffe",
@@ -91,8 +93,15 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        // Code splitting
-        manualChunks(id) {},
+        manualChunks(id) {
+          if (id.includes("node_modules")) {
+            return id
+              .toString()
+              .split("node_modules/")[1]
+              .split("/")[0]
+              .toString();
+          }
+        },
       },
     },
   },

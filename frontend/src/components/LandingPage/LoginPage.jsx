@@ -231,29 +231,31 @@ function LoginPage() {
               ATAU
             </div>
 
-            <div className="relative w-full h-12 group">
-              {!isLoading && (
-                <div
-                  id="hiddenGoogleBtn"
-                  className="absolute inset-0 w-full h-full z-20 opacity-0 overflow-hidden cursor-pointer"
-                  style={{ transform: "scale(1.05)" }}
-                ></div>
-              )}
-
-              <button
-                type="button"
-                disabled={isLoading}
-                className="btn w-full bg-neutral hover:bg-neutral-focus text-neutral-content border-primary border-2 relative z-10 flex items-center justify-center gap-3 normal-case text-base font-medium shadow-sm transition-all group-hover:shadow-md disabled:bg-neutral disabled:text-neutral-content disabled:border-primary"
-              >
-                {isLoading ? (
-                  <span className="loading loading-bars loading-sm"></span>
-                ) : (
-                  <>
-                    <Icon icon="logos:google-icon" className="w-6 h-6" />
-                    <span>Lanjutkan dengan Google</span>
-                  </>
+            <div className="aura aura-rainbow duration-2000 w-full rounded-[var(--rounded-btn,0.5rem)]">
+              <div className="relative group">
+                {!isLoading && (
+                  <div
+                    id="hiddenGoogleBtn"
+                    className="absolute inset-0 w-full h-full z-20 opacity-0 overflow-hidden cursor-pointer"
+                    style={{ transform: "scale(1.05)" }}
+                  ></div>
                 )}
-              </button>
+
+                <button
+                  type="button"
+                  disabled={isLoading}
+                  className="btn w-full bg-neutral hover:bg-neutral-focus text-neutral-content relative z-10 flex items-center justify-center gap-3 normal-case text-base font-medium shadow-sm transition-all group-hover:shadow-md disabled:bg-neutral disabled:text-neutral-content disabled:border-primary/30 disabled:cursor-not-allowed"
+                >
+                  {isLoading ? (
+                    <span className="loading loading-bars loading-sm"></span>
+                  ) : (
+                    <>
+                      <Icon icon="logos:google-icon" className="w-6 h-6" />
+                      <span>Lanjutkan dengan Google</span>
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
 
             <p className="text-center text-sm mt-4">

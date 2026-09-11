@@ -1,8 +1,10 @@
-import React from "react";
+// Sidebar.jsx
+import React, { useMemo } from "react";
 import { Icon } from "@iconify/react";
 import { NavLink, Link } from "react-router-dom";
 import { useSiteStore } from "../../stores/siteStore";
 import { useAuth } from "../../hooks/useAuth";
+import { motion, AnimatePresence } from "framer-motion";
 
 export const menuItems = [
   { name: "Beranda", icon: "mdi:home-outline", path: "/dashboard" },
@@ -20,7 +22,7 @@ const NavItem = ({ to, icon, label }) => {
       end={to === "/dashboard"}
       className={({ isActive }) =>
         `flex items-center gap-4 px-4 py-3.5 rounded-2xl font-headings font-bold text-sm tracking-tight transition-all duration-300 group ${isActive
-          ? "bg-gradient-to-br from-accent to-primary text-base-100/85 shadow-md shadow-primary/20 scale-[1.01]"
+          ? "bg-gradient-to-br from-accent to-primary text-base-100/90 shadow-md shadow-primary/20 scale-[1.02]"
           : "text-base-content/70 hover:bg-base-200 hover:text-base-content hover:translate-x-1"
         }`
       }
@@ -31,33 +33,47 @@ const NavItem = ({ to, icon, label }) => {
   );
 };
 
-export function MobileBottomNav() {
+export function MobileBottomNav({ isVisible }) {
   const { user } = useAuth();
 
-  const allowedMenuItems = menuItems.filter((item) => {
-    if (!item.role) return true;
-    return user?.role === item.role;
-  });
+  const allowedMenuItems = useMemo(() => {
+    return menuItems.filter((item) => {
+      if (!item.role) return true;
+      return user?.role === item.role;
+    });
+  }, [user?.role]);
 
   return (
-    <div className="lg:hidden fixed bottom-5 left-1/2 -translate-x-1/2 w-[91%] max-w-md z-50 bg-base-100/70 backdrop-blur-xl border border-base-content/50 shadow-2xl shadow-base-300/50 rounded-full px-2 py-2 flex items-center gap-1 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-      {allowedMenuItems.map((item) => (
-        <NavLink
-          key={item.path}
-          to={item.path}
-          end={item.path === "/dashboard"}
-          className={({ isActive }) =>
-            `flex flex-col items-center justify-center min-w-[4.5rem] py-2 rounded-[1.5rem] transition-all duration-300 ${isActive
-              ? "bg-gradient-to-br from-accent to-primary text-base-100 shadow-lg shadow-primary/20 scale-103"
-              : "text-base-content/60 hover:text-base-content hover:bg-base-200/50"
-            }`
-          }
+    <AnimatePresence>
+      {isVisible && (
+        <motion.div
+          initial={{ y: 120, opacity: 0, x: "-50%", scale: 0.92 }}
+          animate={{ y: 0, opacity: 1, x: "-50%", scale: 1 }}
+          exit={{ y: 120, opacity: 0, x: "-50%", scale: 0.92 }}
+          transition={{ type: "spring", stiffness: 280, damping: 25, mass: 0.9 }}
+          className="lg:hidden fixed bottom-6 left-1/2 w-fit min-w-[90%] max-w-[95%] z-50 bg-base-100/75 backdrop-blur-xl border border-base-content/10 shadow-2xl shadow-base-content/10 rounded-full px-2 py-2 flex items-center justify-between gap-1 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
         >
-          <Icon icon={item.icon} className="w-6 h-6 mb-1" />
-          <span className="text-[9px] font-bold tracking-wide truncate max-w-full px-1">{item.name}</span>
-        </NavLink>
-      ))}
-    </div>
+          {allowedMenuItems.map((item) => (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              end={item.path === "/dashboard"}
+              className={({ isActive }) =>
+                `flex flex-col items-center justify-center flex-1 h-[3.5rem] px-1 py-1.5 rounded-[1.15rem] transition-all duration-300 ${isActive
+                  ? "bg-gradient-to-br from-accent to-primary text-base-100 shadow-lg shadow-primary/30 scale-105"
+                  : "text-base-content/60 hover:text-base-content hover:bg-base-200/50"
+                }`
+              }
+            >
+              <Icon icon={item.icon} className="w-5 h-5 mb-0.5 shrink-0" />
+              <span className="text-[9px] sm:text-[10px] font-bold tracking-tight text-center leading-[1.1] whitespace-pre-wrap break-words w-full">
+                {item.name.replace(" ", "\n")}
+              </span>
+            </NavLink>
+          ))}
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 
@@ -65,29 +81,29 @@ function Sidebar() {
   const siteData = useSiteStore((state) => state.siteData);
   const { user, handleSignOut } = useAuth();
 
-  const allowedMenuItems = menuItems.filter((item) => {
-    if (!item.role) return true;
-    return user?.role === item.role;
-  });
+  const allowedMenuItems = useMemo(() => {
+    return menuItems.filter((item) => {
+      if (!item.role) return true;
+      return user?.role === item.role;
+    });
+  }, [user?.role]);
 
   return (
-    <div className="w-80 h-full min-h-screen lg:h-screen bg-base-100 border-r border-base-content/10 flex flex-col justify-between p-6 overflow-hidden select-none shrink-0">
+    <div className="w-80 h-full min-h-screen lg:h-screen bg-base-100 border-r border-base-content/10 flex flex-col justify-between p-6 overflow-hidden select-none shrink-0 shadow-xl shadow-base-content/5 relative z-20">
       <div className="flex flex-col flex-1 overflow-hidden">
         <div className="flex items-center gap-3.5 px-2 pb-6 border-b border-base-content/5 shrink-0">
           <div className="avatar">
-            <a href="/" className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent to-primary flex items-center justify-center shadow-md shadow-primary/20">
-              <div>
-                <span className="font-display font-semibold text-lg text-black dark:text-white">
-                  {siteData?.brandName ? siteData.brandName.charAt(0).toUpperCase() : "Vx"}
-                </span>
-              </div>
+            <a href="/" className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent to-primary flex items-center justify-center shadow-lg shadow-primary/20 hover:scale-105 transition-transform duration-300">
+              <span className="font-display font-semibold text-lg text-black dark:text-white">
+                {siteData?.brandName ? siteData.brandName.charAt(0).toUpperCase() : "M"}
+              </span>
             </a>
           </div>
           <div>
-            <span className="font-display font-semibold text-lg tracking-tight block leading-none">
+            <span className="font-display font-semibold text-lg tracking-tight block leading-none text-base-content">
               {siteData?.brandName || "webMazda.N"}
             </span>
-            <span className="text-[10px] font-semibold tracking-widest text-primary uppercase mt-1 block">
+            <span className="text-[10px] font-bold tracking-widest text-primary uppercase mt-1.5 block">
               Panel Kontrol
             </span>
           </div>
@@ -106,7 +122,7 @@ function Sidebar() {
           className="flex items-center gap-4 p-3 bg-base-200/50 hover:bg-base-200 rounded-2xl border border-base-content/5 transition-all duration-300 group"
         >
           <div className="avatar placeholder group-hover:scale-105 transition-transform">
-            <div className="w-11 h-11 rounded-xl overflow-hidden bg-base-300 border border-base-content/10 flex items-center justify-center">
+            <div className="w-11 h-11 rounded-xl overflow-hidden bg-base-300 border border-base-content/10 flex items-center justify-center shadow-inner">
               {user?.avatarUrl || user?.profilePicture || user?.avatar || user?.image ? (
                 <img
                   src={user?.avatarUrl || user?.profilePicture || user?.avatar || user?.image}
@@ -115,14 +131,14 @@ function Sidebar() {
                 />
               ) : (
                 <div className="w-full h-full bg-primary/10 text-primary flex items-center justify-center font-black font-display text-lg">
-                  <span>{user?.fullName ? user.fullName.charAt(0).toUpperCase() : "A"}</span>
+                  <span>{user?.fullName ? user.fullName.charAt(0).toUpperCase() : "M"}</span>
                 </div>
               )}
             </div>
           </div>
           <div className="flex-1 overflow-hidden">
             <div className="font-bold font-display text-sm text-base-content truncate">
-              {user?.fullName || "Admin User"}
+              {user?.fullName || "Mazda Nawallsyah"}
             </div>
             <div className="text-[10px] text-primary font-extrabold truncate uppercase tracking-wider mt-0.5">
               {user?.role === "superAdmin" ? "Super Admin" : "Editor"}
@@ -132,7 +148,7 @@ function Sidebar() {
 
         <button
           type="button"
-          className="btn btn-error w-full text-base-100 rounded-2xl shadow-sm hover:shadow-md hover:shadow-error/20 transition-all duration-300 flex items-center justify-center gap-2"
+          className="btn btn-error w-full text-base-100 rounded-2xl shadow-sm hover:shadow-lg hover:shadow-error/30 hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center gap-2 border-0"
           onClick={handleSignOut}
           title="Logout"
         >

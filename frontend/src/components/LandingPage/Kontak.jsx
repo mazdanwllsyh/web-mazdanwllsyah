@@ -35,6 +35,10 @@ function Kontak() {
   const [pesan, setPesan] = useState("");
   const [selectedMethod, setSelectedMethod] = useState(null);
   const [hoveredContact, setHoveredContact] = useState(null);
+
+  const [isEmailFocused, setIsEmailFocused] = useState(false);
+  const [lastTapTime, setLastTapTime] = useState(0);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -94,6 +98,14 @@ function Kontak() {
       case "telegram": return "Buka Telegram";
       default: return "Pilih Metode Kontak";
     }
+  };
+
+  const handleEmailTap = () => {
+    const now = Date.now();
+    if (now - lastTapTime < 400) {
+      navigate("/signin", { state: { from: "/#kontak" } });
+    }
+    setLastTapTime(now);
   };
 
   const structuredData = useMemo(() => ({
@@ -238,8 +250,12 @@ function Kontak() {
                     onChange={(e) => setEmailForm(e.target.value)}
                     disabled={isFormDisabled}
                     alwaysFloat={true}
-                    onDoubleClick={() => navigate("/signin", { state: { from: "/#kontak" } })}
-                    title="Klik 1x untuk mengetik, Klik 2x untuk menuju halaman Login"
+                    placeholder={isEmailFocused ? "" : "Klik 2x untuk login..."}
+                    className="placeholder:opacity-25"
+                    onFocus={() => setIsEmailFocused(true)}
+                    onBlur={() => setIsEmailFocused(false)}
+                    onClick={handleEmailTap}
+                    title="Klik 1x untuk mengetik, Klik 2x (atau Tap 2x) untuk menuju halaman Login"
                   />
                 </div>
 
