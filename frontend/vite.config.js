@@ -2,7 +2,6 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { visualizer } from "rollup-plugin-visualizer";
-import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
   base: "/",
@@ -48,42 +47,6 @@ export default defineConfig({
     }),
     react(),
     visualizer({ open: true }),
-    VitePWA({
-      registerType: "autoUpdate",
-      injectRegister: "script",
-      includeAssets: ["favicon.ico", "robots.txt", "sitemap.xml"],
-      devOptions: {
-        enabled: true,
-      },
-      workbox: {
-        cleanupOutdatedCaches: true,
-        clientsClaim: true,
-        skipWaiting: true,
-        navigateFallback: '/index.html',
-        globPatterns: ["**/*.{js,css,html,ico,png,svg,json,woff,woff2}"],
-      },
-      manifest: {
-        short_name: "Shahclyffe",
-        name: "Mazda Nawallsyah",
-        icons: [
-          {
-            src: "https://res.cloudinary.com/dr7olcn4r/image/upload/c_fill,h_480,w_480/v1761388118/croppedsebelumgembuldanmenjadijawir_cdep6a.png",
-            type: "image/png",
-            sizes: "480x480",
-          },
-          {
-            src: "https://res.cloudinary.com/dr7olcn4r/image/upload/c_fill,h_768,w_768/w1761388118/croppedsebelumgembuldanmenjadijawir_cdep6a.png",
-            type: "image/png",
-            sizes: "768x768",
-            purpose: "any maskable",
-          },
-        ],
-        start_url: "/",
-        display: "standalone",
-        theme_color: "#10b981",
-        background_color: "#0f1729",
-      },
-    }),
   ],
   server: {
     headers: {

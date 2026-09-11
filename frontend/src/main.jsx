@@ -12,6 +12,14 @@ import { Analytics } from "@vercel/analytics/react";
 import "@react-pdf-viewer/core/lib/styles/index.css";
 import "@react-pdf-viewer/default-layout/lib/styles/index.css";
 
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then((registrations) => {
+    for (let registration of registrations) {
+      registration.unregister();
+    }
+  });
+}
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
@@ -22,7 +30,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       position="bottom-center"
       reverseOrder={false}
       toastOptions={{
-        duration: 3400,
+        duration: 2800,
       }}
     />
 

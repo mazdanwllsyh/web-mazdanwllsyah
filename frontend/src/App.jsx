@@ -8,30 +8,10 @@ import { useAuth } from "./hooks/useAuth";
 import ErrorBoundary from "./components/ErrorBoundary";
 import CustomCursor from "./components/CustomCursor";
 
-import { useRegisterSW } from "virtual:pwa-register/react";
-import toast from "react-hot-toast";
-import { Icon } from "@iconify/react";
-
 const AppLandingPage = lazy(() => import("./components/AppLandingPage"));
 const AppDashboard = lazy(() => import("./components/AppDashboard"));
 
 export const isBot = /bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent);
-
-const UpdateToast = ({ updateServiceWorker }) => (
-  <div className="flex flex-col gap-2">
-    <div className="flex items-center gap-2">
-      <Icon icon="mdi:cloud-download" className="w-5 h-5 text-primary" />
-      <span className="font-bold text-sm">Pembaruan Sistem Tersedia!</span>
-    </div>
-    <p className="text-xs opacity-80">Versi terbaru dari portofolio ini telah siap. Muat ulang untuk pengalaman terbaik.</p>
-    <button
-      onClick={() => updateServiceWorker(true)}
-      className="btn btn-sm btn-primary w-full mt-1 font-bold"
-    >
-      Muat Ulang Sekarang
-    </button>
-  </div>
-);
 
 function App() {
   const location = useLocation();
@@ -43,50 +23,6 @@ function App() {
 
   const [isVisualLoading, setIsVisualLoading] = useState(false);
   const [canRenderRoutes, setCanRenderRoutes] = useState(false);
-
-  const {
-    needRefresh: [needRefresh, setNeedRefresh],
-    updateServiceWorker,
-  } = useRegisterSW({
-    onRegistered(r) {
-      if (r) {
-        setInterval(() => {
-          r.update();
-        }, 60 * 60 * 1000);
-      }
-    },
-    onRegisterError(error) {
-      console.error('SW registration error', error);
-    },
-  });
-
-  useEffect(() => {
-    if (needRefresh) {
-      toast(
-        (t) => (
-          <UpdateToast
-            updateServiceWorker={() => {
-              toast.dismiss(t.id);
-              updateServiceWorker(true);
-            }}
-          />
-        ),
-        {
-          duration: Infinity,
-          position: "bottom-right",
-          style: {
-            background: 'var(--fallback-b1,oklch(var(--b1)/1))',
-            color: 'var(--fallback-bc,oklch(var(--bc)/1))',
-            border: '1px solid var(--fallback-p,oklch(var(--p)/0.2))',
-            boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
-            padding: '16px',
-            borderRadius: '1rem',
-          }
-        }
-      );
-    }
-  }, [needRefresh, updateServiceWorker]);
-
 
   useEffect(() => {
     fetchSiteData();
