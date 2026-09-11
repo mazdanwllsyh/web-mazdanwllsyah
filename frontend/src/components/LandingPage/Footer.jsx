@@ -61,7 +61,7 @@ function Footer() {
           </aside>
 
           <nav className="flex flex-col items-center space-y-4 w-full">
-            <p className="font-bold text-center">Contact Me</p>
+            <p className="font-bold text-center">Find Me</p>
             <div className="flex justify-center gap-4 w-full">
               {socialLinkConfig
                 .filter((link) => availableLinks[link.key])
@@ -101,7 +101,7 @@ function Footer() {
       <footer className="footer footer-center p-4 bg-base-300 text-base-content">
         <aside>
           <h3 className="font-bold text-sm text-center">
-            © 2025 - {currentYear} All right reserved by Mazda Nawallsyah.
+            © {currentYear} All right reserved by {siteData?.brandNameShort || "Mazda Nawallsyah"}.
           </h3>
         </aside>
       </footer>

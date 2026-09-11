@@ -3,7 +3,7 @@ import { Icon } from "@iconify/react";
 import { usePortfolioStore, initialHardSkills } from "../../stores/portfolioStore";
 import { useCustomToast } from "../../hooks/useCustomToast";
 import FloatingLabelInput from "../FloatingLabelInput";
-import { TableContainer, THead, TRow, TCell, TableFooter } from "../StylingTable";
+import { TableContainer, THead, TRow, TCell } from "../StylingTable";
 
 const skillLevels = [
   { value: "Dasar", label: "1 - Dasar" },
@@ -12,6 +12,19 @@ const skillLevels = [
   { value: "Mahir", label: "4 - Mahir" },
   { value: "Pakar", label: "5 - Pakar" },
 ];
+
+// Mapping Ikon Kategori Biar Makin Cakep
+const categoryIcons = {
+  "Markup": "mdi:language-html5",
+  "Bahasa Pemrograman": "mdi:code-braces",
+  "Framework & Library": "mdi:react",
+  "Styling & UI": "mdi:palette",
+  "State Management": "mdi:database-sync",
+  "Database": "mdi:database",
+  "Tools & Lainnya": "mdi:toolbox",
+  "Cloud & Deploy": "mdi:cloud-upload",
+  "IDE & Office": "mdi:microsoft-visual-studio-code"
+};
 
 function EditSkills() {
   const skillsData = usePortfolioStore((state) => state.skillsData);
@@ -23,8 +36,6 @@ function EditSkills() {
 
   const { success: customToast, error: errorToast } = useCustomToast();
 
-  const [limit, setLimit] = useState(5);
-  const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [localHardSkills, setLocalHardSkills] = useState(skillsData.hardSkills || []);
   const [newSoftSkill, setNewSoftSkill] = useState("");
@@ -43,42 +54,31 @@ function EditSkills() {
     if (skillsData.hardSkills) setLocalHardSkills(skillsData.hardSkills);
   }, [skillsData.hardSkills]);
 
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchTerm]);
-
   const masterSkillList = initialHardSkills;
 
-  const skillTableData = useMemo(() => {
+  // Logika Grouping berdasarkan Category
+  const groupedSkills = useMemo(() => {
     const filteredMasterList = masterSkillList.filter((skill) =>
       skill.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    return filteredMasterList.map((masterSkill) => {
+    const groups = {};
+    filteredMasterList.forEach((masterSkill) => {
       const userSkill = localHardSkills.find((s) => s.name === masterSkill.name);
-      return {
+      const mappedSkill = {
         ...masterSkill,
         level: userSkill ? userSkill.level : "Dasar",
         isDisplayed: !!userSkill,
       };
+
+      if (!groups[masterSkill.category]) {
+        groups[masterSkill.category] = [];
+      }
+      groups[masterSkill.category].push(mappedSkill);
     });
+
+    return groups;
   }, [masterSkillList, localHardSkills, searchTerm]);
-
-  const totalData = skillTableData.length;
-  const totalPages = Math.ceil(totalData / limit);
-
-  const paginatedSkills = useMemo(() => {
-    const startIndex = (currentPage - 1) * limit;
-    return skillTableData.slice(startIndex, startIndex + limit);
-  }, [skillTableData, currentPage, limit]);
-
-  const handleNext = () => {
-    if (currentPage < totalPages) setCurrentPage((p) => p + 1);
-  };
-
-  const handlePrev = () => {
-    if (currentPage > 1) setCurrentPage((p) => p - 1);
-  };
 
   const handleAddSoftSkill = async () => {
     if (!newSoftSkill.trim()) return;
@@ -148,7 +148,7 @@ function EditSkills() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
       <div className="lg:col-span-4 space-y-6">
-        <div className="card bg-base-100 shadow-sm border border-base-content/20 rounded-[2.5rem] overflow-hidden">
+        <div className="card bg-base-100 shadow-sm border border-base-content/20 rounded-[2.5rem] overflow-hidden sticky top-6">
           <div className="card-body p-0">
             <div className="p-6 border-b border-base-content/10 bg-base-200/50 flex items-center gap-3">
               <div className="p-2 bg-info/10 text-info rounded-xl">
@@ -207,116 +207,101 @@ function EditSkills() {
       <div className="lg:col-span-8">
         <div className="card bg-base-100 shadow-sm border rounded-[2.5rem] border-base-content/20 overflow-hidden">
           <div className="card-body p-0">
-            <div className="p-6 border-b border-base-content/10 bg-base-200/50 flex items-center justify-between gap-3">
+            <div className="p-6 border-b border-base-content/10 bg-base-200/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-success/10 text-success rounded-xl">
                   <Icon icon="mdi:code-tags" className="w-6 h-6" />
                 </div>
-                <h2 className="text-xl font-black font-display">Master Hard Skills</h2>
+                <h2 className="text-xl font-black font-display">Katalog Hard Skills</h2>
               </div>
-              <div className="w-full max-w-xs relative hidden sm:block">
+              <div className="w-full sm:max-w-xs relative">
                 <input
                   type="search"
                   placeholder="Cari skill..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="input input-bordered input-sm w-full rounded-full pl-8"
+                  className="input input-bordered input-sm w-full rounded-full pl-8 h-10"
                 />
-                <Icon icon="mdi:magnify" className="absolute left-3 top-1/2 -translate-y-1/2 opacity-50" />
+                <Icon icon="mdi:magnify" className="absolute left-3 top-1/2 -translate-y-1/2 opacity-50 w-5 h-5" />
               </div>
             </div>
 
-            <div className="p-4 sm:hidden">
-              <input
-                type="search"
-                placeholder="Cari skill..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="input input-bordered w-full rounded-xl"
-              />
-            </div>
+            <div className="p-6 space-y-8">
+              {Object.keys(groupedSkills).length === 0 ? (
+                <div className="text-center py-10 text-base-content/40 italic">
+                  Skill tidak ditemukan.
+                </div>
+              ) : (
+                Object.entries(groupedSkills).map(([category, skills]) => (
+                  <div key={category} className="space-y-3 animate-fade-in-up">
+                    <div className="flex items-center gap-2 px-1">
+                      <Icon icon={categoryIcons[category] || "mdi:folder-outline"} className="w-5 h-5 text-primary" />
+                      <h3 className="font-bold text-sm uppercase tracking-widest opacity-70">{category}</h3>
+                      <div className="flex-1 h-px bg-base-content/10 ml-2"></div>
+                    </div>
 
-            <div className="p-6 pt-2">
-              <div className="flex flex-col gap-0 shadow-sm border border-base-content/20 rounded-2xl overflow-hidden">
-                <TableContainer maxHeight="500px">
-                  <THead>
-                    <th className="w-16 text-center">Ikon</th>
-                    <th>Teknologi</th>
-                    <th className="w-48 text-center">Level</th>
-                    <th className="w-24 text-center">Tampil</th>
-                  </THead>
-                  <tbody>
-                    {paginatedSkills.map((skill, index) => {
-                      const masterSkill = initialHardSkills.find(s => s.name === skill.name);
-                      const skillIcon = masterSkill ? masterSkill.icon : "mdi:code-tags";
+                    <div className="shadow-sm border border-base-content/20 rounded-2xl overflow-hidden">
+                      <TableContainer maxHeight="none">
+                        <THead>
+                          <th className="w-12 text-center">No</th>
+                          <th>Teknologi</th>
+                          <th className="w-48 text-center">Level</th>
+                          <th className="w-24 text-center">Tampil</th>
+                        </THead>
+                        <tbody>
+                          {skills.map((skill, index) => (
+                            <TRow key={`edit-skill-${skill.name}-${index}`}>
+                              <TCell className="text-center font-mono opacity-50 text-xs">
+                                {index + 1}
+                              </TCell>
+                              <TCell>
+                                <div className="flex items-center gap-3">
+                                  <div className="w-9 h-9 rounded-xl bg-base-200 flex items-center justify-center border border-base-content/10 shrink-0">
+                                    <Icon icon={skill.icon} className="w-5 h-5 text-base-content" />
+                                  </div>
+                                  <span className="font-bold whitespace-nowrap text-sm">{skill.name}</span>
+                                </div>
+                              </TCell>
+                              <TCell>
+                                <select
+                                  className="select select-bordered select-sm w-full font-bold bg-base-100 text-xs"
+                                  value={skill.level}
+                                  onChange={(e) => handleLevelChange(skill.name, e.target.value)}
+                                  disabled={!skill.isDisplayed}
+                                >
+                                  {skillLevels.map((lvl) => (
+                                    <option className="bg-base-100 text-base-content" key={lvl.value} value={lvl.value}>
+                                      {lvl.label}
+                                    </option>
+                                  ))}
+                                </select>
+                              </TCell>
+                              <TCell className="text-center">
+                                <label className="cursor-pointer label justify-center">
+                                  <input
+                                    type="checkbox"
+                                    className="checkbox checkbox-sm checkbox-success"
+                                    checked={skill.isDisplayed}
+                                    onChange={(e) => handleDisplayChange(skill.name, e.target.checked)}
+                                  />
+                                </label>
+                              </TCell>
+                            </TRow>
+                          ))}
+                        </tbody>
+                      </TableContainer>
+                    </div>
+                  </div>
+                ))
+              )}
 
-                      return (
-                        <TRow key={`edit-skill-${index}`}>
-                          <TCell className="text-center font-mono opacity-50">
-                            {(currentPage - 1) * limit + index + 1}
-                          </TCell>
-                          <TCell>
-                            <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 rounded-xl bg-base-200 flex items-center justify-center border border-base-content/10 shrink-0">
-                                <Icon icon={skillIcon} className="w-6 h-6 text-base-content" />
-                              </div>
-                              <span className="font-bold whitespace-nowrap">{skill.name}</span>
-                            </div>
-                          </TCell>
-                          <TCell>
-                            <select
-                              className="select select-bordered select-sm w-full font-bold bg-base-100"
-                              value={skill.level}
-                              onChange={(e) => handleLevelChange(skill.name, e.target.value)}
-                              disabled={!skill.isDisplayed}
-                            >
-                              {skillLevels.map((lvl) => (
-                                <option className="bg-base-100 text-base-content" key={lvl.value} value={lvl.value}>
-                                  {lvl.label}
-                                </option>
-                              ))}
-                            </select>
-                          </TCell>
-                          <TCell className="text-center">
-                            <label className="cursor-pointer label justify-center">
-                              <input
-                                type="checkbox"
-                                className="checkbox checkbox-success"
-                                checked={skill.isDisplayed}
-                                onChange={(e) => handleDisplayChange(skill.name, e.target.checked)}
-                              />
-                            </label>
-                          </TCell>
-                        </TRow>
-                      );
-                    })}
-                    {paginatedSkills.length === 0 && (
-                      <tr>
-                        <td colSpan="4" className="text-center py-10 text-base-content/40 italic border-b border-base-content/5">
-                          Skill tidak ditemukan.
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </TableContainer>
-
-                <TableFooter
-                  limit={limit}
-                  setLimit={(val) => { setLimit(val); setCurrentPage(1); }}
-                  totalData={totalData}
-                  currentDataCount={paginatedSkills.length}
-                  onNext={handleNext}
-                  onPrev={handlePrev}
-                />
-              </div>
-
-              <div className="flex justify-end mt-6">
+              <div className="flex justify-end mt-8 pt-4 border-t border-base-content/10 sticky bottom-0 bg-base-100 py-4 z-10">
                 <button
                   onClick={handleSaveHardSkills}
-                  className="btn btn-primary rounded-xl md:w-80 w-full"
+                  className="btn btn-primary rounded-xl md:w-80 w-full shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform"
                   disabled={isSavingHardSkill}
                 >
-                  {isSavingHardSkill ? <span className="loading loading-ring loading-md"></span> : <Icon icon="mdi:content-save" className="w-5 h-5" />}
+                  {isSavingHardSkill ? <span className="loading loading-ring loading-md"></span> : <Icon icon="mdi:content-save-check" className="w-5 h-5" />}
                   {isSavingHardSkill ? "Menyimpan..." : "Simpan Perubahan Hard Skills"}
                 </button>
               </div>

@@ -97,7 +97,7 @@ function AppDashboard() {
           </div>
 
           <footer className="w-full py-4 bg-transparent text-center text-[11px] font-mono tracking-tight text-base-content/50 shrink-0 md:mb-2">
-            &copy; {new Date().getFullYear()} {siteData?.brandNameShort || "Mazda Nawallsyah"}. Core Management Console v2.0.
+            &copy; {new Date().getFullYear()} {siteData?.brandNameShort || "Mazda Nawallsyah"}. Core Management Console v2.5.
           </footer>
         </main>
       </div>

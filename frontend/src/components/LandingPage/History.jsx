@@ -4,7 +4,7 @@ import { m } from "framer-motion";
 import { usePortfolioStore } from "../../stores/portfolioStore";
 import { useSiteStore } from "../../stores/siteStore";
 import { transformCloudinaryUrl } from "../../utils/imageHelper.js";
-import { isBot } from "../../App.jsx"; 
+import { isBot } from "../../App.jsx";
 
 function History() {
   const fetchHistoryData = usePortfolioStore((state) => state.fetchHistoryData);
@@ -136,32 +136,43 @@ function History() {
         </m.div>
 
         <m.div
-          className="tabs justify-center mb-10"
+          className="flex justify-center items-center gap-3 sm:gap-5 mb-12"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          <button
-            className={`tab tab-lg tab-bordered bg-base-200 border-primary mx-2 rounded-lg font-bold ${activeTab === "pendidikan" ? "tab-active border-2 shadow-md border-primary" : ""}`}
-            onClick={() => {
-              setActiveTab("pendidikan");
-              localStorage.setItem("activeHistoryTab", "pendidikan");
-            }}
-          >
-            <Icon icon="mdi:school" className="w-6 h-6 mr-2" />
-            Pendidikan
-          </button>
-          <button
-            className={`tab tab-lg tab-bordered bg-base-200 border-primary mx-2 rounded-lg font-bold ${activeTab === "pengalaman" ? "tab-active border-2 shadow-md border-primary" : ""}`}
-            onClick={() => {
-              setActiveTab("pengalaman");
-              localStorage.setItem("activeHistoryTab", "pengalaman");
-            }}
-          >
-            <Icon icon="mdi:briefcase" className="w-6 h-6 mr-2" />
-            Pengalaman
-          </button>
+          <div className={activeTab === "pendidikan" ? "aura aura-silver rounded-[var(--rounded-btn,0.5rem)]" : ""}>
+            <button
+              className={`tab h-auto py-1 px-3 sm:px-8 bg-base-200 mx-0 flex flex-row items-center justify-center gap-2.5 flex-nowrap rounded-[var(--rounded-btn,0.5rem)] font-bold transition-all duration-300 outline-none ${activeTab === "pendidikan"
+                ? "tab-active shadow-md text-primary"
+                : "border-2 border-transparent opacity-55 hover:opacity-100 hover:text-primary/55"
+                }`}
+              onClick={() => {
+                setActiveTab("pendidikan");
+                localStorage.setItem("activeHistoryTab", "pendidikan");
+              }}
+            >
+              <Icon icon="mdi:school" className="w-6 h-6 sm:w-7 sm:h-7 shrink-0" />
+              <span className="text-sm sm:text-base">Pendidikan</span>
+            </button>
+          </div>
+
+          <div className={activeTab === "pengalaman" ? "aura aura-gold rounded-[var(--rounded-btn,0.5rem)]" : ""}>
+            <button
+              className={`tab h-auto py-1 px-3 sm:px-8 bg-base-200 mx-0 flex flex-row items-center justify-center gap-2.5 flex-nowrap rounded-[var(--rounded-btn,0.5rem)] font-bold transition-all duration-300 outline-none ${activeTab === "pengalaman"
+                ? "tab-active shadow-md text-base-content/90"
+                : "border-2 border-transparent opacity-55 hover:opacity-100 hover:text-primary/55"
+                }`}
+              onClick={() => {
+                setActiveTab("pengalaman");
+                localStorage.setItem("activeHistoryTab", "pengalaman");
+              }}
+            >
+              <Icon icon="mdi:briefcase" className="w-6 h-6 sm:w-7 sm:h-7 shrink-0" />
+              <span className="text-sm sm:text-base">Pengalaman</span>
+            </button>
+          </div>
         </m.div>
 
         {loading || isHistoryLoading ? (
@@ -172,7 +183,7 @@ function History() {
               <li key={item._id}>
                 {index !== 0 && <hr className="bg-primary" />}
                 <div className="timeline-middle">
-                  <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-content z-10 relative">
+                  <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-content z-10 relative shadow-md shadow-primary/20">
                     <Icon
                       icon={
                         activeTab === "pendidikan"
@@ -183,7 +194,7 @@ function History() {
                     />
                   </div>
                 </div>
-                
+
                 <m.div
                   initial={isBot ? { opacity: 1, x: 0 } : { opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
                   whileInView={{ opacity: 1, x: 0 }}
@@ -195,7 +206,7 @@ function History() {
                     }`}
                 >
                   {item.logoUrl && (
-                    <div className="avatar hidden xl:block shrink-0">
+                    <div className="avatar hidden xl:block shrink-0 self-start mt-3">
                       <div className="w-20 h-20 rounded-full ring ring-secondary ring-offset-base-100 ring-offset-2">
                         <img
                           src={transformCloudinaryUrl(item.logoUrl, 128, 128)}
@@ -203,32 +214,38 @@ function History() {
                           width="80"
                           height="80"
                           loading="lazy"
+                          className="w-full hover:scale-110 transition-transform duration-300 h-full rounded-full"
                         />
                       </div>
                     </div>
                   )}
 
                   <div className="w-full flex flex-col items-stretch max-w-[18rem] sm:max-w-[20rem] md:max-w-[22rem] xl:max-w-[28rem]">
-                    <div
-                      tabIndex={0}
-                      className="card w-full bg-base-100 shadow-md border border-base-content/20 cursor-pointer transition-transform duration-200 hover:-translate-y-2 hover:border-primary hover:bg-base-200 hover:shadow-xl focus:outline-none focus-within:-translate-y-2 focus-within:border-primary focus-within:bg-base-200 focus-within:shadow-xl"
-                    >
-                      <div className="card-body p-6 md:p-8">
-                        <h3 className="card-title text-xl lg:text-2xl font-bold font-display">
-                          {item.institution}
-                        </h3>
-                        {item.detail && (
-                          <p className="text-sm md:text-base text-base-content/80 font-semibold text-justify mt-2">
-                            {item.detail}
-                          </p>
-                        )}
+                    <div className="relative group w-full rounded-[var(--rounded-box,1rem)] transition-all duration-300 hover:-translate-y-2 focus-within:-translate-y-2 cursor-pointer">
 
-                        <div className="flex items-center text-sm mt-4 justify-start font-semibold">
-                          <Icon
-                            icon="mdi:calendar-blank-outline"
-                            className="w-5 h-5 mr-1"
-                          />
-                          <span>{item.years}</span>
+                      <div className="absolute inset-0 rounded-[inherit] opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity aura aura-dual z-0 pointer-events-none"></div>
+
+                      <div
+                        tabIndex={0}
+                        className="card w-full h-full bg-base-100 shadow-md border border-base-content/20 transition-all duration-300 group-hover:border-primary group-hover:shadow-xl group-focus-within:border-primary group-focus-within:shadow-xl focus:outline-none relative z-10"
+                      >
+                        <div className="card-body p-6 md:p-8">
+                          <h3 className="card-title text-xl lg:text-2xl font-bold font-display group-hover:text-primary transition-colors duration-300">
+                            {item.institution}
+                          </h3>
+                          {item.detail && (
+                            <p className="text-sm md:text-base text-base-content/80 font-semibold text-justify mt-2">
+                              {item.detail}
+                            </p>
+                          )}
+
+                          <div className="flex items-center text-sm mt-4 justify-start font-semibold opacity-70 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-300">
+                            <Icon
+                              icon="mdi:calendar-blank-outline"
+                              className="w-5 h-5 mr-1"
+                            />
+                            <span>{item.years}</span>
+                          </div>
                         </div>
                       </div>
                     </div>

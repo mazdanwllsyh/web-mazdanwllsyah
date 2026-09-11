@@ -59,6 +59,7 @@ export default defineConfig({
         cleanupOutdatedCaches: true,
         clientsClaim: true,
         skipWaiting: true,
+        navigateFallback: '/index.html',
         globPatterns: ["**/*.{js,css,html,ico,png,svg,json,woff,woff2}"],
       },
       manifest: {

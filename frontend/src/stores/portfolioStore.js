@@ -30,22 +30,14 @@ export const initialHardSkills = [
   },
 
   // 02 Frameworks & Libraries
-  {
-    icon: "logos:react",
-    name: "React.js",
-    category: "Framework & Library",
-  },
+  { icon: "logos:react", name: "React.js", category: "Framework & Library" },
   { icon: "logos:vue", name: "Vue.js", category: "Framework & Library" },
   {
     icon: "logos:angular-icon",
     name: "Angular",
     category: "Framework & Library",
   },
-  {
-    icon: "logos:nuxt-icon",
-    name: "Nuxt.js",
-    category: "Framework & Library",
-  },
+  { icon: "logos:nuxt-icon", name: "Nuxt.js", category: "Framework & Library" },
   {
     icon: "logos:nextjs-icon",
     name: "Next.js",
@@ -61,11 +53,7 @@ export const initialHardSkills = [
     name: "jQuery",
     category: "Framework & Library",
   },
-  {
-    icon: "logos:laravel",
-    name: "Laravel",
-    category: "Framework & Library",
-  },
+  { icon: "logos:laravel", name: "Laravel", category: "Framework & Library" },
   {
     icon: "logos:nodejs-icon",
     name: "Node.js",
@@ -101,11 +89,7 @@ export const initialHardSkills = [
     name: "Django",
     category: "Framework & Library",
   },
-  {
-    icon: "cib:flask",
-    name: "Flask",
-    category: "Framework & Library",
-  },
+  { icon: "cib:flask", name: "Flask", category: "Framework & Library" },
   {
     icon: "devicon:inertiajs",
     name: "Inertia.js",
@@ -113,11 +97,7 @@ export const initialHardSkills = [
   },
 
   // 03 Styling & UI Tools
-  {
-    icon: "logos:bootstrap",
-    name: "Bootstrap CSS",
-    category: "Styling & UI",
-  },
+  { icon: "logos:bootstrap", name: "Bootstrap CSS", category: "Styling & UI" },
   {
     icon: "logos:tailwindcss-icon",
     name: "Tailwind CSS",
@@ -137,11 +117,7 @@ export const initialHardSkills = [
     name: "PrimeReact",
     category: "Styling & UI",
   },
-  {
-    icon: "devicon:antdesign",
-    name: "Ant Design",
-    category: "Styling & UI",
-  },
+  { icon: "devicon:antdesign", name: "Ant Design", category: "Styling & UI" },
   {
     icon: "simple-icons:chakraui",
     name: "Chakra UI",
@@ -154,39 +130,27 @@ export const initialHardSkills = [
     name: "Framer Motion",
     category: "Styling & UI",
   },
-  {
-    icon: "logos:greensock-icon",
-    name: "GSAP",
-    category: "Styling & UI",
-  },
-  {
-    icon: "tabler:brand-threejs",
-    name: "Three.js",
-    category: "Styling & UI",
-  },
-  {
-    icon: "devicon-plain:bulma",
-    name: "Bulma CSS",
-    category: "Styling & UI",
-  },
+  { icon: "logos:greensock-icon", name: "GSAP", category: "Styling & UI" },
+  { icon: "tabler:brand-threejs", name: "Three.js", category: "Styling & UI" },
+  { icon: "devicon-plain:bulma", name: "Bulma CSS", category: "Styling & UI" },
 
   // 04 State Management
   { icon: "logos:redux", name: "Redux", category: "State Management" },
+  { icon: "devicon:zustand", name: "Zustand", category: "State Management" },
+  { icon: "logos:pinia", name: "Pinia", category: "State Management" },
   {
-    icon: "devicon:zustand",
-    name: "Zustand",
+    icon: "logos:react-query-icon",
+    name: "TanStack Query",
     category: "State Management",
   },
-  { icon: "logos:pinia", name: "Pinia", category: "State Management" },
 
   // 05 Databases
   { icon: "logos:mongodb-icon", name: "MongoDB", category: "Database" },
-  {
-    icon: "logos:postgresql",
-    name: "PostgreSQL",
-    category: "Database",
-  },
+  { icon: "logos:postgresql", name: "PostgreSQL", category: "Database" },
   { icon: "logos:mysql", name: "MySQL", category: "Database" },
+  { icon: "devicon:supabase", name: "Supabase", category: "Database" },
+  { icon: "logos:firebase-icon", name: "Firebase", category: "Database" },
+  { icon: "simple-icons:prisma", name: "Prisma", category: "Database" },
 
   // 06 Tools & Others
   {
@@ -195,27 +159,16 @@ export const initialHardSkills = [
     category: "Tools & Lainnya",
   },
   {
-    icon: "logos:graphql",
-    name: "GraphQL",
+    icon: "thesvg:json-web-tokens",
+    name: "JSON Web Tokens (JWT)",
     category: "Tools & Lainnya",
   },
+  { icon: "logos:graphql", name: "GraphQL", category: "Tools & Lainnya" },
   { icon: "logos:git-icon", name: "Git", category: "Tools & Lainnya" },
-  {
-    icon: "logos:docker-icon",
-    name: "Docker",
-    category: "Tools & Lainnya",
-  },
+  { icon: "logos:docker-icon", name: "Docker", category: "Tools & Lainnya" },
   { icon: "logos:figma", name: "Figma", category: "Tools & Lainnya" },
-  {
-    icon: "logos:npm-icon",
-    name: "npm",
-    category: "Tools & Lainnya",
-  },
-  {
-    icon: "logos:webpack",
-    name: "Webpack",
-    category: "Tools & Lainnya",
-  },
+  { icon: "logos:npm-icon", name: "npm", category: "Tools & Lainnya" },
+  { icon: "logos:webpack", name: "Webpack", category: "Tools & Lainnya" },
   { icon: "logos:vitejs", name: "Vite", category: "Tools & Lainnya" },
   { icon: "logos:jest", name: "Jest", category: "Tools & Lainnya" },
   {
@@ -223,31 +176,15 @@ export const initialHardSkills = [
     name: "React Testing Library",
     category: "Tools & Lainnya",
   },
-  {
-    icon: "logos:postman-icon",
-    name: "Postman",
-    category: "Tools & Lainnya",
-  },
-  {
-    icon: "lineicons:yarn",
-    name: "Yarn",
-    category: "Tools & Lainnya",
-  },
-  {
-    icon: "devicon-plain:bun",
-    name: "Bun",
-    category: "Tools & Lainnya",
-  },
+  { icon: "logos:postman-icon", name: "Postman", category: "Tools & Lainnya" },
+  { icon: "lineicons:yarn", name: "Yarn", category: "Tools & Lainnya" },
+  { icon: "devicon-plain:bun", name: "Bun", category: "Tools & Lainnya" },
   {
     icon: "material-icon-theme:pnpm",
     name: "PNPM",
     category: "Tools & Lainnya",
   },
-  {
-    icon: "simple-icons:pwa",
-    name: "PWA",
-    category: "Tools & Lainnya",
-  },
+  { icon: "simple-icons:pwa", name: "PWA", category: "Tools & Lainnya" },
   {
     icon: "material-icon-theme:babel",
     name: "Babel",
@@ -255,21 +192,14 @@ export const initialHardSkills = [
   },
 
   // 07 Cloud & Deployment
-  {
-    icon: "lineicons:vercel",
-    name: "Vercel",
-    category: "Cloud & Deploy",
-  },
-  {
-    icon: "logos:netlify-icon",
-    name: "Netlify",
-    category: "Cloud & Deploy",
-  },
+  { icon: "lineicons:vercel", name: "Vercel", category: "Cloud & Deploy" },
+  { icon: "logos:netlify-icon", name: "Netlify", category: "Cloud & Deploy" },
   {
     icon: "logos:github-actions",
     name: "GitHub Actions",
     category: "Cloud & Deploy",
   },
+  { icon: "simple-icons:railway", name: "Railway", category: "Cloud & Deploy" },
 
   // 08 Office & IDE
   {
@@ -278,8 +208,24 @@ export const initialHardSkills = [
     category: "IDE & Office",
   },
   {
+    icon: "material-icon-theme:cursor",
+    name: "Cursor AI",
+    category: "IDE & Office",
+  },
+  {
+    icon: "simple-icons:windsurf",
+    name: "Windsurf AI",
+    category: "IDE & Office",
+  },
+  { icon: "hugeicons:claude", name: "Claude AI", category: "IDE & Office" },
+  {
+    icon: "thesvg:github-copilot",
+    name: "GitHub Copilot",
+    category: "IDE & Office",
+  },
+  {
     icon: "material-symbols:antigravity",
-    name: "Antigravity AI IDEs",
+    name: "Antigravity AI",
     category: "IDE & Office",
   },
   {
@@ -287,28 +233,19 @@ export const initialHardSkills = [
     name: "JetBrains IDEs",
     category: "IDE & Office",
   },
+  { icon: "bxl:grok", name: "Grok AI", category: "IDE & Office" },
   {
-    icon: "material-icon-theme:cursor",
-    name: "Cursor AI IDEs",
-    category: "IDE & Office",
-  },
-  {
-    icon: "bxl:grok",
-    name: "Grok AI IDEs",
-    category: "IDE & Office",
-  },
-  {
-    icon: "vscode-icons:file-type-word",
+    icon: "thesvg-color:microsoft-word",
     name: "Ms. Word",
     category: "IDE & Office",
   },
   {
-    icon: "vscode-icons:file-type-excel",
+    icon: "thesvg-color:microsoft-excel",
     name: "Ms. Excel",
     category: "IDE & Office",
   },
   {
-    icon: "vscode-icons:file-type-powerpoint",
+    icon: "thesvg-color:microsoft-powerpoint",
     name: "Ms. PowerPoint",
     category: "IDE & Office",
   },

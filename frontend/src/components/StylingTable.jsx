@@ -43,7 +43,7 @@ export const TableFooter = ({ limit, setLimit, totalData, currentDataCount, onNe
                 onChange={(e) => setLimit(Number(e.target.value))}
                 className="select select-xs select-bordered rounded-lg bg-base-100 font-mono h-8"
             >
-                {[5, 15, 30, 50, 100, 200].map(val => (
+                {[10, 25, 50, 100].map(val => (
                     <option className="bg-base-100 text-base-content" key={val} value={val}>{val}</option>
                 ))}
             </select>
