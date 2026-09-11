@@ -18,7 +18,7 @@ const socialLinkConfig = [
 
 const techIcons = [
   { id: "react", icon: "logos:react", position: "top-[-5%] left-1/2 -translate-x-1/2" },
-  { id: "motion", icon: "devicon:motion", position: "top-[15%] right-[-5%]" },
+  { id: "motion", icon: "bxl:motion-js", position: "top-[15%] right-[-5%]" },
   { id: "html", icon: "logos:html-5", position: "bottom-[15%] right-[-5%]", customClass: "text-base-content" },
   { id: "daisyui", icon: "logos:daisyui-icon", position: "bottom-[-5%] left-1/2 -translate-x-1/2" },
   { id: "css", icon: "logos:css-3", position: "bottom-[15%] left-[-5%]" },
