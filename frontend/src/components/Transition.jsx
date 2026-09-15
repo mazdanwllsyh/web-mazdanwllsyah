@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { m, AnimatePresence, LazyMotion, domAnimation } from "framer-motion";
 import { isBot } from "../App";
 
@@ -9,7 +9,7 @@ const NORMAL_STEPS = [
 ];
 
 const LAG_STEP = {
-  text: "WAITING_FOR_RESPONSE",
+  text: "OVERRIDING_NETWORK_DELAY",
   color: "text-warning",
   fill: "fill-warning/55",
   shadow: "drop-shadow-[0_0_20px_rgba(var(--wa),0.9)]"
@@ -19,40 +19,46 @@ function Transition({ isLoading, onExitComplete }) {
   const [step, setStep] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isLagging, setIsLagging] = useState(false);
+  const lagTimerRef = useRef(null);
 
   useEffect(() => {
     if (!isLoading || isBot) return;
 
     let currentStep = 0;
     const textTimer = setInterval(() => {
-      currentStep++;
-      if (currentStep < NORMAL_STEPS.length) {
+      if (currentStep < 2) {
+        currentStep++;
         setStep(currentStep);
-      } else {
-        clearInterval(textTimer);
       }
-    }, 450);
+    }, 500);
 
     let currentProgress = 0;
     const progressTimer = setInterval(() => {
       currentProgress += Math.floor(Math.random() * 4) + 3;
       if (currentProgress >= 100) {
         currentProgress = 100;
-        setIsLagging(true);
+        setProgress(100);
         clearInterval(progressTimer);
+
+        lagTimerRef.current = setTimeout(() => {
+          setIsLagging(true);
+        }, 1200);
+      } else {
+        setProgress(currentProgress);
       }
-      setProgress(currentProgress);
-    }, 40);
+    }, 35);
 
     return () => {
       clearInterval(textTimer);
       clearInterval(progressTimer);
+      if (lagTimerRef.current) clearTimeout(lagTimerRef.current);
     };
   }, [isLoading]);
 
   if (isBot) return null;
 
   const currentProps = isLagging ? LAG_STEP : NORMAL_STEPS[step];
+  const isDone = progress === 100 && !isLoading;
 
   return (
     <LazyMotion features={domAnimation}>
@@ -72,12 +78,10 @@ function Transition({ isLoading, onExitComplete }) {
             className="fixed inset-0 z-[999999] flex flex-col items-center justify-center bg-base-100 overflow-hidden pointer-events-auto"
           >
             <div className="flex flex-col items-center gap-6 mb-20">
-
               <m.div
                 initial={{ scale: 1 }}
-                animate={{ scale: [1, 1.15, 1] }}
-                exit={{ scale: 150, opacity: 0, transition: { duration: 0.8, ease: "circIn" } }}
-                transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}
+                animate={isDone ? { scale: 150, opacity: 0 } : { scale: [1, 1.15, 1] }}
+                transition={isDone ? { duration: 0.8, ease: "circIn" } : { repeat: Infinity, duration: 1.2, ease: "easeInOut" }}
                 className="relative w-28 h-28 md:w-36 md:h-36 flex items-center justify-center z-10"
               >
                 <m.svg
