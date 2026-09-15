@@ -9,7 +9,7 @@ const NORMAL_STEPS = [
 ];
 
 const LAG_STEP = {
-  text: "OVERRIDING_NETWORK_DELAY",
+  text: "BUYING_TIME",
   color: "text-warning",
   fill: "fill-warning/55",
   shadow: "drop-shadow-[0_0_20px_rgba(var(--wa),0.9)]"
@@ -58,7 +58,6 @@ function Transition({ isLoading, onExitComplete }) {
   if (isBot) return null;
 
   const currentProps = isLagging ? LAG_STEP : NORMAL_STEPS[step];
-  const isDone = progress === 100 && !isLoading;
 
   return (
     <LazyMotion features={domAnimation}>
@@ -70,7 +69,7 @@ function Transition({ isLoading, onExitComplete }) {
             exit={{
               opacity: 0,
               backdropFilter: "blur(0px)",
-              transition: { duration: 0.6, ease: "easeOut", delay: 0.1 }
+              transition: { duration: 0.8, ease: "easeInOut" }
             }}
             onAnimationComplete={(definition) => {
               if (definition === "exit" && onExitComplete) onExitComplete();
@@ -79,9 +78,9 @@ function Transition({ isLoading, onExitComplete }) {
           >
             <div className="flex flex-col items-center gap-6 mb-20">
               <m.div
-                initial={{ scale: 1 }}
-                animate={isDone ? { scale: 150, opacity: 0 } : { scale: [1, 1.15, 1] }}
-                transition={isDone ? { duration: 0.8, ease: "circIn" } : { repeat: Infinity, duration: 1.2, ease: "easeInOut" }}
+                animate={{ scale: [1, 1.15, 1] }}
+                exit={{ scale: 150, opacity: 0, transition: { duration: 0.8, ease: "circIn" } }}
+                transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}
                 className="relative w-28 h-28 md:w-36 md:h-36 flex items-center justify-center z-10"
               >
                 <m.svg
@@ -121,8 +120,7 @@ function Transition({ isLoading, onExitComplete }) {
               </m.div>
 
               <m.div
-                exit={{ opacity: 0, y: 20 }}
-                transition={{ duration: 0.3 }}
+                exit={{ opacity: 0, y: 20, transition: { duration: 0.3 } }}
                 className="flex flex-col items-center gap-1 z-20"
               >
                 <m.span
@@ -142,8 +140,7 @@ function Transition({ isLoading, onExitComplete }) {
             </div>
 
             <m.div
-              exit={{ opacity: 0, y: 30 }}
-              transition={{ duration: 0.4 }}
+              exit={{ opacity: 0, y: 30, transition: { duration: 0.4 } }}
               className="absolute bottom-0 left-0 right-0 w-full flex flex-col items-center"
             >
               <m.div className={`mb-2 font-mono text-2xl md:text-3xl font-black tracking-widest transition-colors duration-500 drop-shadow-md ${currentProps.color}`}>
