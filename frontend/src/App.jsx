@@ -11,7 +11,7 @@ import CustomCursor from "./components/CustomCursor";
 const AppLandingPage = lazy(() => import("./components/AppLandingPage"));
 const AppDashboard = lazy(() => import("./components/AppDashboard"));
 
-export const isBot = /bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent);
+export const isBot = /bot|googlebot|crawler|spider|robot|crawling|lighthouse/i.test(navigator.userAgent);
 
 function App() {
   const location = useLocation();
@@ -21,8 +21,8 @@ function App() {
   const fetchSiteData = useSiteStore((state) => state.fetchSiteData);
   const { isUserLoading, checkUserSession } = useAuth();
 
-  const [isVisualLoading, setIsVisualLoading] = useState(false);
-  const [canRenderRoutes, setCanRenderRoutes] = useState(false);
+  const [isVisualLoading, setIsVisualLoading] = useState(!isBot && !isDashboard);
+  const [canRenderRoutes, setCanRenderRoutes] = useState(isBot || isDashboard);
 
   useEffect(() => {
     fetchSiteData();
@@ -30,13 +30,7 @@ function App() {
   }, [fetchSiteData, checkUserSession]);
 
   useLayoutEffect(() => {
-    if (isDashboard) {
-      setIsVisualLoading(false);
-      setCanRenderRoutes(true);
-      return;
-    }
-
-    if (isBot) {
+    if (isBot || isDashboard) {
       setIsVisualLoading(false);
       setCanRenderRoutes(true);
       return;
@@ -53,7 +47,7 @@ function App() {
   }, [location.pathname, isDashboard]);
 
   const isAppInitializing = isSiteDataLoading || isUserLoading;
-  const showTransition = isAppInitializing || isVisualLoading;
+  const showTransition = !isBot && (isAppInitializing || isVisualLoading);
 
   useEffect(() => {
     if (isBot) {
@@ -88,22 +82,38 @@ function App() {
           ::-webkit-scrollbar:horizontal { height: 6px; }
           ::-webkit-scrollbar-thumb:horizontal { background-color: oklch(var(--p)); border-radius: 9999px; }
           ::-webkit-scrollbar-track:horizontal { background-color: transparent; }
+          
+          /* KILL ANIMATIONS FOR BOTS GLOBALLY */
+          ${isBot ? `
+            * {
+              animation: none !important;
+              transition: none !important;
+              opacity: 1 !important;
+              transform: none !important;
+              visibility: visible !important;
+            }
+            [style*="opacity: 0"] {
+              opacity: 1 !important;
+            }
+          ` : ""}
         `}
       </style>
 
-      <CustomCursor />
+      {!isBot && <CustomCursor />}
       <GlobalModal />
 
-      <Transition isLoading={showTransition} />
+      {!isBot && <Transition isLoading={showTransition} />}
 
       {canRenderRoutes && (
         <main className="w-full min-h-screen">
           <ErrorBoundary>
             <Suspense
               fallback={
-                <div className="fixed inset-0 bg-base-100 z-[9997] flex items-center justify-center">
-                  <span className="loading loading-ring loading-lg text-primary"></span>
-                </div>
+                !isBot && (
+                  <div className="fixed inset-0 bg-base-100 z-[9997] flex items-center justify-center">
+                    <span className="loading loading-ring loading-lg text-primary"></span>
+                  </div>
+                )
               }
             >
               <Routes>

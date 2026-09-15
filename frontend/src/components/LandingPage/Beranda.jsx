@@ -1,10 +1,10 @@
 import React, { Suspense, lazy } from "react";
 import SeoHelmet from "../../components/SEOHelmet";
-
 import Hero from "../../components/LandingPage/Hero";
+import History from "../../components/LandingPage/History";
+import Skills from "../../components/LandingPage/Skills";
+import { isBot } from "../../App";
 
-const History = lazy(() => import("../../components/LandingPage/History"));
-const Skills = lazy(() => import("../../components/LandingPage/Skills"));
 const Gallery = lazy(() => import("../../components/LandingPage/Gallery"));
 const Kontak = lazy(() => import("../../components/LandingPage/Kontak"));
 
@@ -17,27 +17,26 @@ const SectionLoader = () => (
 function Beranda() {
   return (
     <>
-      <SeoHelmet
-        url="/"
-      />
-
+      <SeoHelmet url="/" />
       <Hero />
+      <History />
+      <Skills />
 
-      <Suspense fallback={<SectionLoader />}>
-        <History />
-      </Suspense>
-
-      <Suspense fallback={<SectionLoader />}>
-        <Skills />
-      </Suspense>
-
-      <Suspense fallback={<SectionLoader />}>
-        <Gallery />
-      </Suspense>
-
-      <Suspense fallback={<SectionLoader />}>
-        <Kontak />
-      </Suspense>
+      {isBot ? (
+        <>
+          <Gallery />
+          <Kontak />
+        </>
+      ) : (
+        <>
+          <Suspense fallback={<SectionLoader />}>
+            <Gallery />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <Kontak />
+          </Suspense>
+        </>
+      )}
     </>
   );
 }
