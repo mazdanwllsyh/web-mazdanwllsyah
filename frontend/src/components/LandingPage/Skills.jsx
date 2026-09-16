@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Icon } from "@iconify/react";
-import { m } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { usePortfolioStore, initialHardSkills } from "../../stores/portfolioStore";
 import { isBot } from "../../App.jsx";
 
@@ -8,24 +8,17 @@ const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.2,
-    }
+    transition: { staggerChildren: 0.04, delayChildren: 0.1 }
   }
 };
 
 const itemVariants = {
-  hidden: { y: 20, opacity: 0, scale: 0.9 },
+  hidden: { y: 15, opacity: 0, scale: 0.95 },
   visible: {
     y: 0,
     opacity: 1,
     scale: 1,
-    transition: {
-      type: "spring",
-      stiffness: 100,
-      damping: 15
-    }
+    transition: { type: "spring", stiffness: 120, damping: 14 }
   }
 };
 
@@ -34,16 +27,18 @@ const categoryOrder = [
   "Framework & Library",
   "Styling & UI",
   "State Management",
-  "Database",
   "Cloud & Deploy",
   "Tools & Lainnya",
-  "IDE & Office"
+  "IDE & Office",
+  "Database"
 ];
 
 function Skills() {
   const fetchSkillsData = usePortfolioStore((state) => state.fetchSkillsData);
   const skillsData = usePortfolioStore((state) => state.skillsData);
   const isSkillsLoading = usePortfolioStore((state) => state.isSkillsLoading);
+
+  const [activeTab, setActiveTab] = useState("hard");
 
   useEffect(() => {
     fetchSkillsData();
@@ -59,18 +54,30 @@ function Skills() {
   const groupedHardSkills = useMemo(() => {
     const groups = {};
     displayedHardSkills.forEach(skill => {
-      if (!groups[skill.category]) {
-        groups[skill.category] = [];
-      }
+      if (!groups[skill.category]) groups[skill.category] = [];
       groups[skill.category].push(skill);
     });
     return groups;
   }, [displayedHardSkills]);
 
-  const displayedSoftSkills = useMemo(() => skillsData?.softSkills || [], [skillsData]);
+  const displayedSoftSkills = useMemo(() => {
+    const rawSkills = skillsData?.softSkills || [];
+    return rawSkills.map(skill => {
+      if (typeof skill === 'string') {
+        return { name: skill, description: "Mampu beradaptasi dan berkolaborasi secara efektif dalam lingkungan kerja profesional." };
+      }
+      if (typeof skill === 'object' && skill !== null) {
+        return {
+          name: skill.name ? String(skill.name) : "Skill Tidak Diketahui",
+          description: skill.description ? String(skill.description) : "Mampu beradaptasi dan berkolaborasi secara efektif dalam lingkungan kerja profesional."
+        };
+      }
+      return { name: "Soft Skill", description: "" };
+    });
+  }, [skillsData]);
 
   const structuredData = useMemo(() => {
-    const allSkills = categoryOrder.flatMap(cat => skillsData[cat] || []);
+    const allSkills = categoryOrder.flatMap(cat => groupedHardSkills[cat] || []);
     return {
       "@context": "https://schema.org",
       "@type": "ItemList",
@@ -81,7 +88,7 @@ function Skills() {
         "name": skill.name || skill
       }))
     };
-  }, [skillsData]);
+  }, [groupedHardSkills]);
 
   useEffect(() => {
     let script = document.getElementById("structured-data-skills");
@@ -95,7 +102,6 @@ function Skills() {
     return () => { if (script) script.remove(); };
   }, [structuredData]);
 
-
   if (isSkillsLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
@@ -106,123 +112,173 @@ function Skills() {
   }
 
   return (
-    <div
-      className="bg-base-100 min-h-[auto] xl:min-h-screen flex flex-col items-center justify-center py-10 md:py-16"
-      id="skills"
-    >
+    <div className="min-h-[auto] xl:min-h-screen flex flex-col items-center justify-center py-11 lg:py-18 relative z-10" id="skills">
       <div className="w-full max-w-6xl mx-auto px-4 lg:px-4">
+
         <m.div
-          className="text-center mb-12"
+          className="text-center mb-10"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-2 tracking-tight">Skills</h2>
-          <p className="text-base md:text-lg text-base-content/60">Teknologi dan kompetensi profesional saya</p>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-4 tracking-tight">Skills</h2>
+
+          <div className="h-10 flex items-center justify-center">
+            <AnimatePresence mode="wait">
+              <m.p
+                key={activeTab}
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -5 }}
+                transition={{ duration: 0.2 }}
+                className="text-sm md:text-base text-base-content/60 max-w-2xl mx-auto"
+              >
+                {activeTab === 'hard'
+                  ? "Teknologi, framework, dan perkakas teknis yang saya gunakan untuk membangun ekosistem web."
+                  : "Kemampuan interpersonal dan manajemen diri untuk kolaborasi profesional yang efektif."}
+              </m.p>
+            </AnimatePresence>
+          </div>
         </m.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+        <div className="flex justify-center mb-12">
+          <div className="bg-base-200/60 backdrop-blur-sm p-1.5 rounded-2xl flex gap-2 w-full max-w-md border border-base-content/5 shadow-sm relative z-20">
+            <button
+              onClick={() => setActiveTab('hard')}
+              className={`flex-1 py-3 px-4 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 outline-none ${activeTab === 'hard'
+                  ? 'bg-primary text-primary-content shadow-md shadow-primary/20 scale-100'
+                  : 'text-base-content/60 hover:text-base-content hover:bg-base-100/50 scale-95 hover:scale-[0.98]'
+                }`}
+            >
+              <Icon icon="solar:code-square-bold-duotone" className="w-5 h-5 shrink-0" />
+              <span className="text-sm sm:text-base">Hard Skills</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('soft')}
+              className={`flex-1 py-3 px-4 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 outline-none ${activeTab === 'soft'
+                  ? 'bg-secondary text-secondary-content shadow-md shadow-secondary/20 scale-100'
+                  : 'text-base-content/60 hover:text-base-content hover:bg-base-100/50 scale-95 hover:scale-[0.98]'
+                }`}
+            >
+              <Icon icon="solar:medal-star-bold-duotone" className="w-5 h-5 shrink-0" />
+              <span className="text-sm sm:text-base">Soft Skills</span>
+            </button>
+          </div>
+        </div>
 
-          <m.div
-            className="lg:col-span-8 space-y-10"
-            variants={containerVariants}
-            initial={isBot ? "visible" : "hidden"}
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
-          >
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-primary/10 rounded-lg">
-                <Icon icon="solar:code-bold-duotone" className="w-6 h-6 text-primary" />
-              </div>
-              <h3 className="text-2xl font-bold font-display uppercase tracking-wider text-base-content/80">Hard Skills</h3>
-            </div>
-
-            {Object.keys(groupedHardSkills).length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10">
-                {categoryOrder.map((category) => {
-                  const skills = groupedHardSkills[category];
-                  if (!skills || skills.length === 0) return null;
-
-                  return (
-                    <div key={category} className="space-y-4">
-                      <div className="flex items-center gap-4">
-                        <h4 className="font-bold text-[11px] md:text-xs tracking-widest uppercase opacity-50 whitespace-nowrap">{category}</h4>
-                        <div className="flex-1 h-[1px] bg-base-content/10"></div>
-                      </div>
-
-                      <div className="flex flex-wrap gap-2 md:gap-3">
-                        {skills.map((skill, index) => (
-                          <m.div
-                            key={`hard-skill-${index}`}
-                            variants={itemVariants}
-                            tabIndex={0}
-                            className="relative h-12 md:h-14 w-fit max-w-[3rem] md:max-w-[3.5rem] focus:max-w-[16rem] rounded-2xl bg-base-200 border border-base-content/10 flex items-center overflow-hidden cursor-pointer shadow-sm group transition-all duration-500 ease-in-out hover:border-base-content/30 hover:bg-base-100 hover:shadow-md focus:border-primary focus:bg-base-100 focus:ring-1 focus:ring-primary focus:outline-none"
-                          >
-                            <div className="w-[3rem] md:w-[3.5rem] h-full flex items-center justify-center shrink-0">
-                              <Icon icon={skill.icon} className="w-6 h-6 md:w-8 md:h-8 group-hover:scale-110 group-focus:scale-110 transition-transform duration-300 drop-shadow-sm" />
-                            </div>
-
-                            <div className="flex flex-col whitespace-nowrap opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-300 delay-150 pr-4">
-                              <span className="font-bold font-headings text-[13px] md:text-sm text-base-content leading-tight">
-                                {skill.name}
-                              </span>
-                              <span className="text-[9px] md:text-[10px] font-black tracking-widest uppercase text-primary">
-                                {skill.level || "Expert"}
-                              </span>
-                            </div>
-                          </m.div>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="italic opacity-40 text-sm">Belum ada hard skills.</div>
-            )}
-          </m.div>
-
-          <m.div
-            className="lg:col-span-4 space-y-6 lg:sticky lg:top-32"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-          >
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 bg-secondary/10 rounded-lg">
-                <Icon icon="vscode-icons:file-type-skill" className="w-6 h-6 text-secondary" />
-              </div>
-              <h3 className="text-2xl font-bold font-display uppercase tracking-wider text-base-content/80">Soft Skills</h3>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
-              {displayedSoftSkills.length > 0 ? (
-                displayedSoftSkills.map((skill, index) => (
+        <div className="w-full min-h-[450px]">
+          <AnimatePresence mode="wait">
+            {activeTab === 'hard' && (
+              <m.div
+                key="hard-skills"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.3 }}
+                className="w-full"
+              >
+                {Object.keys(groupedHardSkills).length > 0 ? (
                   <m.div
-                    key={index}
-                    variants={itemVariants}
-                    whileHover={{ x: 5 }}
-                    whileTap={{ scale: 0.95 }}
-                    tabIndex={0}
-                    className="flex items-center gap-3 p-4 rounded-2xl bg-base-200 border border-base-content/10 hover:border-secondary focus:border-secondary focus:ring-1 focus:ring-secondary focus:bg-base-100 outline-none transition-all duration-300 shadow-sm cursor-pointer group"
+                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10"
+                    variants={containerVariants}
+                    initial={isBot ? "visible" : "hidden"}
+                    animate="visible"
                   >
-                    <Icon
-                      icon="line-md:check-all"
-                      className="w-0 h-6 opacity-0 text-secondary flex-shrink-0 group-hover:w-6 group-focus:w-6 group-hover:opacity-100 group-focus:opacity-100 transition-[width,opacity] duration-300"
-                    />
-                    <span className="font-bold text-sm md:text-base leading-tight break-words group-hover:text-secondary group-focus:text-secondary transition-colors duration-300">
-                      {skill}
-                    </span>
-                  </m.div>
-                ))
-              ) : (
-                <div className="italic opacity-40 text-sm">Belum ada soft skills.</div>
-              )}
-            </div>
-          </m.div>
+                    {categoryOrder.map((category) => {
+                      const skills = groupedHardSkills[category];
+                      if (!skills || skills.length === 0) return null;
 
+                      return (
+                        <div key={category} className="space-y-4">
+                          <div className="flex items-center gap-3">
+                            <h4 className="font-bold text-[11px] md:text-xs tracking-widest uppercase opacity-60 whitespace-nowrap">{category}</h4>
+                            <div className="flex-1 h-[1px] bg-base-content/10"></div>
+                          </div>
+
+                          <div className="flex flex-wrap gap-2.5">
+                            {skills.map((skill, index) => (
+                              <m.div key={`hard-skill-${index}`} variants={itemVariants} className="relative group w-fit">
+                                <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity aura aura-dual pointer-events-none -z-10"></div>
+
+                                <div
+                                  tabIndex={0}
+                                  className="relative h-12 md:h-14 w-max max-w-[3.2rem] hover:max-w-[16rem] focus-within:max-w-[16rem] rounded-2xl bg-base-200/90 flex items-center overflow-hidden cursor-pointer transition-[max-width,background-color,box-shadow] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] hover:bg-base-100 hover:shadow-lg focus-within:bg-base-100 focus-within:shadow-lg focus:outline-none z-10"
+                                >
+                                  <div className="w-[3.2rem] h-full flex items-center justify-center shrink-0 relative z-10">
+                                    <Icon icon={skill.icon} className="w-6 h-6 md:w-7 md:h-7 group-hover:scale-110 group-focus-within:scale-110 transition-transform duration-300 drop-shadow-sm" />
+                                  </div>
+
+                                  <div className="flex flex-col whitespace-nowrap opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-300 delay-100 pr-5">
+                                    <span className="font-bold font-headings text-[13px] md:text-sm text-base-content leading-tight group-hover:text-primary group-focus-within:text-primary transition-colors">
+                                      {skill.name}
+                                    </span>
+                                    <span className="text-[9px] md:text-[10px] font-black tracking-widest uppercase text-primary opacity-80">
+                                      {skill.level || "Expert"}
+                                    </span>
+                                  </div>
+                                </div>
+                              </m.div>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </m.div>
+                ) : (
+                  <div className="text-center py-20 italic opacity-40 text-sm">Belum ada hard skills.</div>
+                )}
+              </m.div>
+            )}
+
+            {activeTab === 'soft' && (
+              <m.div
+                key="soft-skills"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3 }}
+                className="w-full max-w-6xl mx-auto"
+              >
+                <m.div
+                  className="grid grid-cols-1 md:grid-cols-2 gap-4 group/softlist"
+                  variants={containerVariants}
+                  initial={isBot ? "visible" : "hidden"}
+                  animate="visible"
+                >
+                  {displayedSoftSkills.length > 0 ? (
+                    displayedSoftSkills.map((skill, index) => (
+                      <m.div key={`soft-skill-${index}`} variants={itemVariants} className="relative group/item w-full">
+                        <div className="absolute inset-0 rounded-2xl opacity-0 group-hover/item:opacity-100 group-focus-within/item:opacity-100 transition-opacity aura aura-dual pointer-events-none -z-10"></div>
+
+                        <div
+                          tabIndex={0}
+                          className="relative w-full p-5 md:p-6 rounded-2xl bg-base-200/90 border border-base-content/10 outline-none text-left flex flex-col justify-start cursor-pointer transition-all duration-300 hover:bg-base-100 focus-within:bg-base-100 z-10"
+                        >
+                          <div className="flex items-center gap-4 relative z-10 w-full">
+                            <div className="w-2.5 h-2.5 rounded-full shrink-0 shadow-[0_0_8px_rgba(var(--s),0.5)] bg-secondary/50 group-hover/item:bg-secondary group-focus-within/item:bg-secondary group-hover/item:scale-150 group-focus-within/item:scale-150 transition-all duration-300" />
+                            <span className="font-bold text-base md:text-lg leading-tight text-base-content group-hover/item:text-secondary group-focus-within/item:text-secondary transition-colors">
+                              {skill.name}
+                            </span>
+                          </div>
+
+                          <div className="grid grid-rows-[0fr] group-hover/softlist:grid-rows-[1fr] group-focus-within/softlist:grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-in-out relative z-10 w-full">
+                            <div className="overflow-hidden">
+                              <p className="text-sm text-base-content/70 pl-[26px] text-justify leading-relaxed border-l-2 border-secondary/20 ml-[5px] mt-3">
+                                {skill.description}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </m.div>
+                    ))
+                  ) : (
+                    <div className="col-span-1 md:col-span-2 text-center py-20 italic opacity-40 text-sm">Belum ada soft skills.</div>
+                  )}
+                </m.div>
+              </m.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </div>

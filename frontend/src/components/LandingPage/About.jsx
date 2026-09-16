@@ -128,7 +128,7 @@ function About() {
   }, [structuredData]);
 
   return (
-    <div className="bg-base-100 min-h-[auto] xl:min-h-screen flex flex-col items-center justify-center py-16 lg:py-20 scroll-mt-12 lg:scroll-mt-18 text-base-content relative overflow-hidden" id="tentang">
+    <div className="min-h-[auto] xl:min-h-screen flex flex-col items-center justify-center py-16 lg:py-20 scroll-mt-12 lg:scroll-mt-18 text-base-content relative overflow-hidden" id="tentang">
       <SeoHelmet
         title="Tentang Saya"
         description={cleanDescription}

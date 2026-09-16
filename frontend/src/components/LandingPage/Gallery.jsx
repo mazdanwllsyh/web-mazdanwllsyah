@@ -125,7 +125,7 @@ function Gallery() {
   return (
     <div
       ref={sectionRef}
-      className="bg-base-100 min-h-[auto] my-12 xl:min-h-screen flex flex-col items-center justify-center py-10 lg:py-16 text-base-content"
+      className="min-h-[auto] my-12 xl:min-h-screen flex flex-col items-center justify-center py-10 lg:py-16 text-base-content"
       id="galeri"
     >
       <div className="w-full max-w-6xl mx-auto px-4 lg:px-4">

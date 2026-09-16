@@ -153,7 +153,7 @@ function Kontak() {
   return (
     <LazyMotion features={domAnimation}>
       <div
-        className="bg-base-100 min-h-[auto] my-12 xl:min-h-screen flex flex-col items-center justify-center py-9 lg:py-12 text-base-content"
+        className="min-h-[auto] my-12 xl:min-h-screen flex flex-col items-center justify-center py-9 lg:py-12 text-base-content"
         id="kontak"
       >
         <div className="w-full max-w-6xl mx-auto px-4">

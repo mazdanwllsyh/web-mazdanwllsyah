@@ -47,7 +47,7 @@ function Donasi() {
 
   return (
     <div
-      className="bg-base-100 min-h-[auto] xl:min-h-screen flex flex-col items-center justify-center py-16 lg:py-0 scroll-mt-16 lg:scroll-mt-24 text-base-content"
+      className="min-h-[auto] xl:min-h-screen flex flex-col items-center justify-center py-16 lg:py-0 scroll-mt-16 lg:scroll-mt-24 text-base-content"
       id="donasi"
     >
       <SeoHelmet

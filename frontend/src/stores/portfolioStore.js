@@ -361,9 +361,9 @@ export const usePortfolioStore = create(
         }
       },
 
-      addSoftSkill: async (skillName) => {
+      addSoftSkill: async (skillObj) => {
         const currentSoftSkills = get().skillsData.softSkills;
-        const newSoftSkills = [...currentSoftSkills, skillName];
+        const newSoftSkills = [...currentSoftSkills, skillObj];
         try {
           const response = await instance.put("/skills", {
             softSkills: newSoftSkills,
@@ -397,15 +397,15 @@ export const usePortfolioStore = create(
         }
       },
 
-      updateHardSkills: async (newHardSkills) => {
+      updateSoftSkills: async (newSoftSkills) => {
         try {
           const response = await instance.put("/skills", {
-            hardSkills: newHardSkills,
+            softSkills: newSoftSkills,
           });
           set((state) => ({
             skillsData: {
               ...state.skillsData,
-              hardSkills: response.data.hardSkills,
+              softSkills: response.data.softSkills,
             },
           }));
         } catch (error) {

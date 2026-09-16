@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Icon } from "@iconify/react";
-import { m } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { usePortfolioStore } from "../../stores/portfolioStore";
 import { useSiteStore } from "../../stores/siteStore";
 import { transformCloudinaryUrl } from "../../utils/imageHelper.js";
@@ -112,68 +112,72 @@ function History() {
 
   return (
     <div
-      className="bg-base-100 min-h-[auto] xl:min-h-screen flex flex-col items-center justify-center py-11 lg:py-18 text-base-content"
+      className="min-h-[auto] xl:min-h-screen flex flex-col items-center justify-center py-11 lg:py-18 text-base-content relative z-10"
       id="histori"
     >
       <script type="application/ld+json">
         {JSON.stringify(structuredData)}
       </script>
 
-      <div className="w-full max-w-6xl mx-auto px-4">
+      <div className="w-full max-w-6xl mx-auto px-4 lg:px-4">
         <m.div
-          className="text-center mb-12"
+          className="text-center mb-10"
           initial={isBot ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-2 tracking-tight">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-4 tracking-tight">
             History
           </h2>
-          <p className="text-base md:text-lg text-base-content">
-            Perjalanan {activeTab} saya
-          </p>
+          <div className="h-8 flex items-center justify-center">
+            <AnimatePresence mode="wait">
+              <m.p
+                key={activeTab}
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -5 }}
+                transition={{ duration: 0.2 }}
+                className="text-sm md:text-base text-base-content/60 max-w-2xl mx-auto"
+              >
+                {activeTab === "pendidikan"
+                  ? "Latar belakang pendidikan formal dan akademik saya."
+                  : "Rekam jejak pengalaman profesional dan organisasi saya."}
+              </m.p>
+            </AnimatePresence>
+          </div>
         </m.div>
 
-        <m.div
-          className="flex justify-center items-center gap-3 sm:gap-5 mb-12"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-        >
-          <div className={activeTab === "pendidikan" ? "aura aura-silver rounded-[var(--rounded-btn,0.5rem)]" : ""}>
+        <div className="flex justify-center mb-12">
+          <div className="bg-base-200/60 backdrop-blur-sm p-1.5 rounded-2xl flex gap-2 w-full max-w-md border border-base-content/5 shadow-sm relative z-20">
             <button
-              className={`tab h-auto py-1 px-3 sm:px-8 bg-base-200 mx-0 flex flex-row items-center justify-center gap-2.5 flex-nowrap rounded-[var(--rounded-btn,0.5rem)] font-bold transition-all duration-300 outline-none ${activeTab === "pendidikan"
-                ? "tab-active shadow-md text-base-content"
-                : "border-2 border-transparent opacity-55 hover:opacity-100 hover:text-primary/55"
-                }`}
               onClick={() => {
                 setActiveTab("pendidikan");
                 localStorage.setItem("activeHistoryTab", "pendidikan");
               }}
+              className={`flex-1 py-3 px-4 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 outline-none ${activeTab === 'pendidikan'
+                ? 'bg-primary text-primary-content shadow-md shadow-primary/20 scale-100'
+                : 'text-base-content/60 hover:text-base-content hover:bg-base-100/50 scale-95 hover:scale-[0.98]'
+                }`}
             >
-              <Icon icon="mdi:school" className="w-6 h-6 sm:w-7 sm:h-7 shrink-0" />
+              <Icon icon="mdi:school" className="w-5 h-5 shrink-0" />
               <span className="text-sm sm:text-base">Pendidikan</span>
             </button>
-          </div>
-
-          <div className={activeTab === "pengalaman" ? "aura aura-gold rounded-[var(--rounded-btn,0.5rem)]" : ""}>
             <button
-              className={`tab h-auto py-1 px-3 sm:px-8 bg-base-200 mx-0 flex flex-row items-center justify-center gap-2.5 flex-nowrap rounded-[var(--rounded-btn,0.5rem)] font-bold transition-all duration-300 outline-none ${activeTab === "pengalaman"
-                ? "tab-active shadow-md text-base-content/90"
-                : "border-2 border-transparent opacity-55 hover:opacity-100 hover:text-primary/55"
-                }`}
               onClick={() => {
                 setActiveTab("pengalaman");
                 localStorage.setItem("activeHistoryTab", "pengalaman");
               }}
+              className={`flex-1 py-3 px-4 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 outline-none ${activeTab === 'pengalaman'
+                ? 'bg-accent text-accent-content shadow-md shadow-accent/20 scale-100'
+                : 'text-base-content/60 hover:text-base-content hover:bg-base-100/50 scale-95 hover:scale-[0.98]'
+                }`}
             >
-              <Icon icon="mdi:briefcase" className="w-6 h-6 sm:w-7 sm:h-7 shrink-0" />
+              <Icon icon="mdi:briefcase" className="w-5 h-5 shrink-0" />
               <span className="text-sm sm:text-base">Pengalaman</span>
             </button>
           </div>
-        </m.div>
+        </div>
 
         {loading || isHistoryLoading ? (
           <TimelineSkeleton count={activeData.length || 3} />
@@ -181,9 +185,13 @@ function History() {
           <ul className="timeline timeline-snap-icon max-md:timeline-compact timeline-vertical px-4">
             {sortedData.map((item, index) => (
               <li key={item._id}>
-                {index !== 0 && <hr className="bg-primary" />}
+                {index !== 0 && <hr className={activeTab === "pendidikan" ? "bg-primary" : "bg-accent"} />}
+
                 <div className="timeline-middle">
-                  <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-content z-10 relative shadow-md shadow-primary/20">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center z-10 relative shadow-md ${activeTab === "pendidikan"
+                      ? "bg-primary text-primary-content shadow-primary/20"
+                      : "bg-accent text-accent-content shadow-accent/20"
+                    }`}>
                     <Icon
                       icon={
                         activeTab === "pendidikan"
@@ -205,9 +213,11 @@ function History() {
                     : "timeline-end md:text-start flex-row"
                     }`}
                 >
+                  {/* AVATAR RING */}
                   {item.logoUrl && (
                     <div className="avatar hidden xl:block shrink-0 self-start mt-3">
-                      <div className="w-20 h-20 rounded-full ring ring-secondary ring-offset-base-100 ring-offset-2">
+                      <div className={`w-20 h-20 rounded-full ring ring-offset-base-100 ring-offset-2 ${activeTab === "pendidikan" ? "ring-primary" : "ring-accent"
+                        }`}>
                         <img
                           src={transformCloudinaryUrl(item.logoUrl, 128, 128)}
                           alt={`${item.institution} logo`}
@@ -225,12 +235,18 @@ function History() {
 
                       <div className="absolute inset-0 rounded-[inherit] opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity aura aura-dual z-0 pointer-events-none"></div>
 
+                      {/* CARD BORDER & HOVER */}
                       <div
                         tabIndex={0}
-                        className="card w-full h-full bg-base-100 shadow-md border border-base-content/20 transition-all duration-300 group-hover:border-primary group-hover:shadow-xl group-focus-within:border-primary group-focus-within:shadow-xl focus:outline-none relative z-10"
+                        className={`card w-full h-full bg-base-100 shadow-md border border-base-content/20 transition-all duration-300 focus:outline-none relative z-10 group-hover:shadow-xl group-focus-within:shadow-xl ${activeTab === "pendidikan"
+                            ? "group-hover:border-primary group-focus-within:border-primary"
+                            : "group-hover:border-accent group-focus-within:border-accent"
+                          }`}
                       >
                         <div className="card-body p-6 md:p-8">
-                          <h3 className="card-title text-xl lg:text-2xl font-bold font-display group-hover:text-primary transition-colors duration-300">
+                          {/* CARD TITLE TEXT COLOR */}
+                          <h3 className={`card-title text-xl lg:text-2xl font-bold font-display transition-colors duration-300 ${activeTab === "pendidikan" ? "group-hover:text-primary" : "group-hover:text-accent"
+                            }`}>
                             {item.institution}
                           </h3>
                           {item.detail && (
@@ -251,8 +267,10 @@ function History() {
                     </div>
                   </div>
                 </m.div>
+
+                {/* TIMELINE LINE (BOTTOM) */}
                 {index !== sortedData.length - 1 && (
-                  <hr className="bg-primary" />
+                  <hr className={activeTab === "pendidikan" ? "bg-primary" : "bg-accent"} />
                 )}
               </li>
             ))}

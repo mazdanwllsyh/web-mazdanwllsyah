@@ -150,9 +150,9 @@ function LoginPage() {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center bg-base-100 px-4 py-8">
+    <div className="min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center px-4 py-8">
       <SeoHelmet
-        title="Masuk ke Porto Mazda?"
+        title="Login ke Sistem Portfolio?"
         description={
           siteData.aboutParagraph
             ? siteData.aboutParagraph.substring(0, 160)
@@ -244,7 +244,7 @@ function LoginPage() {
                 <button
                   type="button"
                   disabled={isLoading}
-                  className="btn w-full bg-neutral hover:bg-neutral-focus text-neutral-content relative z-10 flex items-center justify-center gap-3 normal-case text-base font-medium shadow-sm transition-all group-hover:shadow-md disabled:bg-neutral disabled:text-neutral-content disabled:border-primary/30 disabled:cursor-not-allowed"
+                  className="btn w-full text-sm bg-neutral hover:bg-neutral-focus text-neutral-content relative z-10 flex items-center justify-center gap-3 normal-case font-medium shadow-sm transition-all group-hover:shadow-md disabled:bg-neutral disabled:text-neutral-content disabled:border-primary/30 disabled:cursor-not-allowed"
                 >
                   {isLoading ? (
                     <span className="loading loading-bars loading-sm"></span>

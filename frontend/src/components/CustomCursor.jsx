@@ -4,12 +4,35 @@ import { motion, useScroll, useTransform } from "framer-motion";
 const CustomCursor = () => {
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
     const [isHover, setIsHover] = useState(false);
+    const [isDarkMode, setIsDarkMode] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
 
     const { scrollYProgress } = useScroll();
     const scaleX = useTransform(scrollYProgress, [0, 1], [0, 1]);
     const opacity = useTransform(scrollYProgress, [0, 0.05, 1], [0, 1, 1]);
 
     useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.matchMedia("(hover: none) and (pointer: coarse)").matches);
+        };
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+
+        const observer = new MutationObserver(() => {
+            const theme = document.documentElement.getAttribute("data-theme");
+            setIsDarkMode(["night", "dark", "business", "dim", "black", "abyss"].includes(theme));
+        });
+
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ["data-theme"]
+        });
+
+        const initialTheme = document.documentElement.getAttribute("data-theme");
+        if (initialTheme) {
+            setIsDarkMode(["night", "dark", "business", "dim", "black", "abyss"].includes(initialTheme));
+        }
+
         const move = (e) => setMousePos({ x: e.clientX, y: e.clientY });
         const checkHover = (e) => {
             const t = e.target;
@@ -24,14 +47,20 @@ const CustomCursor = () => {
             }
         };
 
-        window.addEventListener('mousemove', move);
-        window.addEventListener('mouseover', checkHover);
+        if (!isMobile) {
+            window.addEventListener('mousemove', move);
+            window.addEventListener('mouseover', checkHover);
+        }
 
         return () => {
-            window.removeEventListener('mousemove', move);
-            window.removeEventListener('mouseover', checkHover);
+            window.removeEventListener("resize", checkMobile);
+            observer.disconnect();
+            if (!isMobile) {
+                window.removeEventListener('mousemove', move);
+                window.removeEventListener('mouseover', checkHover);
+            }
         }
-    }, []);
+    }, [isMobile]);
 
     return (
         <>
@@ -40,33 +69,65 @@ const CustomCursor = () => {
                 style={{ scaleX, opacity }}
             />
 
-            <motion.div
-                className="fixed top-0 left-0 w-0 h-0 pointer-events-none z-[999999] hidden lg:block"
-                animate={{ x: mousePos.x, y: mousePos.y }}
-                transition={{ type: "spring", stiffness: 800, damping: 40, mass: 0.2 }}
-            >
+            {!isMobile && (
                 <motion.div
-                    className="absolute bg-gradient-to-br from-accent to-primary rounded-full"
-                    animate={{
-                        width: isHover ? 0 : 12,
-                        height: isHover ? 0 : 12,
-                        opacity: isHover ? 0 : 1,
-                        x: "-50%",
-                        y: "-50%"
-                    }}
-                />
+                    className="fixed top-0 left-0 w-0 h-0 pointer-events-none z-[999999]"
+                    animate={{ x: mousePos.x, y: mousePos.y }}
+                    transition={{ type: "spring", stiffness: 800, damping: 40, mass: 0.2 }}
+                >
+                    {isDarkMode && (
+                        <motion.div
+                            className="absolute rounded-full bg-accent/20 blur-[60px]"
+                            animate={{
+                                width: isHover ? 200 : 150,
+                                height: isHover ? 200 : 150,
+                                x: "-50%",
+                                y: "-50%",
+                            }}
+                            transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                        />
+                    )}
+
+                    <motion.div
+                        className={`absolute bg-gradient-to-br from-accent to-primary rounded-full ${!isDarkMode ? "shadow-[0_0_10px_rgba(0,0,0,0.2)]" : ""}`}
+                        animate={{
+                            width: isHover ? 0 : 12,
+                            height: isHover ? 0 : 12,
+                            opacity: isHover ? 0 : 1,
+                            x: "-50%",
+                            y: "-50%"
+                        }}
+                    />
+
+                    <motion.div
+                        className={`absolute border border-primary bg-primary/10 backdrop-blur-sm rounded-full ${!isDarkMode ? "shadow-[0_4px_15px_rgba(0,0,0,0.15)]" : ""}`}
+                        animate={{
+                            width: isHover ? 32 : 0,
+                            height: isHover ? 32 : 0,
+                            opacity: isHover ? 0.87 : 0,
+                            x: "-50%",
+                            y: "-50%"
+                        }}
+                        transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                    />
+                </motion.div>
+            )}
+
+            {isMobile && isDarkMode && (
                 <motion.div
-                    className="absolute border border-primary bg-primary/10 backdrop-blur-sm rounded-full"
+                    className="fixed inset-0 pointer-events-none z-[99999] opacity-30"
                     animate={{
-                        width: isHover ? 32 : 0,
-                        height: isHover ? 32 : 0,
-                        opacity: isHover ? 0.87 : 0,
-                        x: "-50%",
-                        y: "-50%"
+                        background: [
+                            "radial-gradient(circle at 10% 10%, rgba(var(--a), 0.2) 0%, transparent 40%)",
+                            "radial-gradient(circle at 90% 90%, rgba(var(--a), 0.2) 0%, transparent 40%)",
+                            "radial-gradient(circle at 10% 90%, rgba(var(--a), 0.2) 0%, transparent 40%)",
+                            "radial-gradient(circle at 90% 10%, rgba(var(--a), 0.2) 0%, transparent 40%)",
+                            "radial-gradient(circle at 10% 10%, rgba(var(--a), 0.2) 0%, transparent 40%)"
+                        ]
                     }}
-                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                    transition={{ repeat: Infinity, duration: 15, ease: "linear" }}
                 />
-            </motion.div>
+            )}
         </>
     );
 };

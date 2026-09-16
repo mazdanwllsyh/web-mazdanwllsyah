@@ -94,7 +94,7 @@ function Hero() {
   }, [structuredData]);
 
   return (
-    <div className="hero bg-base-100 flex items-center justify-center pt-10 pb-16 lg:py-0 min-h-[auto] xl:min-h-screen" id="home">
+    <div className="hero flex items-center justify-center pt-10 pb-16 lg:py-0 min-h-[auto] xl:min-h-screen" id="home">
       <SeoHelmet
         title="Mazda Nawallsyah"
         description="Portofolio pribadi Mazda Nawallsyah seorang Fresh Graduate S1 - Teknik Informatika Universitas Semarang yang berfokus di Bidang Front-End Web Dev."
@@ -207,7 +207,7 @@ function Hero() {
 
                   <m.div variants={textItemVariants}>
                     <div className="aura aura-glow rounded-2xl">
-                      <Link tabIndex={0} to="/tentang" className="btn btn-md bg-base-300/90 font-display border-base-content/20 border-2 shadow-sm hover:shadow-primary/20 group rounded-2xl lg:px-8 transition-all">
+                      <Link tabIndex={0} to="/tentang" className="btn btn-md bg-base-300/90 font-display border-base-content/20 border-2 shadow-sm hover:shadow-primary/20 group rounded-2xl lg:px-8">
                         Tentang Saya?
                         <Icon icon="streamline-flex:finger-snapping" className="w-6 h-6 ml-1 group-hover:scale-110 transition-transform" focusable="false" />
                       </Link>

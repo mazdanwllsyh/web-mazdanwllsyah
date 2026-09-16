@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { Routes, Route, useLocation, Navigate, Outlet, Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Routes, Route, useLocation, Navigate, Outlet } from "react-router-dom";
 import Header from "../components/LandingPage/Header";
 import ProtectedRoute from "../routes/ProtectedRoute";
 import { useAuth } from "../hooks/useAuth";
-import { Icon } from "@iconify/react";
 
-import { LazyMotion, domAnimation, m } from "framer-motion";
+import { LazyMotion, domAnimation } from "framer-motion";
 import Beranda from "../components/LandingPage/Beranda";
+import HexagonBackground from "../components/HexagonBackground"; 
 
 const FABDonate = React.lazy(() => import("../components/FABDonate"));
 const ScrollToTop = React.lazy(() => import("../components/ScrollToTop"));
@@ -46,7 +46,7 @@ function AppLandingPage() {
         const id = hash.replace("#", "");
         const element = document.getElementById(id);
         if (element) {
-          const headerOffset = 55; 
+          const headerOffset = 55;
           const elementPosition = element.getBoundingClientRect().top;
           const offsetPosition = elementPosition + window.scrollY - headerOffset;
           window.scrollTo({ top: offsetPosition, behavior: "smooth" });
@@ -56,10 +56,12 @@ function AppLandingPage() {
     } else {
       window.scrollTo({ top: 0, behavior: "instant" });
     }
-  }, [location.pathname]); 
+  }, [location.pathname]);
 
   return (
-    <div className="flex flex-col min-h-screen overflow-x-hidden">
+    <div className="flex flex-col min-h-screen overflow-x-hidden relative">
+
+      <HexagonBackground />
       <LazyMotion features={domAnimation}>
         <Header />
 
