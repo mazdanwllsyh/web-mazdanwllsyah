@@ -121,7 +121,7 @@ function Skills() {
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-4 tracking-tight uppercase">Skills</h2>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-4 tracking-tight">Skills</h2>
 
           <div className="h-10 flex items-center justify-center">
             <AnimatePresence mode="wait">
