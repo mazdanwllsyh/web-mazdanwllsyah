@@ -1,4 +1,3 @@
-// src/components/LandingPage/Skills.jsx
 import React, { useEffect, useMemo, useState } from "react";
 import { Icon } from "@iconify/react";
 import { m, AnimatePresence } from "framer-motion";
@@ -40,7 +39,6 @@ function Skills() {
   const isSkillsLoading = usePortfolioStore((state) => state.isSkillsLoading);
 
   const [activeTab, setActiveTab] = useState("hard");
-  const [isSoftHovered, setIsSoftHovered] = useState(false);
 
   useEffect(() => {
     fetchSkillsData();
@@ -116,7 +114,6 @@ function Skills() {
   return (
     <div className="min-h-[auto] xl:min-h-screen flex flex-col items-center justify-center py-11 lg:py-18 relative z-10" id="skills">
       <div className="w-full max-w-6xl mx-auto px-4 lg:px-4">
-
         <m.div
           className="text-center mb-10"
           initial={{ opacity: 0, y: 20 }}
@@ -124,7 +121,7 @@ function Skills() {
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-4 tracking-tight">Skills</h2>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-4 tracking-tight uppercase">Skills</h2>
 
           <div className="h-10 flex items-center justify-center">
             <AnimatePresence mode="wait">
@@ -145,10 +142,10 @@ function Skills() {
         </m.div>
 
         <div className="flex justify-center mb-12">
-          <div className="bg-base-200/60 backdrop-blur-sm p-1.5 rounded-2xl flex gap-2 w-full max-w-md border border-base-content/5 shadow-sm relative z-20">
+          <div role="tablist" aria-label="Kategori Keahlian" className="bg-base-200/60 backdrop-blur-sm p-1.5 rounded-2xl flex gap-2 w-full max-w-md border border-base-content/5 shadow-sm relative z-20">
             <button
               onClick={() => setActiveTab('hard')}
-              className={`flex-1 py-3 px-4 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 outline-none ${activeTab === 'hard'
+              className={`flex-1 py-3 px-4 rounded-xl font-bold transition-[background-color,color,transform,box-shadow] duration-300 flex items-center justify-center gap-2 outline-none ${activeTab === 'hard'
                   ? 'bg-primary text-primary-content shadow-md shadow-primary/20 scale-100'
                   : 'bg-transparent text-base-content/70 hover:text-base-content hover:bg-base-100/50 scale-95 hover:scale-[0.98]'
                 }`}
@@ -160,7 +157,7 @@ function Skills() {
             </button>
             <button
               onClick={() => setActiveTab('soft')}
-              className={`flex-1 py-3 px-4 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 outline-none ${activeTab === 'soft'
+              className={`flex-1 py-3 px-4 rounded-xl font-bold transition-[background-color,color,transform,box-shadow] duration-300 flex items-center justify-center gap-2 outline-none ${activeTab === 'soft'
                   ? 'bg-secondary text-secondary-content shadow-md shadow-secondary/20 scale-100'
                   : 'bg-transparent text-base-content/70 hover:text-base-content hover:bg-base-100/50 scale-95 hover:scale-[0.98]'
                 }`}
@@ -220,7 +217,7 @@ function Skills() {
                                       {skill.name}
                                     </span>
                                     <span className="text-[9px] md:text-[10px] font-black tracking-widest uppercase text-primary text-opacity-80">
-                                      {skill.level || "Intermediate"}
+                                      {skill.level || "Expert"}
                                     </span>
                                   </div>
                                 </div>
@@ -245,10 +242,6 @@ function Skills() {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
                 className="w-full max-w-6xl mx-auto"
-                onMouseEnter={() => setIsSoftHovered(true)}
-                onMouseLeave={() => setIsSoftHovered(false)}
-                onFocus={() => setIsSoftHovered(true)}
-                onBlur={() => setIsSoftHovered(false)}
               >
                 <m.div
                   className="grid grid-cols-1 md:grid-cols-2 gap-4"
@@ -259,31 +252,26 @@ function Skills() {
                   {displayedSoftSkills.length > 0 ? (
                     displayedSoftSkills.map((skill, index) => (
                       <m.div key={`soft-skill-${index}`} variants={itemVariants} className="relative group/item w-full">
-                        <div className="absolute inset-0 rounded-2xl opacity-0 group-hover/item:opacity-100 group-focus-within/item:opacity-100 transition-opacity aura aura-silver pointer-events-none -z-10"></div>
+                        <div className="absolute inset-0 rounded-2xl opacity-0 group-hover/item:opacity-100 group-focus-within/item:opacity-100 transition-opacity aura aura-glow pointer-events-none -z-10"></div>
 
                         <div
                           tabIndex={0}
-                          className="relative w-full p-5 md:p-6 rounded-2xl bg-base-200/90 border border-base-content/10 outline-none text-left flex flex-col justify-start cursor-pointer transition-colors duration-300 hover:bg-base-100 focus-within:bg-base-100 z-10"
+                          className="relative w-full p-5 md:p-6 rounded-2xl bg-base-200/90 border border-base-content/10 outline-none text-left flex flex-col justify-start cursor-pointer transition-[background-color,border-color,box-shadow] duration-300 hover:bg-base-100 focus-within:bg-base-100 z-10"
                         >
                           <div className="flex items-center gap-4 relative z-10 w-full">
                             <div className="w-2.5 h-2.5 rounded-full shrink-0 shadow-[0_0_8px_rgba(var(--s),0.5)] bg-secondary/50 group-hover/item:bg-secondary group-focus-within/item:bg-secondary group-hover/item:scale-150 group-focus-within/item:scale-150 transition-[background-color,transform] duration-300" />
-                            <span className="font-bold text-base md:text-lg leading-tight text-base-content group-hover/item:text-secondary group-focus-within/item:text-secondary transition-colors">
+                            <h3 className="font-bold text-base md:text-lg leading-tight text-base-content group-hover/item:text-secondary group-focus-within/item:text-secondary transition-colors">
                               {skill.name}
-                            </span>
+                            </h3>
                           </div>
 
-                          <AnimatePresence>
-                            <m.div
-                              initial={{ height: 0, opacity: 0 }}
-                              animate={{ height: isSoftHovered ? "auto" : 0, opacity: isSoftHovered ? 1 : 0 }}
-                              transition={{ duration: 0.4, ease: [0.04, 0.62, 0.23, 0.98] }}
-                              className="overflow-hidden relative z-10 w-full"
-                            >
+                          <div className="grid grid-rows-[0fr] group-hover/item:grid-rows-[1fr] group-focus-within/item:grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-in-out relative z-10 w-full">
+                            <div className="overflow-hidden">
                               <p className="text-sm text-base-content/80 pl-[26px] text-justify leading-relaxed border-l-2 border-secondary/20 ml-[5px] mt-3">
                                 {skill.description}
                               </p>
-                            </m.div>
-                          </AnimatePresence>
+                            </div>
+                          </div>
                         </div>
                       </m.div>
                     ))

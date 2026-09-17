@@ -13,12 +13,16 @@ const historyItemSchema = new mongoose.Schema(
       type: String,
       required: [true, "Durasi (tahun) wajib diisi."],
     },
+    badge: {
+      type: String,
+      default: "",
+    },
     logoUrl: {
       type: String,
       default: "",
     },
     cloudinaryId: {
-      type: String, 
+      type: String,
     },
     type: {
       type: String,
@@ -27,8 +31,8 @@ const historyItemSchema = new mongoose.Schema(
     },
   },
   {
-    timestamps: true, 
-  }
+    timestamps: true,
+  },
 );
 
 const HistoryItem = mongoose.model("HistoryItem", historyItemSchema);

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Icon } from "@iconify/react";
 import { m, AnimatePresence } from "framer-motion";
-import { usePortfolioStore } from "../../stores/portfolioStore";
+import { usePortfolioStore, experienceBadges } from "../../stores/portfolioStore";
 import { useSiteStore } from "../../stores/siteStore";
 import { transformCloudinaryUrl } from "../../utils/imageHelper.js";
 import { isBot } from "../../App.jsx";
@@ -127,7 +127,7 @@ function History() {
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-4 tracking-tight">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-4 tracking-tight uppercase">
             History
           </h2>
           <div className="h-8 flex items-center justify-center">
@@ -149,8 +149,10 @@ function History() {
         </m.div>
 
         <div className="flex justify-center mb-12">
-          <div className="bg-base-200/60 backdrop-blur-sm p-1.5 rounded-2xl flex gap-2 w-full max-w-md border border-base-content/5 shadow-sm relative z-20">
+          <div role="tablist" aria-label="History Categories" className="bg-base-200/60 backdrop-blur-sm p-1.5 rounded-2xl flex gap-2 w-full max-w-md border border-base-content/5 shadow-sm relative z-20">
             <button
+              role="tab"
+              aria-selected={activeTab === 'pendidikan'}
               onClick={() => {
                 setActiveTab("pendidikan");
                 localStorage.setItem("activeHistoryTab", "pendidikan");
@@ -159,13 +161,13 @@ function History() {
                   ? 'bg-primary text-primary-content shadow-md shadow-primary/20 scale-100'
                   : 'bg-transparent text-base-content/70 hover:text-base-content hover:bg-base-100/50 scale-95 hover:scale-[0.98]'
                 }`}
-              aria-selected={activeTab === 'pendidikan'}
-              role="tab"
             >
               <Icon icon="mdi:school" className="w-5 h-5 shrink-0" />
               <span className="text-sm sm:text-base">Pendidikan</span>
             </button>
             <button
+              role="tab"
+              aria-selected={activeTab === 'pengalaman'}
               onClick={() => {
                 setActiveTab("pengalaman");
                 localStorage.setItem("activeHistoryTab", "pengalaman");
@@ -174,8 +176,6 @@ function History() {
                   ? 'bg-secondary text-secondary-content shadow-md shadow-secondary/20 scale-100'
                   : 'bg-transparent text-base-content/70 hover:text-base-content hover:bg-base-100/50 scale-95 hover:scale-[0.98]'
                 }`}
-              aria-selected={activeTab === 'pengalaman'}
-              role="tab"
             >
               <Icon icon="mdi:briefcase" className="w-5 h-5 shrink-0" />
               <span className="text-sm sm:text-base">Pengalaman</span>
@@ -187,102 +187,103 @@ function History() {
           <TimelineSkeleton count={activeData.length || 3} />
         ) : (
           <ul className="timeline timeline-snap-icon max-md:timeline-compact timeline-vertical px-4">
-            {sortedData.map((item, index) => (
-              <li key={item._id}>
-                {index !== 0 && <hr className={activeTab === "pendidikan" ? "bg-primary" : "bg-secondary"} />}
+            {sortedData.map((item, index) => {
+              const badgePosition = index % 2 === 0 ? "right-4 md:right-auto md:left-6" : "right-4 md:right-6";
 
-                <div className="timeline-middle">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center z-10 relative shadow-md ${activeTab === "pendidikan"
-                      ? "bg-primary text-primary-content shadow-primary/20"
-                      : "bg-secondary text-secondary-content shadow-secondary/20"
-                    }`}>
-                    <Icon
-                      icon={
-                        activeTab === "pendidikan"
-                          ? "mdi:school-outline"
-                          : "mdi:briefcase-outline"
-                      }
-                      className="w-5 h-5"
-                    />
-                  </div>
-                </div>
+              return (
+                <li key={item._id}>
+                  {index !== 0 && <hr className={activeTab === "pendidikan" ? "bg-primary" : "bg-secondary"} />}
 
-                <m.div
-                  initial={isBot ? { opacity: 1, x: 0 } : { opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, margin: "-50px" }}
-                  transition={{ duration: 0.6, delay: isBot ? 0 : 0.4 + index * 0.2 }}
-                  className={`mb-10 flex items-start gap-4 xl:gap-8 w-full ${index % 2 === 0
-                    ? "timeline-start md:text-end md:flex-row-reverse"
-                    : "timeline-end md:text-start flex-row"
-                    }`}
-                >
-                  {item.logoUrl && (
-                    <div className="avatar hidden xl:block shrink-0 self-start mt-3">
-                      <div className={`w-20 h-20 rounded-full ring ring-offset-base-100 ring-offset-2 ${activeTab === "pendidikan" ? "ring-primary" : "ring-secondary"
-                        }`}>
-                        <img
-                          src={transformCloudinaryUrl(item.logoUrl, 128, 128)}
-                          alt={`${item.institution} logo`}
-                          width="80"
-                          height="80"
-                          loading="lazy"
-                          className="w-full hover:scale-110 transition-transform duration-300 h-full rounded-full"
-                        />
-                      </div>
+                  <div className="timeline-middle">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center z-10 relative shadow-md ${activeTab === "pendidikan"
+                        ? "bg-primary text-primary-content shadow-primary/20"
+                        : "bg-secondary text-secondary-content shadow-secondary/20"
+                      }`}>
+                      <Icon
+                        icon={
+                          activeTab === "pendidikan"
+                            ? "mdi:school-outline"
+                            : "mdi:briefcase-outline"
+                        }
+                        className="w-5 h-5"
+                      />
                     </div>
-                  )}
+                  </div>
 
-                  <div className="w-full flex flex-col items-stretch max-w-[18rem] sm:max-w-[20rem] md:max-w-[22rem] xl:max-w-[28rem]">
-                    <div className="relative group w-full rounded-[var(--rounded-box,1rem)] transition-transform duration-300 hover:-translate-y-2 focus-within:-translate-y-2 cursor-pointer">
-
-                      {item.badge && (
-                        <div className={`absolute -top-3 right-4 md:right-6 z-20 px-3 py-1 rounded-full text-[10px] font-bold tracking-widest shadow-md uppercase ${activeTab === "pendidikan"
-                            ? "bg-primary text-primary-content shadow-primary/20"
-                            : "bg-secondary text-secondary-content shadow-secondary/20"
+                  <m.div
+                    initial={isBot ? { opacity: 1, x: 0 } : { opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{ duration: 0.6, delay: isBot ? 0 : 0.4 + index * 0.2 }}
+                    className={`mb-10 flex items-start gap-4 xl:gap-8 w-full ${index % 2 === 0
+                      ? "timeline-start md:text-end md:flex-row-reverse"
+                      : "timeline-end md:text-start flex-row"
+                      }`}
+                  >
+                    {item.logoUrl && (
+                      <div className="avatar hidden xl:block shrink-0 self-start mt-3">
+                        <div className={`w-20 h-20 rounded-full ring ring-offset-base-100 ring-offset-2 ${activeTab === "pendidikan" ? "ring-primary" : "ring-secondary"
                           }`}>
-                          {item.badge}
+                          <img
+                            src={transformCloudinaryUrl(item.logoUrl, 128, 128)}
+                            alt={`${item.institution} logo`}
+                            width="80"
+                            height="80"
+                            loading="lazy"
+                            className="w-full hover:scale-110 transition-transform duration-300 h-full rounded-full"
+                          />
                         </div>
-                      )}
+                      </div>
+                    )}
 
-                      <div className="absolute inset-0 rounded-[inherit] opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity aura aura-dual z-0 pointer-events-none"></div>
+                    <div className="w-full flex flex-col items-stretch max-w-[18rem] sm:max-w-[20rem] md:max-w-[22rem] xl:max-w-[28rem]">
+                      <div className="relative group w-full rounded-[var(--rounded-box,1rem)] transition-transform duration-300 hover:-translate-y-2 focus-within:-translate-y-2 cursor-pointer">
 
-                      <div
-                        tabIndex={0}
-                        className={`card w-full h-full bg-base-100 shadow-md border border-base-content/20 transition-[background-color,border-color,box-shadow] duration-300 focus:outline-none relative z-10 group-hover:shadow-xl group-focus-within:shadow-xl ${activeTab === "pendidikan"
-                            ? "group-hover:border-primary group-focus-within:border-primary"
-                            : "group-hover:border-secondary group-focus-within:border-secondary"
-                          }`}
-                      >
-                        <div className="card-body p-6 md:p-8">
-                          <h3 className={`card-title text-xl lg:text-2xl font-bold font-display transition-colors duration-300 ${activeTab === "pendidikan" ? "group-hover:text-primary group-focus-within:text-primary" : "group-hover:text-secondary group-focus-within:text-secondary"
-                            }`}>
-                            {item.institution}
-                          </h3>
-                          {item.detail && (
-                            <p className="text-sm md:text-base text-base-content/80 font-medium text-justify mt-2">
-                              {item.detail}
-                            </p>
-                          )}
+                        {activeTab === "pengalaman" && (
+                          <div className={`absolute -top-3 ${badgePosition} z-20 px-3 py-1 rounded-full text-[10px] font-bold tracking-widest shadow-md uppercase bg-secondary text-secondary-content shadow-secondary/20`}>
+                            {item.badge || experienceBadges[index % experienceBadges.length]}
+                          </div>
+                        )}
 
-                          <div className="flex items-center text-sm mt-4 justify-start font-bold text-base-content/70 group-hover:text-base-content group-focus-within:text-base-content transition-colors duration-300">
-                            <Icon
-                              icon="mdi:calendar-blank-outline"
-                              className="w-5 h-5 mr-1"
-                            />
-                            <span>{item.years}</span>
+                        <div className="absolute inset-0 rounded-[inherit] opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity aura aura-dual z-0 pointer-events-none"></div>
+
+                        <div
+                          tabIndex={0}
+                          className={`card w-full h-full bg-base-100 shadow-md border border-base-content/20 transition-[background-color,border-color,box-shadow] duration-300 focus:outline-none relative z-10 group-hover:shadow-xl group-focus-within:shadow-xl ${activeTab === "pendidikan"
+                              ? "group-hover:border-primary group-focus-within:border-primary"
+                              : "group-hover:border-secondary group-focus-within:border-secondary"
+                            }`}
+                        >
+                          <div className="card-body p-6 md:p-8">
+                            <h3 className={`card-title text-xl lg:text-2xl font-bold font-display transition-colors duration-300 ${activeTab === "pendidikan" ? "group-hover:text-primary group-focus-within:text-primary" : "group-hover:text-secondary group-focus-within:text-secondary"
+                              }`}>
+                              {item.institution}
+                            </h3>
+                            {item.detail && (
+                              <p className="text-sm md:text-base text-base-content/80 font-medium text-justify mt-2">
+                                {item.detail}
+                              </p>
+                            )}
+
+                            <div className="flex items-center text-sm mt-4 justify-start font-bold text-base-content/70 group-hover:text-base-content group-focus-within:text-base-content transition-colors duration-300">
+                              <Icon
+                                icon="mdi:calendar-blank-outline"
+                                className="w-5 h-5 mr-1"
+                              />
+                              <span>{item.years}</span>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </m.div>
+                  </m.div>
 
-                {index !== sortedData.length - 1 && (
-                  <hr className={activeTab === "pendidikan" ? "bg-primary" : "bg-secondary"} />
-                )}
-              </li>
-            ))}
+                  {index !== sortedData.length - 1 && (
+                    <hr className={activeTab === "pendidikan" ? "bg-primary" : "bg-secondary"} />
+                  )}
+                </li>
+              );
+            })}
           </ul>
         )}
       </div>

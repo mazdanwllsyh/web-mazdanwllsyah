@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import { usePortfolioStore, initialHardSkills } from "../../stores/portfolioStore";
 import { useCustomToast } from "../../hooks/useCustomToast";
-import FloatingLabelInput from "../FloatingLabelInput";
+import FloatingLabelInput, { FloatingLabelTextarea } from "../FloatingLabelInput";
 import { TableContainer, THead, TRow, TCell } from "../StylingTable";
 
 const skillLevels = [
@@ -25,7 +25,6 @@ const categoryIcons = {
   "IDE & Office": "mdi:microsoft-visual-studio-code"
 };
 
-// 6 TAB MUTLAK SESUAI REQUEST
 const hardSkillTabs = [
   { id: "lang", label: "Languages", categories: ["Markup", "Bahasa Pemrograman"] },
   { id: "framework", label: "Framework", categories: ["Framework & Library"] },
@@ -49,7 +48,6 @@ function EditSkills() {
   const [localSoftSkills, setLocalSoftSkills] = useState([]);
   const [activeHardTab, setActiveHardTab] = useState("lang");
 
-  // State Form Soft Skills
   const [newSoftName, setNewSoftName] = useState("");
   const [newSoftDesc, setNewSoftDesc] = useState("");
   const [editingSoftIndex, setEditingSoftIndex] = useState(null);
@@ -66,7 +64,6 @@ function EditSkills() {
   useEffect(() => {
     if (skillsData.hardSkills) setLocalHardSkills(skillsData.hardSkills);
     if (skillsData.softSkills) {
-      // Normalisasi & Deteksi Data Rusak (String [object Object])
       const normalized = skillsData.softSkills.map(s => {
         let name = "";
         let desc = "";
@@ -88,7 +85,6 @@ function EditSkills() {
     }
   }, [skillsData]);
 
-  // Tab Auto-Switch berdasarkan Search
   useEffect(() => {
     if (searchTerm) {
       const lowerSearch = searchTerm.toLowerCase();
@@ -124,7 +120,6 @@ function EditSkills() {
     return groups;
   }, [localHardSkills, searchTerm, activeHardTab]);
 
-  // --- LOGIKA SOFT SKILLS (DRAFT LOCAL) ---
   const resetSoftForm = () => {
     setNewSoftName("");
     setNewSoftDesc("");
@@ -135,12 +130,10 @@ function EditSkills() {
     if (!newSoftName.trim()) return;
 
     if (editingSoftIndex !== null) {
-      // Update existing
       const updated = [...localSoftSkills];
       updated[editingSoftIndex] = { name: newSoftName.trim(), description: newSoftDesc.trim() };
       setLocalSoftSkills(updated);
     } else {
-      // Add new
       setLocalSoftSkills([...localSoftSkills, { name: newSoftName.trim(), description: newSoftDesc.trim() }]);
     }
     resetSoftForm();
@@ -171,7 +164,6 @@ function EditSkills() {
     }
   };
 
-  // --- LOGIKA HARD SKILLS ---
   const handleDisplayChange = (skillName, isChecked) => {
     if (isChecked) {
       const skillToAdd = initialHardSkills.find((s) => s.name === skillName);
@@ -214,7 +206,6 @@ function EditSkills() {
   return (
     <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
 
-      {/* KIRI: SOFT SKILLS */}
       <div className="xl:col-span-4 space-y-6">
         <div className="card bg-base-100 shadow-sm border border-base-content/20 rounded-[2.5rem] overflow-hidden xl:sticky xl:top-6">
           <div className="card-body p-0 flex flex-col h-full xl:max-h-[calc(100vh-3rem)]">
@@ -229,7 +220,6 @@ function EditSkills() {
 
             <div className="p-6 flex-1 overflow-y-auto no-scrollbar space-y-6">
 
-              {/* FORM INPUT SOFT SKILLS */}
               <div className="flex flex-col gap-3 p-5 bg-base-200/50 rounded-2xl border border-base-content/10 transition-all">
                 <FloatingLabelInput
                   id="softName"
@@ -238,13 +228,13 @@ function EditSkills() {
                   value={newSoftName}
                   onChange={(e) => setNewSoftName(e.target.value)}
                 />
-                <FloatingLabelInput
+                <FloatingLabelTextarea
                   id="softDesc"
                   name="softDesc"
                   label="Deskripsi (Opsional)"
                   value={newSoftDesc}
                   onChange={(e) => setNewSoftDesc(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && handleAddOrUpdateSoftSkill()}
+                  rows={3}
                 />
 
                 <div className="flex gap-2 mt-2">
@@ -262,7 +252,6 @@ function EditSkills() {
                 </div>
               </div>
 
-              {/* LIST DRAFT SOFT SKILLS */}
               <div className="space-y-3 pb-4">
                 {localSoftSkills.length > 0 ? (
                   localSoftSkills.map((skill, index) => (
@@ -302,7 +291,6 @@ function EditSkills() {
               </div>
             </div>
 
-            {/* BUTTON SIMPAN KE DB */}
             <div className="p-6 pt-0 shrink-0">
               <button
                 onClick={handleSaveSoftSkillsToDB}
@@ -317,7 +305,6 @@ function EditSkills() {
         </div>
       </div>
 
-      {/* KANAN: HARD SKILLS */}
       <div className="xl:col-span-8">
         <div className="card bg-base-100 shadow-sm border rounded-[2.5rem] border-base-content/20 overflow-hidden">
           <div className="card-body p-0">
@@ -340,15 +327,14 @@ function EditSkills() {
               </div>
             </div>
 
-            {/* HARD SKILL CATEGORY TABS (6 TABS DINAMIS) */}
             <div className="px-6 pt-4 pb-2 border-b border-base-content/5 overflow-x-auto no-scrollbar flex gap-2">
               {hardSkillTabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveHardTab(tab.id)}
                   className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-300 ${activeHardTab === tab.id
-                      ? "bg-primary text-primary-content shadow-md shadow-primary/20"
-                      : "bg-base-200 text-base-content/60 hover:bg-base-300"
+                    ? "bg-primary text-primary-content shadow-md shadow-primary/20"
+                    : "bg-base-200 text-base-content/60 hover:bg-base-300"
                     }`}
                 >
                   {tab.label}
@@ -432,7 +418,7 @@ function EditSkills() {
                   disabled={isSavingHardSkill}
                 >
                   {isSavingHardSkill ? <span className="loading loading-ring loading-md"></span> : <Icon icon="mdi:content-save-check" className="w-5 h-5" />}
-                  {isSavingHardSkill ? "Menyimpan..." : "Simpan Perubahan Hard Skills"}
+                  Simpan Perubahan Hard Skills
                 </button>
               </div>
             </div>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { Icon } from "@iconify/react";
-import { usePortfolioStore } from "../../stores/portfolioStore";
+import { usePortfolioStore, experienceBadges } from "../../stores/portfolioStore";
 import { useCustomToast } from "../../hooks/useCustomToast";
 import useCustomSwals from "../../hooks/useCustomSwals";
 import FloatingLabelInput, { FloatingLabelTextarea, FloatingLabelSelect } from "../FloatingLabelInput";
@@ -13,6 +13,8 @@ function EditHistory() {
   const deleteHistoryItem = usePortfolioStore((state) => state.deleteHistoryItem);
   const isHistoryLoading = usePortfolioStore((state) => state.isHistoryLoading);
 
+  const currentYear = new Date().getFullYear();
+
   const { error: errorToast } = useCustomToast();
   const { showConfirmSwal, showSuccessSwal } = useCustomSwals();
 
@@ -21,6 +23,7 @@ function EditHistory() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndStatus] = useState("");
   const [detail, setDetail] = useState("");
+  const [badge, setBadge] = useState("");
   const [isCurrent, setIsCurrent] = useState(false);
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
@@ -60,6 +63,7 @@ function EditHistory() {
     setStartDate("");
     setEndStatus("");
     setDetail("");
+    setBadge("");
     setIsCurrent(false);
     setEditingItemId(null);
     setImageFile(null);
@@ -90,6 +94,7 @@ function EditHistory() {
     setEndStatus(end);
     setIsCurrent(currentCheck);
     setDetail(item.detail || "");
+    setBadge(item.badge || "");
     setEditingItemId(item._id);
     setImagePreview(item.logoUrl || "");
     setImageFile(null);
@@ -118,6 +123,9 @@ function EditHistory() {
     formData.append("institution", institution);
     formData.append("years", finalYears);
     formData.append("detail", detail);
+    if (type === "experience" && badge) {
+      formData.append("badge", badge);
+    }
 
     if (imageFile) formData.append("logoFile", imageFile);
 
@@ -144,7 +152,7 @@ function EditHistory() {
 
   return (
     <div className="flex flex-col xl:flex-row gap-8 items-start w-full">
-      <div className="w-full xl:w-5/12 xl:sticky xl:top-24 card bg-base-100 border border-base-content/20 shadow-sm rounded-[2.5rem] overflow-hidden">
+      <div className="w-full xl:w-5/12 h-fit xl:sticky xl:top-24 card bg-base-100 border border-base-content/20 shadow-sm rounded-[2.5rem] overflow-hidden">
         <div className="p-6 border-b border-base-content/10 bg-base-200/50 flex items-center gap-3">
           <div className="p-2 bg-primary/10 text-primary rounded-xl">
             <Icon icon="mdi:timeline-plus-outline" className="w-6 h-6" />
@@ -153,23 +161,43 @@ function EditHistory() {
         </div>
 
         <form onSubmit={handleSubmit} className="p-8 space-y-6">
-          <FloatingLabelSelect
-            label="Tipe Riwayat"
-            name="type"
-            value={type}
-            onChange={(e) => setType(e.target.value)}
-            required
-          >
-            <option value="" disabled hidden>Pilih Tipe</option>
-            <option value="education" className="bg-base-100 text-base-content">Pendidikan</option>
-            <option value="experience" className="bg-base-100 text-base-content">Pengalaman</option>
-          </FloatingLabelSelect>
+          <div className={`grid gap-4 ${type === 'experience' ? 'md:grid-cols-2' : 'grid-cols-1'}`}>
+            <FloatingLabelSelect
+              label="Tipe Riwayat"
+              name="type"
+              value={type}
+              onChange={(e) => {
+                setType(e.target.value);
+                if (e.target.value !== "experience") setBadge("");
+              }}
+              required
+            >
+              <option value="" disabled hidden>Pilih Tipe</option>
+              <option value="education" className="bg-base-100 text-base-content">Pendidikan</option>
+              <option value="experience" className="bg-base-100 text-base-content">Pengalaman</option>
+            </FloatingLabelSelect>
+
+            {type === 'experience' && (
+              <FloatingLabelSelect
+                label="Kategori Badge"
+                name="badge"
+                value={badge}
+                onChange={(e) => setBadge(e.target.value)}
+                required
+              >
+                <option value="" disabled hidden>Pilih Kategori</option>
+                {experienceBadges.map((b) => (
+                  <option key={b} value={b} className="bg-base-100 text-base-content">{b}</option>
+                ))}
+              </FloatingLabelSelect>
+            )}
+          </div>
 
           <FloatingLabelInput label="Institusi / Perusahaan" value={institution} onChange={(e) => setInstitution(e.target.value)} required />
 
           <div className="grid md:grid-cols-2 gap-4">
-            <FloatingLabelInput label="Mulai (Cth: 2020)" value={startDate} onChange={(e) => setStartDate(e.target.value)} required />
-            <FloatingLabelInput label="Sampai (Cth: 2024)" value={isCurrent ? "" : endDate} onChange={(e) => setEndStatus(e.target.value)} disabled={isCurrent} />
+            <FloatingLabelInput label="Mulai (Cth: 2021)" value={startDate} onChange={(e) => setStartDate(e.target.value)} required />
+            <FloatingLabelInput label={`Sampai (Cth: ${currentYear})`} value={isCurrent ? "" : endDate} onChange={(e) => setEndStatus(e.target.value)} disabled={isCurrent} />
           </div>
 
           <label className="label cursor-pointer justify-center gap-3 p-4 border border-base-content/20 rounded-xl hover:bg-base-200/50 transition-colors h-14">
@@ -213,7 +241,7 @@ function EditHistory() {
                 <h3 className="text-xl font-bold font-display capitalize">{section === "education" ? "Pendidikan" : "Pengalaman"}</h3>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
                 {items.map((item) => (
                   <div key={item._id} className="relative group p-5 bg-base-100 border border-base-content/10 rounded-[2rem] hover:border-primary transition-all shadow-sm hover:shadow-lg flex flex-col gap-4">
                     <div className="flex gap-4 items-start">
@@ -234,6 +262,14 @@ function EditHistory() {
                       <p className="text-xs opacity-70 bg-base-200/50 p-3 rounded-xl font-medium line-clamp-3 leading-relaxed">
                         {item.detail}
                       </p>
+                    )}
+
+                    {section === "experience" && item.badge && (
+                      <div className="flex justify-center mt-2">
+                        <span className="px-4 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase bg-accent/10 text-accent border border-accent/20">
+                          {item.badge}
+                        </span>
+                      </div>
                     )}
 
                     <div className="absolute top-4 right-4 flex gap-2 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity bg-base-100/90 p-1 rounded-xl shadow-sm backdrop-blur-sm">

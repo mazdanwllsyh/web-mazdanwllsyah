@@ -14,7 +14,7 @@ export const getHistoryItems = asyncHandler(async (req, res) => {
 });
 
 export const addHistoryItem = asyncHandler(async (req, res) => {
-  const { institution, detail, years, type } = req.body;
+  const { institution, detail, years, type, badge } = req.body;
 
   if (!institution || !years || !type) {
     res.status(400);
@@ -47,7 +47,7 @@ export const addHistoryItem = asyncHandler(async (req, res) => {
           (error, result) => {
             if (error) return reject(error);
             resolve(result);
-          }
+          },
         );
         stream.pipe(cloudinaryStream);
       });
@@ -65,6 +65,7 @@ export const addHistoryItem = asyncHandler(async (req, res) => {
     detail,
     years,
     type,
+    badge: type === "experience" ? badge : "",
     logoUrl,
     cloudinaryId,
   });
@@ -74,7 +75,7 @@ export const addHistoryItem = asyncHandler(async (req, res) => {
 
 export const updateHistoryItem = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { institution, detail, years, type } = req.body;
+  const { institution, detail, years, type, badge } = req.body;
 
   const item = await HistoryItem.findById(id);
   if (!item) {
@@ -83,9 +84,14 @@ export const updateHistoryItem = asyncHandler(async (req, res) => {
   }
 
   item.institution = institution || item.institution;
-  item.detail = detail || item.detail;
+  item.detail = detail !== undefined ? detail : item.detail;
   item.years = years || item.years;
   item.type = type || item.type;
+  if (type === "experience") {
+    item.badge = badge !== undefined ? badge : item.badge;
+  } else {
+    item.badge = "";
+  }
 
   if (req.file) {
     console.log("File baru terdeteksi, memproses update logo...");
@@ -118,7 +124,7 @@ export const updateHistoryItem = asyncHandler(async (req, res) => {
           (error, result) => {
             if (error) return reject(error);
             resolve(result);
-          }
+          },
         );
         stream.pipe(cloudinaryStream);
       });
@@ -151,7 +157,7 @@ export const deleteHistoryItem = asyncHandler(async (req, res) => {
     } catch (err) {
       console.error(
         "Gagal hapus dari Cloudinary (mungkin sudah terhapus):",
-        err
+        err,
       );
     }
   }

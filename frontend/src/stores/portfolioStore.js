@@ -251,6 +251,18 @@ export const initialHardSkills = [
   },
 ];
 
+export const experienceBadges = [
+  "Full-Time", 
+  "Contract", 
+  "Part-Time", 
+  "Freelance", 
+  "Internship", 
+  "MSIB", 
+  "Student Exchange", 
+  "Organization", 
+  "Volunteer", 
+];
+
 export const categories = [
   "Semua",
   "Universitas",
