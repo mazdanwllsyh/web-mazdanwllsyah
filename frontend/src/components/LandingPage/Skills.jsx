@@ -1,3 +1,4 @@
+// src/components/LandingPage/Skills.jsx
 import React, { useEffect, useMemo, useState } from "react";
 import { Icon } from "@iconify/react";
 import { m, AnimatePresence } from "framer-motion";
@@ -8,12 +9,12 @@ const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.04, delayChildren: 0.1 }
+    transition: { staggerChildren: 0.08, delayChildren: 0.1 }
   }
 };
 
 const itemVariants = {
-  hidden: { y: 15, opacity: 0, scale: 0.95 },
+  hidden: { y: 20, opacity: 0, scale: 0.95 },
   visible: {
     y: 0,
     opacity: 1,
@@ -39,6 +40,7 @@ function Skills() {
   const isSkillsLoading = usePortfolioStore((state) => state.isSkillsLoading);
 
   const [activeTab, setActiveTab] = useState("hard");
+  const [isSoftHovered, setIsSoftHovered] = useState(false);
 
   useEffect(() => {
     fetchSkillsData();
@@ -106,7 +108,7 @@ function Skills() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
         <span className="loading loading-ring w-16 h-16 text-primary"></span>
-        <p className="font-bold opacity-60 animate-pulse tracking-widest text-sm uppercase">Sinkronisasi Keahlian...</p>
+        <p className="font-bold text-base-content/80 animate-pulse tracking-widest text-sm uppercase">Sinkronisasi Keahlian...</p>
       </div>
     );
   }
@@ -132,7 +134,7 @@ function Skills() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -5 }}
                 transition={{ duration: 0.2 }}
-                className="text-sm md:text-base text-base-content/60 max-w-2xl mx-auto"
+                className="text-sm md:text-base text-base-content/80 font-medium max-w-2xl mx-auto"
               >
                 {activeTab === 'hard'
                   ? "Teknologi, framework, dan perkakas teknis yang saya gunakan untuk membangun ekosistem web."
@@ -148,8 +150,10 @@ function Skills() {
               onClick={() => setActiveTab('hard')}
               className={`flex-1 py-3 px-4 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 outline-none ${activeTab === 'hard'
                   ? 'bg-primary text-primary-content shadow-md shadow-primary/20 scale-100'
-                  : 'text-base-content/60 hover:text-base-content hover:bg-base-100/50 scale-95 hover:scale-[0.98]'
+                  : 'bg-transparent text-base-content/70 hover:text-base-content hover:bg-base-100/50 scale-95 hover:scale-[0.98]'
                 }`}
+              aria-selected={activeTab === 'hard'}
+              role="tab"
             >
               <Icon icon="solar:code-square-bold-duotone" className="w-5 h-5 shrink-0" />
               <span className="text-sm sm:text-base">Hard Skills</span>
@@ -158,8 +162,10 @@ function Skills() {
               onClick={() => setActiveTab('soft')}
               className={`flex-1 py-3 px-4 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 outline-none ${activeTab === 'soft'
                   ? 'bg-secondary text-secondary-content shadow-md shadow-secondary/20 scale-100'
-                  : 'text-base-content/60 hover:text-base-content hover:bg-base-100/50 scale-95 hover:scale-[0.98]'
+                  : 'bg-transparent text-base-content/70 hover:text-base-content hover:bg-base-100/50 scale-95 hover:scale-[0.98]'
                 }`}
+              aria-selected={activeTab === 'soft'}
+              role="tab"
             >
               <Icon icon="solar:medal-star-bold-duotone" className="w-5 h-5 shrink-0" />
               <span className="text-sm sm:text-base">Soft Skills</span>
@@ -192,14 +198,14 @@ function Skills() {
                       return (
                         <div key={category} className="space-y-4">
                           <div className="flex items-center gap-3">
-                            <h4 className="font-bold text-[11px] md:text-xs tracking-widest uppercase opacity-60 whitespace-nowrap">{category}</h4>
-                            <div className="flex-1 h-[1px] bg-base-content/10"></div>
+                            <h3 className="font-bold text-[11px] md:text-xs tracking-widest uppercase text-base-content/80 whitespace-nowrap">{category}</h3>
+                            <div className="flex-1 h-[1px] bg-base-content/20"></div>
                           </div>
 
                           <div className="flex flex-wrap gap-2.5">
                             {skills.map((skill, index) => (
                               <m.div key={`hard-skill-${index}`} variants={itemVariants} className="relative group w-fit">
-                                <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity aura aura-dual pointer-events-none -z-10"></div>
+                                <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity aura text-primary bg-accent pointer-events-none -z-10"></div>
 
                                 <div
                                   tabIndex={0}
@@ -213,8 +219,8 @@ function Skills() {
                                     <span className="font-bold font-headings text-[13px] md:text-sm text-base-content leading-tight group-hover:text-primary group-focus-within:text-primary transition-colors">
                                       {skill.name}
                                     </span>
-                                    <span className="text-[9px] md:text-[10px] font-black tracking-widest uppercase text-primary opacity-80">
-                                      {skill.level || "Expert"}
+                                    <span className="text-[9px] md:text-[10px] font-black tracking-widest uppercase text-primary text-opacity-80">
+                                      {skill.level || "Intermediate"}
                                     </span>
                                   </div>
                                 </div>
@@ -226,7 +232,7 @@ function Skills() {
                     })}
                   </m.div>
                 ) : (
-                  <div className="text-center py-20 italic opacity-40 text-sm">Belum ada hard skills.</div>
+                  <div className="text-center py-20 italic text-base-content/50 text-sm">Belum ada hard skills.</div>
                 )}
               </m.div>
             )}
@@ -239,9 +245,13 @@ function Skills() {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
                 className="w-full max-w-6xl mx-auto"
+                onMouseEnter={() => setIsSoftHovered(true)}
+                onMouseLeave={() => setIsSoftHovered(false)}
+                onFocus={() => setIsSoftHovered(true)}
+                onBlur={() => setIsSoftHovered(false)}
               >
                 <m.div
-                  className="grid grid-cols-1 md:grid-cols-2 gap-4 group/softlist"
+                  className="grid grid-cols-1 md:grid-cols-2 gap-4"
                   variants={containerVariants}
                   initial={isBot ? "visible" : "hidden"}
                   animate="visible"
@@ -249,31 +259,36 @@ function Skills() {
                   {displayedSoftSkills.length > 0 ? (
                     displayedSoftSkills.map((skill, index) => (
                       <m.div key={`soft-skill-${index}`} variants={itemVariants} className="relative group/item w-full">
-                        <div className="absolute inset-0 rounded-2xl opacity-0 group-hover/item:opacity-100 group-focus-within/item:opacity-100 transition-opacity aura aura-dual pointer-events-none -z-10"></div>
+                        <div className="absolute inset-0 rounded-2xl opacity-0 group-hover/item:opacity-100 group-focus-within/item:opacity-100 transition-opacity aura aura-silver pointer-events-none -z-10"></div>
 
                         <div
                           tabIndex={0}
-                          className="relative w-full p-5 md:p-6 rounded-2xl bg-base-200/90 border border-base-content/10 outline-none text-left flex flex-col justify-start cursor-pointer transition-all duration-300 hover:bg-base-100 focus-within:bg-base-100 z-10"
+                          className="relative w-full p-5 md:p-6 rounded-2xl bg-base-200/90 border border-base-content/10 outline-none text-left flex flex-col justify-start cursor-pointer transition-colors duration-300 hover:bg-base-100 focus-within:bg-base-100 z-10"
                         >
                           <div className="flex items-center gap-4 relative z-10 w-full">
-                            <div className="w-2.5 h-2.5 rounded-full shrink-0 shadow-[0_0_8px_rgba(var(--s),0.5)] bg-secondary/50 group-hover/item:bg-secondary group-focus-within/item:bg-secondary group-hover/item:scale-150 group-focus-within/item:scale-150 transition-all duration-300" />
+                            <div className="w-2.5 h-2.5 rounded-full shrink-0 shadow-[0_0_8px_rgba(var(--s),0.5)] bg-secondary/50 group-hover/item:bg-secondary group-focus-within/item:bg-secondary group-hover/item:scale-150 group-focus-within/item:scale-150 transition-[background-color,transform] duration-300" />
                             <span className="font-bold text-base md:text-lg leading-tight text-base-content group-hover/item:text-secondary group-focus-within/item:text-secondary transition-colors">
                               {skill.name}
                             </span>
                           </div>
 
-                          <div className="grid grid-rows-[0fr] group-hover/softlist:grid-rows-[1fr] group-focus-within/softlist:grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-in-out relative z-10 w-full">
-                            <div className="overflow-hidden">
-                              <p className="text-sm text-base-content/70 pl-[26px] text-justify leading-relaxed border-l-2 border-secondary/20 ml-[5px] mt-3">
+                          <AnimatePresence>
+                            <m.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: isSoftHovered ? "auto" : 0, opacity: isSoftHovered ? 1 : 0 }}
+                              transition={{ duration: 0.4, ease: [0.04, 0.62, 0.23, 0.98] }}
+                              className="overflow-hidden relative z-10 w-full"
+                            >
+                              <p className="text-sm text-base-content/80 pl-[26px] text-justify leading-relaxed border-l-2 border-secondary/20 ml-[5px] mt-3">
                                 {skill.description}
                               </p>
-                            </div>
-                          </div>
+                            </m.div>
+                          </AnimatePresence>
                         </div>
                       </m.div>
                     ))
                   ) : (
-                    <div className="col-span-1 md:col-span-2 text-center py-20 italic opacity-40 text-sm">Belum ada soft skills.</div>
+                    <div className="col-span-1 md:col-span-2 text-center py-20 italic text-base-content/50 text-sm">Belum ada soft skills.</div>
                   )}
                 </m.div>
               </m.div>

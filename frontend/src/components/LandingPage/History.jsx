@@ -138,7 +138,7 @@ function History() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -5 }}
                 transition={{ duration: 0.2 }}
-                className="text-sm md:text-base text-base-content/60 max-w-2xl mx-auto"
+                className="text-sm md:text-base text-base-content/80 font-medium max-w-2xl mx-auto"
               >
                 {activeTab === "pendidikan"
                   ? "Latar belakang pendidikan formal dan akademik saya."
@@ -155,10 +155,12 @@ function History() {
                 setActiveTab("pendidikan");
                 localStorage.setItem("activeHistoryTab", "pendidikan");
               }}
-              className={`flex-1 py-3 px-4 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 outline-none ${activeTab === 'pendidikan'
-                ? 'bg-primary text-primary-content shadow-md shadow-primary/20 scale-100'
-                : 'text-base-content/60 hover:text-base-content hover:bg-base-100/50 scale-95 hover:scale-[0.98]'
+              className={`flex-1 py-3 px-4 rounded-xl font-bold transition-[background-color,color,transform,box-shadow] duration-300 flex items-center justify-center gap-2 outline-none ${activeTab === 'pendidikan'
+                  ? 'bg-primary text-primary-content shadow-md shadow-primary/20 scale-100'
+                  : 'bg-transparent text-base-content/70 hover:text-base-content hover:bg-base-100/50 scale-95 hover:scale-[0.98]'
                 }`}
+              aria-selected={activeTab === 'pendidikan'}
+              role="tab"
             >
               <Icon icon="mdi:school" className="w-5 h-5 shrink-0" />
               <span className="text-sm sm:text-base">Pendidikan</span>
@@ -168,10 +170,12 @@ function History() {
                 setActiveTab("pengalaman");
                 localStorage.setItem("activeHistoryTab", "pengalaman");
               }}
-              className={`flex-1 py-3 px-4 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 outline-none ${activeTab === 'pengalaman'
-                ? 'bg-accent text-accent-content shadow-md shadow-accent/20 scale-100'
-                : 'text-base-content/60 hover:text-base-content hover:bg-base-100/50 scale-95 hover:scale-[0.98]'
+              className={`flex-1 py-3 px-4 rounded-xl font-bold transition-[background-color,color,transform,box-shadow] duration-300 flex items-center justify-center gap-2 outline-none ${activeTab === 'pengalaman'
+                  ? 'bg-secondary text-secondary-content shadow-md shadow-secondary/20 scale-100'
+                  : 'bg-transparent text-base-content/70 hover:text-base-content hover:bg-base-100/50 scale-95 hover:scale-[0.98]'
                 }`}
+              aria-selected={activeTab === 'pengalaman'}
+              role="tab"
             >
               <Icon icon="mdi:briefcase" className="w-5 h-5 shrink-0" />
               <span className="text-sm sm:text-base">Pengalaman</span>
@@ -185,12 +189,12 @@ function History() {
           <ul className="timeline timeline-snap-icon max-md:timeline-compact timeline-vertical px-4">
             {sortedData.map((item, index) => (
               <li key={item._id}>
-                {index !== 0 && <hr className={activeTab === "pendidikan" ? "bg-primary" : "bg-accent"} />}
+                {index !== 0 && <hr className={activeTab === "pendidikan" ? "bg-primary" : "bg-secondary"} />}
 
                 <div className="timeline-middle">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center z-10 relative shadow-md ${activeTab === "pendidikan"
                       ? "bg-primary text-primary-content shadow-primary/20"
-                      : "bg-accent text-accent-content shadow-accent/20"
+                      : "bg-secondary text-secondary-content shadow-secondary/20"
                     }`}>
                     <Icon
                       icon={
@@ -213,10 +217,9 @@ function History() {
                     : "timeline-end md:text-start flex-row"
                     }`}
                 >
-                  {/* AVATAR RING */}
                   {item.logoUrl && (
                     <div className="avatar hidden xl:block shrink-0 self-start mt-3">
-                      <div className={`w-20 h-20 rounded-full ring ring-offset-base-100 ring-offset-2 ${activeTab === "pendidikan" ? "ring-primary" : "ring-accent"
+                      <div className={`w-20 h-20 rounded-full ring ring-offset-base-100 ring-offset-2 ${activeTab === "pendidikan" ? "ring-primary" : "ring-secondary"
                         }`}>
                         <img
                           src={transformCloudinaryUrl(item.logoUrl, 128, 128)}
@@ -231,31 +234,38 @@ function History() {
                   )}
 
                   <div className="w-full flex flex-col items-stretch max-w-[18rem] sm:max-w-[20rem] md:max-w-[22rem] xl:max-w-[28rem]">
-                    <div className="relative group w-full rounded-[var(--rounded-box,1rem)] transition-all duration-300 hover:-translate-y-2 focus-within:-translate-y-2 cursor-pointer">
+                    <div className="relative group w-full rounded-[var(--rounded-box,1rem)] transition-transform duration-300 hover:-translate-y-2 focus-within:-translate-y-2 cursor-pointer">
+
+                      {item.badge && (
+                        <div className={`absolute -top-3 right-4 md:right-6 z-20 px-3 py-1 rounded-full text-[10px] font-bold tracking-widest shadow-md uppercase ${activeTab === "pendidikan"
+                            ? "bg-primary text-primary-content shadow-primary/20"
+                            : "bg-secondary text-secondary-content shadow-secondary/20"
+                          }`}>
+                          {item.badge}
+                        </div>
+                      )}
 
                       <div className="absolute inset-0 rounded-[inherit] opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity aura aura-dual z-0 pointer-events-none"></div>
 
-                      {/* CARD BORDER & HOVER */}
                       <div
                         tabIndex={0}
-                        className={`card w-full h-full bg-base-100 shadow-md border border-base-content/20 transition-all duration-300 focus:outline-none relative z-10 group-hover:shadow-xl group-focus-within:shadow-xl ${activeTab === "pendidikan"
+                        className={`card w-full h-full bg-base-100 shadow-md border border-base-content/20 transition-[background-color,border-color,box-shadow] duration-300 focus:outline-none relative z-10 group-hover:shadow-xl group-focus-within:shadow-xl ${activeTab === "pendidikan"
                             ? "group-hover:border-primary group-focus-within:border-primary"
-                            : "group-hover:border-accent group-focus-within:border-accent"
+                            : "group-hover:border-secondary group-focus-within:border-secondary"
                           }`}
                       >
                         <div className="card-body p-6 md:p-8">
-                          {/* CARD TITLE TEXT COLOR */}
-                          <h3 className={`card-title text-xl lg:text-2xl font-bold font-display transition-colors duration-300 ${activeTab === "pendidikan" ? "group-hover:text-primary" : "group-hover:text-accent"
+                          <h3 className={`card-title text-xl lg:text-2xl font-bold font-display transition-colors duration-300 ${activeTab === "pendidikan" ? "group-hover:text-primary group-focus-within:text-primary" : "group-hover:text-secondary group-focus-within:text-secondary"
                             }`}>
                             {item.institution}
                           </h3>
                           {item.detail && (
-                            <p className="text-sm md:text-base text-base-content/80 font-semibold text-justify mt-2">
+                            <p className="text-sm md:text-base text-base-content/80 font-medium text-justify mt-2">
                               {item.detail}
                             </p>
                           )}
 
-                          <div className="flex items-center text-sm mt-4 justify-start font-semibold opacity-70 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-300">
+                          <div className="flex items-center text-sm mt-4 justify-start font-bold text-base-content/70 group-hover:text-base-content group-focus-within:text-base-content transition-colors duration-300">
                             <Icon
                               icon="mdi:calendar-blank-outline"
                               className="w-5 h-5 mr-1"
@@ -268,9 +278,8 @@ function History() {
                   </div>
                 </m.div>
 
-                {/* TIMELINE LINE (BOTTOM) */}
                 {index !== sortedData.length - 1 && (
-                  <hr className={activeTab === "pendidikan" ? "bg-primary" : "bg-accent"} />
+                  <hr className={activeTab === "pendidikan" ? "bg-primary" : "bg-secondary"} />
                 )}
               </li>
             ))}

@@ -206,7 +206,7 @@ function Hero() {
                   </m.p>
 
                   <m.div variants={textItemVariants}>
-                    <div className="aura aura-glow rounded-2xl">
+                    <div className="aura duration-2900 rounded-2xl">
                       <Link tabIndex={0} to="/tentang" className="btn btn-md bg-base-300/90 font-display border-base-content/20 border-2 shadow-sm hover:shadow-primary/20 group rounded-2xl lg:px-8">
                         Tentang Saya?
                         <Icon icon="streamline-flex:finger-snapping" className="w-6 h-6 ml-1 group-hover:scale-110 transition-transform" focusable="false" />
