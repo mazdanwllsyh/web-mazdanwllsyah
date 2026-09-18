@@ -7,7 +7,7 @@ const siteUrl = "https://mazdaweb.bejalen.com";
 
 const pageTitles = {
   "/tentang": "Tentang",
-  "/sertifikasi": "Sertifikasi",
+  "/sertifikasi": "Sertifikat yang didapat",
   "/donasi": "Donasi",
 };
 
@@ -38,7 +38,6 @@ function SeoHelmet({ title, description, imageUrl, url }) {
   }, [hash, pathname]);
 
   const canonicalUrl = `${siteUrl}${pathname}`;
-
   const pageTitle = `${activeSection || title || "Beranda"} — ${siteData?.brandNameShort || "Mazda N."} | Frontend Developer`;
 
   const dynamicDescription = useMemo(() => {
@@ -53,21 +52,35 @@ function SeoHelmet({ title, description, imageUrl, url }) {
   const pageImage = imageUrl || defaultImageUrl;
   const isRootPage = pathname === "/";
 
-  const schemaPerson = useMemo(() => ({
-    "@context": "https://schema.org",
-    "@type": "Person",
-    "name": "Mazda Nawallsyah",
-    "alternateName": [
-      "Nawallsyah",
-      "Shahclyffe",
-      "Rafford",
-      "Milord de Rafford",
-      "VOXELIX"
-    ],
-    "jobTitle": "Frontend Web Developer",
-    "image": pageImage,
-    "url": siteUrl,
-  }), [pageImage]);
+  const schemaMarkup = useMemo(() => {
+    if (isRootPage) {
+      return {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": siteData?.brandNameShort || "Mazda Nawallsyah",
+        "alternateName": [
+          "Portofolio Mazda",
+          "Nawallsyah",
+          "Shahclyffe",
+          "Rafford",
+          "VOXELIX"
+        ],
+        "url": siteUrl
+      };
+    }
+
+    return {
+      "@context": "https://schema.org",
+      "@type": "ProfilePage",
+      "mainEntity": {
+        "@type": "Person",
+        "name": "Mazda Nawallsyah",
+        "jobTitle": "Frontend Web Developer",
+        "image": pageImage,
+        "url": canonicalUrl,
+      }
+    };
+  }, [isRootPage, pageImage, canonicalUrl, siteData]);
 
   return (
     <>
@@ -96,7 +109,7 @@ function SeoHelmet({ title, description, imageUrl, url }) {
       <meta name="twitter:image" content={pageImage} />
 
       <script type="application/ld+json">
-        {JSON.stringify(schemaPerson)}
+        {JSON.stringify(schemaMarkup)}
       </script>
     </>
   );

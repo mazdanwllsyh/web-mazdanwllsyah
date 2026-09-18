@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Icon } from "@iconify/react";
 import { useSiteStore } from "../../stores/siteStore";
+import { usePortfolioStore } from "../../stores/portfolioStore";
 import { Link } from "react-router-dom";
 import { TypeAnimation } from "react-type-animation";
 import SeoHelmet from "../SEOHelmet";
@@ -40,11 +41,19 @@ const textItemVariants = {
 
 function Hero() {
   const siteData = useSiteStore((state) => state.siteData);
+  const fetchSertifikat = usePortfolioStore((state) => state.fetchSertifikat);
+  const sertifikatData = usePortfolioStore((state) => state.sertifikatData);
+  const isSertifikatLoading = usePortfolioStore((state) => state.isSertifikatLoading);
+
   const [imageLoaded, setImageLoaded] = useState(false);
   const [currentImgIndex, setCurrentImgIndex] = useState(0);
 
   const profileImages = siteData?.profileImages || [];
   const availableLinks = siteData?.contactLinks || {};
+
+  useEffect(() => {
+    fetchSertifikat();
+  }, [fetchSertifikat]);
 
   useEffect(() => {
     if (profileImages.length > 1) {
@@ -122,7 +131,10 @@ function Hero() {
             ))}
 
             <div className="aura aura-dual mask mask-hexagon w-full h-full p-1">
-              <div className="mask mask-hexagon w-full h-full bg-base-300 relative z-10 transition-transform duration-700 hover:scale-105 overflow-hidden">
+              <div
+                className="mask mask-hexagon w-full h-full bg-base-300 relative z-10 transition-transform duration-700 hover:scale-105 overflow-hidden"
+                onContextMenu={(e) => e.preventDefault()}
+              >
                 {(!imageLoaded && !isBot) && <div className="absolute inset-0 skeleton w-full h-full"></div>}
 
                 <AnimatePresence mode="wait">
@@ -135,7 +147,7 @@ function Hero() {
                     transition={{ duration: 0.8 }}
                     onLoad={() => setImageLoaded(true)}
                     onError={(e) => { e.target.src = "/default-avatar.png"; setImageLoaded(true); }}
-                    className={`w-full h-full object-cover transition-opacity duration-500 ${(imageLoaded || isBot) ? "opacity-100" : "opacity-0"}`}
+                    className={`w-full h-full object-cover transition-opacity duration-500 select-none pointer-events-none [-webkit-touch-callout:none] ${(imageLoaded || isBot) ? "opacity-100" : "opacity-0"}`}
                     alt="Foto Mazda Nawallsyah"
                   />
                 </AnimatePresence>
@@ -205,12 +217,26 @@ function Hero() {
                     {displayParagraph}
                   </m.p>
 
-                  <m.div variants={textItemVariants}>
-                    <div className="aura duration-2900 rounded-2xl">
-                      <Link tabIndex={0} to="/tentang" className="btn btn-md bg-base-300/90 font-display border-base-content/20 border-2 shadow-sm hover:shadow-primary/20 group rounded-2xl lg:px-8">
-                        Tentang Saya?
-                        <Icon icon="streamline-flex:finger-snapping" className="w-6 h-6 ml-1 group-hover:scale-110 transition-transform" focusable="false" />
-                      </Link>
+                  <m.div variants={textItemVariants} className="flex flex-wrap items-center justify-center lg:justify-start gap-4 mt-2">
+                    <div className="tooltip tooltip-bottom" data-tip="Kenali saya lebih dekat">
+                      <div className="aura text-primary/90 bg-accent/70 duration-2900 rounded-2xl">
+                        <Link tabIndex={0} to="/tentang" className="btn btn-md bg-base-300/90 text-base-content font-display border-base-content/20 border-2 shadow-sm hover:border-primary/50 hover:shadow-primary/20 group rounded-2xl px-5">
+                          Tentang Saya?
+                          <Icon icon="streamline-flex:finger-snapping" className="w-5 h-5 ml-1 group-hover:scale-110 transition-transform text-primary" focusable="false" />
+                        </Link>
+                      </div>
+                    </div>
+
+                    <div className="tooltip tooltip-bottom" data-tip="Sertifikasi & Penghargaan">
+                      <div className="aura aura-dual duration-2900 rounded-2xl">
+                        <Link tabIndex={0} to="/sertifikasi" className="btn btn-md bg-primary text-primary-content font-display border-primary border-2 shadow-md shadow-primary/20 hover:shadow-primary/40 group rounded-2xl px-5">
+                          Sertifikat
+                          <Icon icon="solar:diploma-verified-bold-duotone" className="w-5 h-5 ml-1 group-hover:scale-110 transition-transform" focusable="false" />
+                          <span className="text-[11px] font-black opacity-90 border-l border-primary-content/30 pl-2 ml-1">
+                            {isSertifikatLoading ? "..." : sertifikatData?.length || 0}
+                          </span>
+                        </Link>
+                      </div>
                     </div>
                   </m.div>
 

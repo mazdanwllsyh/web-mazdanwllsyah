@@ -15,7 +15,7 @@ const initialSertifForm = {
   imageUrl: "",
   fileUrl: "",
   type: "pdf",
-  category: "Online Course",
+  category: "Nasional",
 };
 
 function EditSertifikat() {
@@ -138,7 +138,7 @@ function EditSertifikat() {
     if (await showConfirmSwal("Hapus?", `Hapus sertifikat: ${sertif.title}?`)) {
       try {
         await deleteSertifikat(sertif._id);
-        showSuccessSwal("Dihapus!");
+        showSuccessSwal("Sertifikat Berhasil Dihapus!");
       } catch (e) { showErrorToast("Gagal hapus"); }
     }
   };

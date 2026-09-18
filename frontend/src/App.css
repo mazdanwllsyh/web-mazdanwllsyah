@@ -85,7 +85,9 @@
 @plugin "daisyui" {
   themes:
     emerald, light, corporate, synthwave, dark, black, business, night, dim,
-    abyss, bumblebee, caramellatte, nord, cupcake;
+    abyss, bumblebee, caramellatte, nord, cupcake, retro, valentine, halloween,
+    garden, forest, aqua, lofi, pastel, fantasy, wireframe, luxury, dracula,
+    cmyk, autumn, acid, lemonade, coffee, winter, sunset;
 }
 
 img {

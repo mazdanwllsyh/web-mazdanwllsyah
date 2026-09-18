@@ -16,13 +16,13 @@
       "src": "https://res.cloudinary.com/dr7olcn4r/image/upload/c_fill,h_512,w_512/v1761388118/croppedsebelumgembuldanmenjadijawir_cdep6a.png",
       "type": "image/png",
       "sizes": "512x512",
-      "purpose": "any maskable" 
+      "purpose": "any maskable"
     }
   ],
   "start_url": "/",
   "display": "standalone",
-  "theme_color": "#37cdbe",
-  "background_color": "#37cdbe",
+  "theme_color": "#282a36",
+  "background_color": "#ffffff",
   "scope": "/",
   "description": "Portofolio pribadi Mazda Nawallsyah, seorang Front-End Web Developer."
 }

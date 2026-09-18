@@ -10,6 +10,18 @@ const lightThemes = [
   "cupcake",
   "caramellatte",
   "nord",
+  "retro",
+  "valentine",
+  "garden",
+  "lofi",
+  "pastel",
+  "fantasy",
+  "wireframe",
+  "cmyk",
+  "autumn",
+  "acid",
+  "lemonade",
+  "winter",
 ];
 const darkThemes = [
   "synthwave",
@@ -19,6 +31,13 @@ const darkThemes = [
   "night",
   "dim",
   "abyss",
+  "halloween",
+  "sunset",
+  "forest",
+  "aqua",
+  "luxury",
+  "dracula",
+  "coffee",
 ];
 
 const initialSiteData = {
@@ -47,9 +66,9 @@ const getInitialTheme = () => {
     const osPrefersDark = window.matchMedia(
       "(prefers-color-scheme: dark)",
     ).matches;
-    return osPrefersDark ? "night" : "emerald";
+    return osPrefersDark ? "dracula" : "cmyk";
   }
-  return "emerald";
+  return "cmyk";
 };
 
 export const useSiteStore = create(

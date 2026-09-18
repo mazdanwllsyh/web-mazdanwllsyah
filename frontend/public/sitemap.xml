@@ -3,30 +3,30 @@
    
    <url>
       <loc>https://mazdaweb.bejalen.com/</loc>
-      <lastmod>2026-09-12</lastmod>
+      <lastmod>2026-09-18</lastmod>
       <changefreq>weekly</changefreq>
       <priority>1.0</priority>
    </url>
 
    <url>
       <loc>https://mazdaweb.bejalen.com/tentang</loc>
-      <lastmod>2026-09-12</lastmod>
+      <lastmod>2026-09-18</lastmod>
       <changefreq>monthly</changefreq>
-      <priority>0.88</priority>
+      <priority>0.85</priority>
    </url>
 
    <url>
       <loc>https://mazdaweb.bejalen.com/sertifikasi</loc>
-      <lastmod>2026-09-12</lastmod>
+      <lastmod>2026-09-18</lastmod>
       <changefreq>monthly</changefreq>
-      <priority>0.7</priority>
+      <priority>0.80</priority>
    </url>
 
    <url>
       <loc>https://mazdaweb.bejalen.com/donasi</loc>
-      <lastmod>2026-09-12</lastmod>
+      <lastmod>2026-09-18</lastmod>
       <changefreq>monthly</changefreq>
-      <priority>0.25</priority>
+      <priority>0.50</priority>
    </url>
 
 </urlset>

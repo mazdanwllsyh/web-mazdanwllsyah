@@ -167,7 +167,7 @@ function Kontak() {
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-2 tracking-tight">
               Hubungi <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-primary">Saya</span>
             </h2>
-            <p className="text-base md:text-lg text-base-content/60">Mari berdiskusi tentang proyek hebat Anda</p>
+            <p className="text-sm md:text-base text-base-content/85 font-medium mx-auto">Mari berdiskusi tentang proyek hebat Anda</p>
           </m.div>
 
           <div className="w-full">

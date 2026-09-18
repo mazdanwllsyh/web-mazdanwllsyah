@@ -265,11 +265,11 @@ export const experienceBadges = [
 
 export const categories = [
   "Semua",
+  "Internasional",
+  "Nasional",
+  "Bootcamp",
   "Universitas",
   "Online Course",
-  "Bootcamp",
-  "Nasional",
-  "Internasional",
 ];
 
 export const usePortfolioStore = create(

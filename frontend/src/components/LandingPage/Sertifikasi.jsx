@@ -69,11 +69,11 @@ function Sertifikasi() {
   const themeMode = useSiteStore((state) => state.getThemeMode());
   const categories = [
     "Semua",
+    "Internasional",
+    "Nasional",
+    "Bootcamp",
     "Universitas",
     "Online Course",
-    "Bootcamp",
-    "Nasional",
-    "Internasional",
   ];
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -237,7 +237,7 @@ function Sertifikasi() {
               key={`cert-grid-${searchTerm}-${activeCategory}-${currentItems[0]?._id || "empty"}`}
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
               variants={containerVariants}
-              initial={isBot ? "visible" : "hidden"} 
+              initial={isBot ? "visible" : "hidden"}
               animate="visible"
               viewport={{ once: true, amount: 0.1 }}
             >
@@ -245,7 +245,7 @@ function Sertifikasi() {
                 <m.div
                   key={cert._id}
                   variants={itemVariants}
-                  initial={isBot ? { opacity: 1, y: 0 } : { y: 30, opacity: 0 }} 
+                  initial={isBot ? { opacity: 1, y: 0 } : { y: 30, opacity: 0 }}
                   whileHover={!isBot ? { y: -5 } : {}}
                   whileTap={!isBot ? { scale: 0.95 } : {}}
                   tabIndex={0}

@@ -139,8 +139,8 @@ function Gallery() {
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-2 tracking-tight">
             Galeri <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-primary">Proyek</span>
           </h2>
-          <p className="text-base md:text-lg text-base-content">
-            Mahakarya dan studi kasus terbaru saya
+          <p className="text-sm md:text-base text-base-content/85">
+            Mahakarya dan studi kasus saya
           </p>
         </m.div>
 

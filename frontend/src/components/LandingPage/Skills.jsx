@@ -39,6 +39,7 @@ function Skills() {
   const isSkillsLoading = usePortfolioStore((state) => state.isSkillsLoading);
 
   const [activeTab, setActiveTab] = useState("hard");
+  const [hoveredCategory, setHoveredCategory] = useState(null);
 
   useEffect(() => {
     fetchSkillsData();
@@ -121,7 +122,7 @@ function Skills() {
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-4 tracking-tight">Skills</h2>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-4 tracking-tight uppercase">Skills</h2>
 
           <div className="h-10 flex items-center justify-center">
             <AnimatePresence mode="wait">
@@ -131,11 +132,11 @@ function Skills() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -5 }}
                 transition={{ duration: 0.2 }}
-                className="text-sm md:text-base text-base-content/80 font-medium max-w-2xl mx-auto"
+                className="text-sm md:text-base text-base-content/85 font-medium max-w-2xl mx-auto"
               >
                 {activeTab === 'hard'
-                  ? "Teknologi, framework, dan perkakas teknis yang saya gunakan untuk membangun ekosistem web."
-                  : "Kemampuan interpersonal dan manajemen diri untuk kolaborasi profesional yang efektif."}
+                  ? "Teknologi, framework, dan perkakas teknis yang dikuasai."
+                  : "Kemampuan interpersonal dan manajemen diri."}
               </m.p>
             </AnimatePresence>
           </div>
@@ -146,8 +147,8 @@ function Skills() {
             <button
               onClick={() => setActiveTab('hard')}
               className={`flex-1 py-3 px-4 rounded-xl font-bold transition-[background-color,color,transform,box-shadow] duration-300 flex items-center justify-center gap-2 outline-none ${activeTab === 'hard'
-                  ? 'bg-primary text-primary-content shadow-md shadow-primary/20 scale-100'
-                  : 'bg-transparent text-base-content/70 hover:text-base-content hover:bg-base-100/50 scale-95 hover:scale-[0.98]'
+                ? 'bg-primary text-primary-content shadow-md shadow-primary/20 scale-100'
+                : 'bg-transparent text-base-content/70 hover:text-base-content hover:bg-base-100/50 scale-95 hover:scale-[0.98]'
                 }`}
               aria-selected={activeTab === 'hard'}
               role="tab"
@@ -158,8 +159,8 @@ function Skills() {
             <button
               onClick={() => setActiveTab('soft')}
               className={`flex-1 py-3 px-4 rounded-xl font-bold transition-[background-color,color,transform,box-shadow] duration-300 flex items-center justify-center gap-2 outline-none ${activeTab === 'soft'
-                  ? 'bg-secondary text-secondary-content shadow-md shadow-secondary/20 scale-100'
-                  : 'bg-transparent text-base-content/70 hover:text-base-content hover:bg-base-100/50 scale-95 hover:scale-[0.98]'
+                ? 'bg-secondary text-secondary-content shadow-md shadow-secondary/20 scale-100'
+                : 'bg-transparent text-base-content/70 hover:text-base-content hover:bg-base-100/50 scale-95 hover:scale-[0.98]'
                 }`}
               aria-selected={activeTab === 'soft'}
               role="tab"
@@ -192,8 +193,10 @@ function Skills() {
                       const skills = groupedHardSkills[category];
                       if (!skills || skills.length === 0) return null;
 
+                      const isCategoryActive = hoveredCategory === category;
+
                       return (
-                        <div key={category} className="space-y-4">
+                        <div key={category} className="space-y-4" onMouseEnter={() => setHoveredCategory(category)} onMouseLeave={() => setHoveredCategory(null)} onFocus={() => setHoveredCategory(category)} onBlur={() => setHoveredCategory(null)}>
                           <div className="flex items-center gap-3">
                             <h3 className="font-bold text-[11px] md:text-xs tracking-widest uppercase text-base-content/80 whitespace-nowrap">{category}</h3>
                             <div className="flex-1 h-[1px] bg-base-content/20"></div>
@@ -202,18 +205,18 @@ function Skills() {
                           <div className="flex flex-wrap gap-2.5">
                             {skills.map((skill, index) => (
                               <m.div key={`hard-skill-${index}`} variants={itemVariants} className="relative group w-fit">
-                                <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity aura text-primary bg-accent pointer-events-none -z-10"></div>
+                                <div className={`absolute inset-0 rounded-2xl transition-opacity aura text-primary bg-accent pointer-events-none -z-10 ${isCategoryActive ? 'opacity-100' : 'opacity-0'}`}></div>
 
                                 <div
                                   tabIndex={0}
-                                  className="relative h-12 md:h-14 w-max max-w-[3.2rem] hover:max-w-[16rem] focus-within:max-w-[16rem] rounded-2xl bg-base-200/90 flex items-center overflow-hidden cursor-pointer transition-[max-width,background-color,box-shadow] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] hover:bg-base-100 hover:shadow-lg focus-within:bg-base-100 focus-within:shadow-lg focus:outline-none z-10"
+                                  className={`relative h-12 md:h-14 w-max rounded-2xl flex items-center overflow-hidden cursor-pointer transition-[max-width,background-color,box-shadow] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] focus:outline-none z-10 ${isCategoryActive ? 'max-w-[16rem] bg-base-100 shadow-lg' : 'max-w-[3.2rem] bg-base-200/90'}`}
                                 >
                                   <div className="w-[3.2rem] h-full flex items-center justify-center shrink-0 relative z-10">
-                                    <Icon icon={skill.icon} className="w-6 h-6 md:w-7 md:h-7 group-hover:scale-110 group-focus-within:scale-110 transition-transform duration-300 drop-shadow-sm" />
+                                    <Icon icon={skill.icon} className={`w-6 h-6 md:w-7 md:h-7 transition-transform duration-300 drop-shadow-sm ${isCategoryActive ? 'scale-110' : ''}`} />
                                   </div>
 
-                                  <div className="flex flex-col whitespace-nowrap opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-300 delay-100 pr-5">
-                                    <span className="font-bold font-headings text-[13px] md:text-sm text-base-content leading-tight group-hover:text-primary group-focus-within:text-primary transition-colors">
+                                  <div className={`flex flex-col whitespace-nowrap transition-opacity duration-300 pr-5 ${isCategoryActive ? 'opacity-100 delay-100' : 'opacity-0'}`}>
+                                    <span className="font-bold font-headings text-[13px] md:text-sm text-primary leading-tight transition-colors">
                                       {skill.name}
                                     </span>
                                     <span className="text-[9px] md:text-[10px] font-black tracking-widest uppercase text-primary text-opacity-80">
@@ -244,7 +247,7 @@ function Skills() {
                 className="w-full max-w-6xl mx-auto"
               >
                 <m.div
-                  className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                  className="grid grid-cols-1 md:grid-cols-2 gap-4 group/softlist"
                   variants={containerVariants}
                   initial={isBot ? "visible" : "hidden"}
                   animate="visible"

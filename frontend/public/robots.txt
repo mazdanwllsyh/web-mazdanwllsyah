@@ -1,12 +1,11 @@
 User-agent: *
 Allow: /
 
-# Blokir halaman sistem/auth agar tidak terindeks Google
 Disallow: /dashboard/
 Disallow: /profil/
 Disallow: /signin/
 Disallow: /signup/
 Disallow: /verifikasi/
 
-# Peta Situs
+# SITEMAP
 Sitemap: https://mazdaweb.bejalen.com/sitemap.xml
