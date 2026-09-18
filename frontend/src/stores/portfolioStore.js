@@ -3,7 +3,6 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import instance from "../utils/axios";
 
 export const initialHardSkills = [
-  // 01 Languanges & Core
   { icon: "logos:html-5", name: "HTML", category: "Markup" },
   { icon: "logos:css-3", name: "CSS", category: "Bahasa Pemrograman" },
   {
@@ -29,7 +28,6 @@ export const initialHardSkills = [
     category: "Bahasa Pemrograman",
   },
 
-  // 02 Frameworks & Libraries
   { icon: "logos:react", name: "React.js", category: "Framework & Library" },
   { icon: "logos:vue", name: "Vue.js", category: "Framework & Library" },
   {
@@ -96,7 +94,6 @@ export const initialHardSkills = [
     category: "Framework & Library",
   },
 
-  // 03 Styling & UI Tools
   { icon: "logos:bootstrap", name: "Bootstrap CSS", category: "Styling & UI" },
   {
     icon: "logos:tailwindcss-icon",
@@ -134,7 +131,6 @@ export const initialHardSkills = [
   { icon: "tabler:brand-threejs", name: "Three.js", category: "Styling & UI" },
   { icon: "devicon-plain:bulma", name: "Bulma CSS", category: "Styling & UI" },
 
-  // 04 State Management
   { icon: "logos:redux", name: "Redux", category: "State Management" },
   { icon: "devicon:zustand", name: "Zustand", category: "State Management" },
   { icon: "logos:pinia", name: "Pinia", category: "State Management" },
@@ -144,7 +140,6 @@ export const initialHardSkills = [
     category: "State Management",
   },
 
-  // 05 Databases
   { icon: "logos:mongodb-icon", name: "MongoDB", category: "Database" },
   { icon: "logos:postgresql", name: "PostgreSQL", category: "Database" },
   { icon: "logos:mysql", name: "MySQL", category: "Database" },
@@ -152,7 +147,6 @@ export const initialHardSkills = [
   { icon: "logos:firebase-icon", name: "Firebase", category: "Database" },
   { icon: "simple-icons:prisma", name: "Prisma", category: "Database" },
 
-  // 06 Tools & Others
   {
     icon: "dashicons:rest-api",
     name: "RESTful API",
@@ -191,7 +185,6 @@ export const initialHardSkills = [
     category: "Tools & Lainnya",
   },
 
-  // 07 Cloud & Deployment
   { icon: "lineicons:vercel", name: "Vercel", category: "Cloud & Deploy" },
   { icon: "logos:netlify-icon", name: "Netlify", category: "Cloud & Deploy" },
   {
@@ -201,7 +194,6 @@ export const initialHardSkills = [
   },
   { icon: "simple-icons:railway", name: "Railway", category: "Cloud & Deploy" },
 
-  // 08 Office & IDE
   {
     icon: "logos:visual-studio-code",
     name: "VS Code",
@@ -252,15 +244,15 @@ export const initialHardSkills = [
 ];
 
 export const experienceBadges = [
-  "Full-Time", 
-  "Contract", 
-  "Part-Time", 
-  "Freelance", 
-  "Internship", 
-  "MSIB", 
-  "Student Exchange", 
-  "Organization", 
-  "Volunteer", 
+  "Full-Time",
+  "Contract",
+  "Part-Time",
+  "Freelance",
+  "Internship",
+  "MSIB",
+  "Student Exchange",
+  "Organization",
+  "Volunteer",
 ];
 
 export const categories = [
@@ -418,6 +410,22 @@ export const usePortfolioStore = create(
             skillsData: {
               ...state.skillsData,
               softSkills: response.data.softSkills,
+            },
+          }));
+        } catch (error) {
+          throw error;
+        }
+      },
+
+      updateHardSkills: async (newHardSkills) => {
+        try {
+          const response = await instance.put("/skills", {
+            hardSkills: newHardSkills,
+          });
+          set((state) => ({
+            skillsData: {
+              ...state.skillsData,
+              hardSkills: response.data.hardSkills,
             },
           }));
         } catch (error) {

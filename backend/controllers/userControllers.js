@@ -2,7 +2,11 @@ import User from "../models/UserModels.js";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import asyncHandler from "../middleware/asyncHandler.js";
-import { sendEmailVerify, sendWelcomeEmail } from "../utils/sendEmail.js";
+import {
+  sendEmailVerify,
+  sendWelcomeEmail,
+  sendLoginAlert,
+} from "../utils/sendEmail.js";
 import { OAuth2Client } from "google-auth-library";
 import { v2 as cloudinary } from "cloudinary";
 import streamifier from "streamifier";
@@ -11,7 +15,7 @@ import sharp from "sharp";
 const client = new OAuth2Client(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
-  "postmessage"
+  "postmessage",
 );
 
 export const getCookieOptions = () => {
@@ -51,14 +55,26 @@ const createSendResToken = async (
   user,
   statusCode,
   res,
-  isRefreshToken = false
+  isRefreshToken = false,
 ) => {
   let token;
 
   if (!isRefreshToken) {
     const newSessionId = crypto.randomBytes(16).toString("hex");
     user.sessionTokenId = newSessionId;
-    await user.save();
+
+    const COOLDOWN_MS = 3 * 24 * 60 * 60 * 1000;
+    const now = Date.now();
+
+    if (
+      !user.lastLoginAlert ||
+      now - new Date(user.lastLoginAlert).getTime() > COOLDOWN_MS
+    ) {
+      sendLoginAlert(user);
+      user.lastLoginAlert = now;
+    }
+
+    await user.save({ validateBeforeSave: false });
     token = signToken(user._id, user.role, newSessionId);
   } else {
     token = signToken(user._id, user.role, user.sessionTokenId);
@@ -66,39 +82,24 @@ const createSendResToken = async (
 
   const decodedToken = jwt.decode(token);
   const sessionExpiresAt = decodedToken.exp * 1000;
-
   const cookieOptions = getCookieOptions();
-  const expiresInDays = parseInt(process.env.JWT_COOKIE_EXPIRES_IN, 10);
+  const expiresInDays = parseInt(process.env.JWT_COOKIE_EXPIRES_IN, 10) || 30;
 
-  if (isNaN(expiresInDays)) {
-    console.warn(
-      "JWT_COOKIE_EXPIRES_IN tidak diatur di .env. Menggunakan default 30 hari."
-    );
-    cookieOptions.expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-  } else {
-    cookieOptions.expires = new Date(
-      Date.now() + expiresInDays * 24 * 60 * 60 * 1000
-    );
-  }
+  cookieOptions.expires = new Date(
+    Date.now() + expiresInDays * 24 * 60 * 60 * 1000,
+  );
 
   res.cookie("jwt", token, cookieOptions);
-  user.password = undefined;
 
   const userResponse = user.toObject ? user.toObject() : { ...user };
   delete userResponse.password;
   userResponse.sessionExpiresAt = sessionExpiresAt;
-
-  if (!isRefreshToken) {
-    const userWithToken = { ...user.toObject(), token };
-    sendWelcomeEmail(userWithToken).catch((err) => console.error(err));
-  }
 
   res.status(statusCode).json({ user: userResponse });
 };
 
 export const logoutUser = (req, res) => {
   res.setHeader("Cache-Control", "no-store");
-
   const cookieOptions = getCookieOptions();
   cookieOptions.expires = new Date(0);
   res.cookie("jwt", "loggedout", cookieOptions);
@@ -138,7 +139,7 @@ const streamUploadFromBuffer = (buffer, folderName) => {
       (error, result) => {
         if (result) resolve(result);
         else reject(error);
-      }
+      },
     );
     streamifier.createReadStream(buffer).pipe(stream);
   });
@@ -165,13 +166,13 @@ export const registerRequest = asyncHandler(async (req, res) => {
     } else {
       res.status(400);
       throw new Error(
-        "Email ini sudah didaftarkan tapi belum diverifikasi. Silakan Verifikasi terlebih dahulu."
+        "Email ini sudah didaftarkan tapi belum diverifikasi. Silakan Verifikasi terlebih dahulu.",
       );
     }
   }
 
   const verificationCode = Math.floor(
-    100000 + Math.random() * 900000
+    100000 + Math.random() * 900000,
   ).toString();
   const verificationExpires = Date.now() + 10 * 60 * 1000;
 
@@ -195,10 +196,11 @@ export const registerRequest = asyncHandler(async (req, res) => {
 
 const processGooglePayload = async (payload) => {
   const { email, name, picture } = payload;
-  if (!email) {
+  if (!email)
     throw new Error("Tidak dapat mengambil email dari kredensial Google.");
-  }
+
   let user = await User.findOne({ email });
+  let isNewUser = false;
 
   if (!user) {
     user = await User.create({
@@ -209,15 +211,15 @@ const processGooglePayload = async (payload) => {
       profilePicture: picture,
       role: "user",
     });
-  } else {
-    if (picture && !user.profilePicture) {
-      user.profilePicture = picture;
-      await user.save();
-    }
+    isNewUser = true;
+  } else if (picture && !user.profilePicture) {
+    user.profilePicture = picture;
+    await user.save();
   }
 
   const userForFrontend = user.toObject();
   userForFrontend.hasSubmittedTestimonial = false;
+  userForFrontend.isNewUser = isNewUser;
   return userForFrontend;
 };
 
@@ -239,16 +241,11 @@ export const googleAuth = asyncHandler(async (req, res) => {
       });
       payload = ticket.getPayload();
     } catch (error) {
-      console.log(
-        "Verifikasi sebagai ID Token gagal, mencoba menukar sebagai Authorization Code..."
-      );
-
       const { tokens } = await client.getToken(tokenFromFrontend);
       const idToken = tokens.id_token;
 
-      if (!idToken) {
+      if (!idToken)
         throw new Error("Gagal mendapatkan ID Token setelah penukaran kode.");
-      }
 
       const ticket = await client.verifyIdToken({
         idToken: idToken,
@@ -257,12 +254,17 @@ export const googleAuth = asyncHandler(async (req, res) => {
       payload = ticket.getPayload();
     }
 
-    const user = await processGooglePayload(payload);
+    const userObj = await processGooglePayload(payload);
+    const userInDb = await User.findById(userObj._id);
 
-    const userInDb = await User.findById(user._id);
+    if (userObj.isNewUser) {
+      sendWelcomeEmail(userInDb).catch((err) =>
+        console.error("Gagal mengirim email welcome GoogleAuth:", err),
+      );
+    }
+
     createSendResToken(userInDb, 200, res);
   } catch (finalError) {
-    console.error("Gagal total saat otentikasi Google:", finalError);
     res.status(400);
     throw new Error("Kredensial Google tidak valid atau sudah kedaluwarsa.");
   }
@@ -287,6 +289,10 @@ export const verifyUser = asyncHandler(async (req, res) => {
   user.verificationExpires = undefined;
   await user.save();
 
+  sendWelcomeEmail(user).catch((err) =>
+    console.error("Gagal mengirim email welcome VerifyUser:", err),
+  );
+
   createSendResToken(user, 200, res);
 });
 
@@ -308,12 +314,11 @@ export const resendVerification = asyncHandler(async (req, res) => {
   }
 
   user.verificationCode = Math.floor(
-    100000 + Math.random() * 900000
+    100000 + Math.random() * 900000,
   ).toString();
   user.verificationExpires = Date.now() + 10 * 60 * 1000;
 
   await user.save();
-
   await sendEmailVerify(user.email, user.verificationCode);
 
   res.status(200).json({
@@ -339,7 +344,7 @@ export const loginUser = asyncHandler(async (req, res) => {
   if (userData.role === "user" && !userData.isVerified) {
     res.status(403);
     throw new Error(
-      "Akun Anda belum diverifikasi. Silakan lakukan Verifikasi terlebih dahulu."
+      "Akun Anda belum diverifikasi. Silakan lakukan Verifikasi terlebih dahulu.",
     );
   }
 
@@ -351,11 +356,7 @@ export const getUserStats = asyncHandler(async (req, res) => {
   const totalAdmins = await User.countDocuments({ role: "admin" });
   const totalSuperAdmins = await User.countDocuments({ role: "superAdmin" });
 
-  res.status(200).json({
-    totalUsers,
-    totalAdmins,
-    totalSuperAdmins,
-  });
+  res.status(200).json({ totalUsers, totalAdmins, totalSuperAdmins });
 });
 
 export const getAdminData = asyncHandler(async (req, res) => {
@@ -365,7 +366,7 @@ export const getAdminData = asyncHandler(async (req, res) => {
   }
 
   const superAdmins = await User.find({ role: "superAdmin" }).select(
-    "-password"
+    "-password",
   );
   const admins = await User.find({ role: "admin" }).select("-password");
 
@@ -374,7 +375,7 @@ export const getAdminData = asyncHandler(async (req, res) => {
 
 export const getManagementUsers = asyncHandler(async (req, res) => {
   const superAdmins = await User.find({ role: "superAdmin" }).select(
-    "-password"
+    "-password",
   );
   const admins = await User.find({ role: "admin" }).select("-password");
 
@@ -387,14 +388,8 @@ export const deleteAdmin = asyncHandler(async (req, res) => {
     if (user.cloudinaryId) {
       try {
         await cloudinary.uploader.destroy(user.cloudinaryId);
-      } catch (error) {
-        console.error(
-          "Gagal menghapus foto profil Admin dari Cloudinary:",
-          error
-        );
-      }
+      } catch (error) {}
     }
-
     await user.deleteOne();
     res.status(200).json({ message: "Admin berhasil dihapus" });
   } else {
@@ -412,7 +407,7 @@ export const updateAdmin = asyncHandler(async (req, res) => {
     if (req.body.password && req.body.password.length > 0) {
       const newPassword = req.body.password;
 
-      if (req.body.password.length < 10) {
+      if (newPassword.length < 10) {
         res.status(400);
         throw new Error("Password baru minimal harus 10 karakter.");
       }
@@ -420,19 +415,17 @@ export const updateAdmin = asyncHandler(async (req, res) => {
       if (digitCount < 3) {
         res.status(400);
         throw new Error(
-          "Password baru harus mengandung setidaknya tiga (3) angka."
+          "Password baru harus mengandung setidaknya tiga (3) angka.",
         );
       }
       if (newPassword.toLowerCase().includes("admin")) {
         res.status(400);
         throw new Error("Password tidak boleh mengandung kata 'admin'.");
       }
-
       if (/^\d+$/.test(newPassword)) {
         res.status(400);
         throw new Error("Password tidak boleh hanya terdiri dari angka.");
       }
-
       if (!/\d/.test(newPassword) || !/[a-zA-Z]/.test(newPassword)) {
         res.status(400);
         throw new Error("Password harus merupakan kombinasi huruf dan angka.");
@@ -459,7 +452,7 @@ export const updateAdmin = asyncHandler(async (req, res) => {
       if (sequentialPatterns.some((pattern) => newPassword.includes(pattern))) {
         res.status(400);
         throw new Error(
-          "Password tidak boleh mengandung urutan angka yang mudah ditebak."
+          "Password tidak boleh mengandung urutan angka yang mudah ditebak.",
         );
       }
       admin.password = req.body.password;
@@ -529,23 +522,20 @@ export const createAdmin = asyncHandler(async (req, res) => {
   if (sequentialPatterns.some((pattern) => password.includes(pattern))) {
     res.status(400);
     throw new Error(
-      "Password tidak boleh mengandung urutan angka yang mudah ditebak."
+      "Password tidak boleh mengandung urutan angka yang mudah ditebak.",
     );
   }
 
   const passwordLower = password.toLowerCase();
-
   const nameParts = fullName.toLowerCase().split(/\s+/);
-
   const emailUsername = email.split("@")[0].toLowerCase();
-
   const forbiddenWords = [...nameParts, emailUsername];
 
   for (const word of forbiddenWords) {
     if (word.length > 2 && passwordLower.includes(word)) {
       res.status(400);
       throw new Error(
-        `Password tidak boleh mengandung bagian dari nama atau email Anda (kata: "${word}").`
+        `Password tidak boleh mengandung bagian dari nama atau email Anda (kata: "${word}").`,
       );
     }
   }
@@ -584,9 +574,7 @@ export const getUser = asyncHandler(async (req, res) => {
     hasSubmittedTestimonial: false,
   };
 
-  return res.status(200).json({
-    user: userForFrontend,
-  });
+  return res.status(200).json({ user: userForFrontend });
 });
 
 export const getUsers = asyncHandler(async (req, res) => {
@@ -608,9 +596,7 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
       if (user.cloudinaryId) {
         try {
           await cloudinary.uploader.destroy(user.cloudinaryId);
-        } catch (error) {
-          console.error("Gagal menghapus gambar lama dari Cloudinary:", error);
-        }
+        } catch (error) {}
       }
       const maxSize = 4 * 1024 * 1024;
       if (req.file.size > maxSize) {
@@ -625,7 +611,7 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
 
       const result = await streamUploadFromBuffer(
         optimizedBuffer,
-        "profile_pictures"
+        "profile_pictures",
       );
       user.profilePicture = result.secure_url;
       user.cloudinaryId = result.public_id;
@@ -657,9 +643,7 @@ export const deleteUserByAdmin = asyncHandler(async (req, res) => {
     if (user.cloudinaryId) {
       try {
         await cloudinary.uploader.destroy(user.cloudinaryId);
-      } catch (error) {
-        console.error("Gagal menghapus foto profil dari Cloudinary:", error);
-      }
+      } catch (error) {}
     }
     await user.deleteOne();
     res
@@ -676,7 +660,7 @@ export const deleteSuperAdmin = asyncHandler(async (req, res) => {
   const targetUser = await User.findById(id);
 
   if (!targetUser || targetUser.role !== "superAdmin") {
-    res.status(4404);
+    res.status(404);
     throw new Error("Super Admin tidak ditemukan.");
   }
   if (req.user._id.toString() === id) {

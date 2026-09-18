@@ -167,7 +167,9 @@ function EditSkills() {
   const handleDisplayChange = (skillName, isChecked) => {
     if (isChecked) {
       const skillToAdd = initialHardSkills.find((s) => s.name === skillName);
-      setLocalHardSkills((prev) => [...prev, { ...skillToAdd, level: "Dasar" }]);
+      if (skillToAdd) {
+        setLocalHardSkills((prev) => [...prev, { ...skillToAdd, level: "Dasar" }]);
+      }
     } else {
       setLocalHardSkills((prev) => prev.filter((s) => s.name !== skillName));
     }
@@ -184,7 +186,16 @@ function EditSkills() {
   const handleSaveHardSkills = async () => {
     setIsSavingHardSkill(true);
     try {
-      await updateHardSkills(localHardSkills);
+      // FIX: Clean payload strictly for Mongoose validation
+      const payload = localHardSkills
+        .filter(skill => skill && skill.name && skill.icon) // Ensure valid data
+        .map(skill => ({
+          name: String(skill.name),
+          icon: String(skill.icon),
+          level: String(skill.level || "Dasar")
+        }));
+
+      await updateHardSkills(payload);
       customToast("Hard skills berhasil diperbarui!");
     } catch (error) {
       errorToast("Gagal", error.response?.data?.message || "Error server");
@@ -418,7 +429,7 @@ function EditSkills() {
                   disabled={isSavingHardSkill}
                 >
                   {isSavingHardSkill ? <span className="loading loading-ring loading-md"></span> : <Icon icon="mdi:content-save-check" className="w-5 h-5" />}
-                  Simpan Perubahan Hard Skills
+                  {isSavingHardSkill ? "Menyimpan..." : "Simpan Perubahan Hard Skills"}
                 </button>
               </div>
             </div>
