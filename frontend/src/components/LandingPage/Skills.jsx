@@ -187,7 +187,8 @@ function Skills() {
                     className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10"
                     variants={containerVariants}
                     initial={isBot ? "visible" : "hidden"}
-                    animate="visible"
+                    whileInView="visible"
+                    viewport={{ once: true, amount: 0.1 }}
                   >
                     {categoryOrder.map((category) => {
                       const skills = groupedHardSkills[category];
@@ -250,7 +251,8 @@ function Skills() {
                   className="grid grid-cols-1 md:grid-cols-2 gap-4 group/softlist"
                   variants={containerVariants}
                   initial={isBot ? "visible" : "hidden"}
-                  animate="visible"
+                  whileInView="visible"
+                  viewport={{ once: true, amount: 0.1 }}
                 >
                   {displayedSoftSkills.length > 0 ? (
                     displayedSoftSkills.map((skill, index) => (

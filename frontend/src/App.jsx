@@ -83,7 +83,6 @@ function App() {
           ::-webkit-scrollbar-thumb:horizontal { background-color: oklch(var(--p)); border-radius: 9999px; }
           ::-webkit-scrollbar-track:horizontal { background-color: transparent; }
           
-          /* KILL ANIMATIONS FOR BOTS GLOBALLY */
           ${isBot ? `
             * {
               animation: none !important;

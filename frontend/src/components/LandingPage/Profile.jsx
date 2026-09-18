@@ -11,40 +11,29 @@ import FloatingLabelInput, { FloatingLabelSelect } from "../FloatingLabelInput";
 
 const ProfileSkeleton = () => {
   return (
-    <section className="container mx-auto px-4 py-8">
-      <div className="max-w-6xl mx-auto">
-        <div className="text-sm breadcrumbs mb-4">
-          <ul>
-            <li>
-              <div className="skeleton h-4 w-16"></div>
-            </li>
-            <li>
-              <div className="skeleton h-4 w-20"></div>
-            </li>
-          </ul>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-4">
-            <div className="card bg-base-100 shadow-md border border-base-content/20 p-4 items-center text-center">
-              <div className="skeleton w-36 h-36 rounded-full shrink-0"></div>
-              <div className="skeleton h-4 w-2/3 mt-3"></div>
-              <div className="skeleton h-10 w-full mt-4"></div>
+    <section className="container mx-auto px-4 py-12 max-w-6xl">
+      <div className="flex flex-col lg:flex-row gap-8">
+        <div className="w-full lg:w-1/3">
+          <div className="card bg-base-100 border border-base-content/10 rounded-[2rem] overflow-hidden">
+            <div className="h-32 bg-base-200 animate-pulse"></div>
+            <div className="px-6 pb-6 pt-0 flex flex-col items-center -mt-16">
+              <div className="w-32 h-32 rounded-full bg-base-300 border-4 border-base-100 animate-pulse mb-4"></div>
+              <div className="h-6 w-3/4 bg-base-300 animate-pulse rounded-lg mb-2"></div>
+              <div className="h-4 w-1/2 bg-base-200 animate-pulse rounded-lg mb-6"></div>
+              <div className="h-12 w-full bg-base-200 animate-pulse rounded-xl"></div>
             </div>
           </div>
-          <div className="lg:col-span-8">
-            <div className="card bg-base-100 shadow-md border border-base-content/20">
-              <div className="card-body">
-                <div className="skeleton h-6 w-1/3 mb-2"></div>
-                <div className="divider my-2"></div>
-                <div className="skeleton h-16 w-full mb-4"></div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="skeleton h-16 w-full"></div>
-                  <div className="skeleton h-16 w-full"></div>
-                </div>
-                <div className="skeleton h-16 w-full mt-4"></div>
-                <div className="skeleton h-12 w-full mt-6"></div>
+        </div>
+        <div className="w-full lg:w-2/3">
+          <div className="card bg-base-100 border border-base-content/10 rounded-[2rem] p-8">
+            <div className="h-8 w-1/3 bg-base-300 animate-pulse rounded-lg mb-8"></div>
+            <div className="space-y-6">
+              <div className="h-14 w-full bg-base-200 animate-pulse rounded-xl"></div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="h-14 w-full bg-base-200 animate-pulse rounded-xl"></div>
+                <div className="h-14 w-full bg-base-200 animate-pulse rounded-xl"></div>
               </div>
+              <div className="h-14 w-full bg-base-200 animate-pulse rounded-xl"></div>
             </div>
           </div>
         </div>
@@ -145,7 +134,9 @@ function Profile() {
         formData.append("password", newPassword);
       }
 
-      const response = await instance.put("/users/profile", formData, { headers: { "Content-Type": "multipart/form-data" } });
+      const response = await instance.put("/users/profile", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
       updateUser(response.data.user);
       showSuccessSwal("Berhasil!", "Profil diperbarui.");
@@ -186,152 +177,158 @@ function Profile() {
 
   const isAdmin = user && (user.role === "admin" || user.role === "superAdmin");
 
-  return (
-    <>
-      <section id="userprofile" className="container mx-auto px-4 py-8">
-        <SeoHelmet
-          title="Selamat Datang di Web MazdaN"
-          description={
-            siteData.aboutParagraph
-              ? siteData.aboutParagraph.substring(0, 160)
-              : "Profil Kamu disini ya"
-          }
-          url="/profil"
-        />
-        <div className="max-w-6xl mx-auto">
-          <div className="text-sm breadcrumbs mb-4">
-            <ul>
-              <li>
-                <Link to="/">Beranda</Link>
-              </li>
-              <li>Profil</li>
-            </ul>
-          </div>
+  const displayImage =
+    imagePreview ||
+    (user?.profilePicture &&
+      user.profilePicture !== "null" &&
+      user.profilePicture.trim() !== ""
+      ? user.profilePicture
+      : "/default-avatar.png");
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <div className="lg:col-span-4 mb-4 lg:mb-0 order-1 lg:order-1">
-              <div className="card bg-base-100 shadow-md border border-base-content/20">
-                <div className="card-body items-center text-center">
-                  <h2 className="text-3xl font-bold font-display">
-                    Foto Profil
-                  </h2>
-                  <div className="divider my-2"></div>
+  return (
+    <section id="userprofile" className="py-12 px-2 lg:px-12">
+      <SeoHelmet
+        title={`Profil | ${user?.fullName || "Akun"}`}
+        description={
+          siteData.aboutParagraph
+            ? siteData.aboutParagraph.substring(0, 160)
+            : "Manajemen profil dan akun Anda."
+        }
+        url="/profil"
+      />
+      <div className="max-w-6xl mx-auto">
+        <div className="text-sm breadcrumbs mb-8 font-medium text-base-content/60">
+          <ul>
+            <li>
+              <Link to="/" className="hover:text-primary transition-colors">
+                Beranda
+              </Link>
+            </li>
+            <li className="text-base-content">Profil</li>
+          </ul>
+        </div>
+
+        <div className="flex flex-col lg:flex-row gap-8 items-start">
+          <div className="w-full lg:w-1/3 flex flex-col gap-6 lg:sticky lg:top-24">
+            <div className="card bg-base-100 border border-base-content/10 shadow-xl shadow-base-content/5 rounded-[2rem] overflow-hidden">
+              <div className="h-32 w-full bg-gradient-to-r from-primary/80 to-secondary/80 relative">
+                <div className="absolute inset-0 bg-black/10"></div>
+              </div>
+
+              <div className="px-6 pb-8 pt-0 flex flex-col items-center relative -mt-16">
+                <div className="relative group">
                   <div className="avatar">
-                    <div className="w-36 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                    <div className="w-32 h-32 rounded-full ring-4 ring-base-100 shadow-xl bg-base-200">
                       <img
-                        src={
-                          imagePreview ||
-                          (user?.profilePicture
-                            ? user.profilePicture
-                            : "/default-avatar.png")
-                        }
+                        src={displayImage}
                         alt="Foto Profil"
+                        className="object-cover"
                       />
                     </div>
                   </div>
-                  {isEditing ? (
-                    <div className="form-control w-full my-3">
-                      <label className="label">
-                        <span className="label-text text-xs">
-                          Maks. 4MB (format gambar harus .jpg, .png)
-                        </span>
-                      </label>
+                  {isEditing && (
+                    <label className="absolute inset-0 flex items-center justify-center bg-black/50 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer backdrop-blur-sm">
+                      <Icon icon="mdi:camera-plus" className="w-8 h-8" />
                       <input
                         type="file"
-                        className="file-input file-input-bordered file-input-sm w-full"
+                        className="hidden"
                         onChange={handleFileChange}
-                        accept="image/jpeg, image/png"
+                        accept="image/jpeg, image/png, image/webp"
                       />
-                    </div>
-                  ) : (
-                    <small className="text-base-content/70 text-sm mt-2">
-                      "Edit Data" untuk mengubah data.
-                    </small>
+                    </label>
                   )}
                 </div>
-              </div>
 
-              <div className="hidden lg:block text-center mt-3 space-y-3">
-                {isAdmin && (
-                  <Link to="/dashboard" className="btn btn-neutral w-full">
-                    <Icon icon="mdi:view-dashboard-outline" className="mr-2" />
-                    Ke Dashboard
-                  </Link>
+                <div className="mt-4 text-center">
+                  <h2 className="text-2xl font-black font-display text-base-content">
+                    {user?.fullName || "User"}
+                  </h2>
+                  <p className="text-sm font-medium text-base-content/50 uppercase tracking-widest mt-1">
+                    {isAdmin ? "Administrator" : "Member"}
+                  </p>
+                </div>
+
+                {isEditing && (
+                  <p className="text-xs text-base-content/50 mt-4 text-center px-4 bg-base-200/50 py-2 rounded-xl border border-base-content/5">
+                    Format: JPG, PNG, WEBP. Maks 4MB.
+                  </p>
                 )}
-
-                <button
-                  className="btn btn-error w-full text-base-100"
-                  onClick={handleSignOut}
-                >
-                  <Icon icon="mdi:logout" className="mr-2" />
-                  Logout
-                </button>
               </div>
-
-              {!isEditing && (
-                <div className="lg:hidden w-full mt-3">
-                  {isAdmin && (
-                    <Link
-                      to="/dashboard"
-                      className="btn btn-neutral w-full mb-3"
-                    >
-                      <Icon
-                        icon="mdi:view-dashboard-outline"
-                        className="mr-2"
-                      />
-                      Ke Dashboard
-                    </Link>
-                  )}
-                  <button
-                    type="button"
-                    className="btn btn-error w-full text-base-100"
-                    onClick={handleSignOut}
-                  >
-                    <Icon icon="mdi:logout" className="mr-2" />
-                    Logout
-                  </button>
-                </div>
-              )}
             </div>
 
-            <div className="lg:col-span-8 order-2 lg:order-2">
-              <div className="card bg-base-100 shadow-md border border-base-content/20">
-                <form
-                  className="card-body"
-                  onSubmit={(e) => e.preventDefault()}
+            <div className="flex flex-col gap-3">
+              {isAdmin && (
+                <Link
+                  to="/dashboard"
+                  className="btn btn-neutral w-full rounded-2xl shadow-sm hover:shadow-md transition-all h-14"
                 >
-                  <h2 className="text-3xl font-bold font-display text-center">
-                    Data Diri
-                  </h2>
-                  <div className="divider my-2"></div>
+                  <Icon icon="solar:widget-5-bold-duotone" className="w-6 h-6 mr-1" />
+                  Ke Dashboard
+                </Link>
+              )}
+              <button
+                type="button"
+                className="btn btn-error btn-outline w-full rounded-2xl hover:!text-base-100 transition-all h-14"
+                onClick={handleSignOut}
+              >
+                <Icon icon="solar:logout-2-bold-duotone" className="w-6 h-6 mr-1" />
+                Logout Sistem
+              </button>
+            </div>
+          </div>
 
-                  <div className="mt-4">
-                    <FloatingLabelInput
-                      id="fullName"
-                      name="fullName"
-                      label="Nama Lengkap"
-                      value={profileData.fullName}
-                      onChange={handleInputChange}
-                      disabled={!isEditing}
-                    />
+          <div className="w-full lg:w-2/3">
+            <div className="card bg-base-100 border border-base-content/10 shadow-xl shadow-base-content/5 rounded-[2rem]">
+              <form className="card-body p-6 md:p-10" onSubmit={(e) => e.preventDefault()}>
+                <div className="flex items-center justify-between mb-8">
+                  <div>
+                    <h2 className="text-3xl font-black font-display text-base-content">
+                      Informasi Pribadi
+                    </h2>
+                    <p className="text-base-content/60 mt-1 text-sm">
+                      Kelola data diri dan preferensi keamanan Anda.
+                    </p>
                   </div>
+                  {!isEditing && (
+                    <button
+                      type="button"
+                      onClick={() => setIsEditing(true)}
+                      className="btn btn-primary btn-circle shadow-lg shadow-primary/30"
+                      title="Edit Profil"
+                    >
+                      <Icon icon="solar:pen-bold" className="w-5 h-5" />
+                    </button>
+                  )}
+                </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div className="space-y-6">
+                  <FloatingLabelInput
+                    id="fullName"
+                    name="fullName"
+                    label="Nama Lengkap"
+                    value={profileData.fullName}
+                    onChange={handleInputChange}
+                    disabled={!isEditing}
+                    className={!isEditing ? "bg-base-200/30" : ""}
+                  />
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <FloatingLabelInput
                       id="email"
                       name="email"
-                      label="Email"
+                      label="Alamat Email"
                       type="text"
                       value={isEditing && showEmail ? profileData.email : "•••••••••••••"}
                       disabled={true}
+                      className="bg-base-200/30"
                       rightElement={
                         isEditing ? (
                           <button
                             type="button"
-                            className="text-base-content/50 hover:text-primary transition-colors cursor-pointer"
+                            className="text-base-content/40 hover:text-primary transition-colors p-2"
                             onClick={() => setShowEmail(!showEmail)}
                           >
-                            <Icon icon={showEmail ? "mdi:eye-off" : "mdi:eye"} className="w-5 h-5" />
+                            <Icon icon={showEmail ? "solar:eye-closed-bold" : "solar:eye-bold"} className="w-5 h-5" />
                           </button>
                         ) : null
                       }
@@ -345,113 +342,104 @@ function Profile() {
                       value={profileData.phone}
                       onChange={handleInputChange}
                       disabled={!isEditing}
+                      className={!isEditing ? "bg-base-200/30" : ""}
                     />
                   </div>
 
-                  <div className="mt-4">
-                    <FloatingLabelSelect
-                      id="gender"
-                      name="gender"
-                      label="Jenis Kelamin"
-                      value={profileData.gender || ""}
-                      onChange={handleInputChange}
-                      disabled={!isEditing}
-                      className="bg-base-100"
-                    >
-                      <option value="" disabled hidden className="bg-base-100 text-base-content">-- Pilih Jenis Kelamin --</option>
-                      <option value="Laki-laki" className="bg-base-100 text-base-content">Laki-laki</option>
-                      <option value="Perempuan" className="bg-base-100 text-base-content">Perempuan</option>
-                    </FloatingLabelSelect>
-                  </div>
+                  <FloatingLabelSelect
+                    id="gender"
+                    name="gender"
+                    label="Jenis Kelamin"
+                    value={profileData.gender || ""}
+                    onChange={handleInputChange}
+                    disabled={!isEditing}
+                    className={!isEditing ? "bg-base-200/70" : "bg-base-100"}
+                  >
+                    <option className="bg-base-100" value="" disabled hidden>-- Pilih --</option>
+                    <option className="bg-base-100" value="Laki-laki">Laki-laki</option>
+                    <option className="bg-base-100" value="Perempuan">Perempuan</option>
+                  </FloatingLabelSelect>
+                </div>
 
-                  {isEditing ? (
-                    <>
-                      <div className="divider my-4">
-                        Ubah Password <strong>(Opsional)</strong>
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <FloatingLabelInput
-                          id="oldPassword"
-                          label="Kata Sandi Lama"
-                          type="password"
-                          value={oldPassword}
-                          onChange={(e) => setOldPassword(e.target.value)}
-                        />
+                {isEditing ? (
+                  <div className="mt-10 animate-fade-in-up">
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className="h-[1px] flex-1 bg-base-content/10"></div>
+                      <span className="text-xs font-bold uppercase tracking-widest text-base-content/40">Keamanan (Opsional)</span>
+                      <div className="h-[1px] flex-1 bg-base-content/10"></div>
+                    </div>
 
-                        <FloatingLabelInput
-                          id="newPassword"
-                          label="Kata Sandi Baru"
-                          type={showPassword ? "text" : "password"}
-                          value={newPassword}
-                          onChange={(e) => setNewPassword(e.target.value)}
-                          rightElement={
-                            <button
-                              type="button"
-                              className="text-base-content/50 hover:text-primary transition-colors cursor-pointer"
-                              onClick={() => setShowPassword(!showPassword)}
-                            >
-                              <Icon icon={showPassword ? "mdi:eye-off" : "mdi:eye"} className="w-5 h-5" />
-                            </button>
-                          }
-                        />
-                      </div>
-                    </>
-                  ) : (
-                    <div className="mt-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <FloatingLabelInput
-                        id="dummyPassword"
-                        label="Password"
+                        id="oldPassword"
+                        label="Kata Sandi Lama"
                         type="password"
-                        value="********"
-                        disabled={true}
+                        value={oldPassword}
+                        onChange={(e) => setOldPassword(e.target.value)}
+                      />
+
+                      <FloatingLabelInput
+                        id="newPassword"
+                        label="Kata Sandi Baru"
+                        type={showPassword ? "text" : "password"}
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        rightElement={
+                          <button
+                            type="button"
+                            className="text-base-content/40 hover:text-primary transition-colors p-2"
+                            onClick={() => setShowPassword(!showPassword)}
+                          >
+                            <Icon icon={showPassword ? "solar:eye-closed-bold" : "solar:eye-bold"} className="w-5 h-5" />
+                          </button>
+                        }
                       />
                     </div>
-                  )}
-
-                  <div className="mt-6 flex flex-col items-center gap-2">
-                    {isEditing ? (
-                      <div className="flex flex-col md:flex-row gap-2 w-full">
-                        <button
-                          type="button"
-                          onClick={handleCancelEdit}
-                          className="btn btn-warning w-full md:flex-1"
-                          disabled={isUpdating}
-                        >
-                          <Icon icon="mdi:close-circle" className="mr-2" />
-                          Batal Edit
-                        </button>
-                        <button
-                          type="button"
-                          onClick={handleSaveChanges}
-                          className="btn btn-success w-full md:flex-1"
-                          disabled={isUpdating}
-                        >
-                          {isUpdating ? (
-                            <span className="loading loading-ring loading-sm"></span>
-                          ) : (
-                            <Icon icon="mdi:content-save" className="mr-2" />
-                          )}
-                          Simpan Perubahan
-                        </button>
-                      </div>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => setIsEditing(true)}
-                        className="btn btn-secondary w-full"
-                      >
-                        <Icon icon="mdi:pencil" className="mr-2" />
-                        Edit Data
-                      </button>
-                    )}
                   </div>
-                </form>
-              </div>
+                ) : (
+                  <div className="mt-6">
+                    <FloatingLabelInput
+                      id="dummyPassword"
+                      label="Kata Sandi"
+                      type="password"
+                      value="********"
+                      disabled={true}
+                      className="bg-base-200/30"
+                    />
+                  </div>
+                )}
+
+                {isEditing && (
+                  <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-end pt-6 border-t border-base-content/10">
+                    <button
+                      type="button"
+                      onClick={handleCancelEdit}
+                      className="btn btn-ghost rounded-xl h-12 px-8"
+                      disabled={isUpdating}
+                    >
+                      Batal
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleSaveChanges}
+                      className="btn btn-primary rounded-xl h-12 px-8 shadow-lg shadow-primary/30"
+                      disabled={isUpdating}
+                    >
+                      {isUpdating ? (
+                        <span className="loading loading-ring loading-md"></span>
+                      ) : (
+                        <Icon icon="solar:diskette-bold" className="w-5 h-5 mr-2" />
+                      )}
+                      Simpan Perubahan
+                    </button>
+                  </div>
+                )}
+              </form>
             </div>
           </div>
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }
 

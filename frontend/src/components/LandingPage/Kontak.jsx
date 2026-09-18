@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import { toast } from "react-hot-toast";
@@ -35,8 +35,6 @@ function Kontak() {
   const [pesan, setPesan] = useState("");
   const [selectedMethod, setSelectedMethod] = useState(null);
   const [hoveredContact, setHoveredContact] = useState(null);
-
-  const [isEmailFocused, setIsEmailFocused] = useState(false);
   const [lastTapTime, setLastTapTime] = useState(0);
 
   const navigate = useNavigate();
@@ -108,31 +106,6 @@ function Kontak() {
     setLastTapTime(now);
   };
 
-  const structuredData = useMemo(() => ({
-    "@context": "https://schema.org",
-    "@type": "ContactPage",
-    "name": "Hubungi Saya",
-    "description": "Halaman kontak Mazda Nawallsyah",
-    "mainEntity": {
-      "@type": "Person",
-      "name": siteData?.brandNameShort || "Mazda Nawallsyah",
-      "email": siteData?.contactLinks?.email || "",
-      "sameAs": Object.values(siteData?.contactLinks || {}).filter(Boolean)
-    }
-  }), [siteData]);
-
-  useEffect(() => {
-    let script = document.getElementById("structured-data-kontak");
-    if (!script) {
-      script = document.createElement("script");
-      script.id = "structured-data-kontak";
-      script.type = "application/ld+json";
-      document.head.appendChild(script);
-    }
-    script.innerHTML = JSON.stringify(structuredData);
-    return () => { if (script) script.remove(); };
-  }, [structuredData]);
-
   const isFormDisabled = selectedMethod === "telegram";
   const isFormValid = !isFormDisabled && nama.trim().length >= 5 && emailForm.trim().length >= 8 && pesan.trim().length >= 25;
 
@@ -188,7 +161,7 @@ function Kontak() {
                 const isHoveredOrFocused = hoveredContact === method.id;
                 const isSelected = selectedMethod === method.id;
                 const showAura = isHoveredOrFocused || isSelected;
-                const displayData = isHoveredOrFocused || method.id === "email" ? method.data : maskContact(method.data, method.id);
+                const displayData = isHoveredOrFocused || isSelected || method.id === "email" ? method.data : maskContact(method.data, method.id);
 
                 return (
                   <m.div
@@ -203,12 +176,10 @@ function Kontak() {
                     tabIndex={0}
                     onFocus={() => setHoveredContact(method.id)}
                     onBlur={() => setHoveredContact(null)}
-                    className={`rounded-3xl outline-none cursor-pointer transition-all ${showAura ? `aura duration-[3500ms] ${method.color}` : ''
-                      }`}
+                    className={`rounded-3xl outline-none cursor-pointer ${showAura ? `aura duration-[3500ms] ${method.color}` : ''}`}
                   >
                     <div
-                      className={`card p-6 flex flex-col items-center text-center space-y-2 transition-colors duration-300 rounded-3xl w-full h-full text-base-content bg-base-100 ${isSelected ? `border-2 ${method.border} shadow-md` : "border border-base-content/40 shadow-sm"
-                        }`}
+                      className={`card p-6 flex flex-col items-center text-center space-y-2 rounded-3xl w-full h-full text-base-content bg-base-100 ${isSelected ? `border-2 ${method.border} shadow-md` : "border border-base-content/40 shadow-sm"}`}
                     >
                       <Icon icon={method.icon} className={`w-12 h-12 ${method.color}`} />
                       <h3 className="font-bold font-display text-lg">{method.label}</h3>
@@ -250,12 +221,11 @@ function Kontak() {
                     onChange={(e) => setEmailForm(e.target.value)}
                     disabled={isFormDisabled}
                     alwaysFloat={true}
-                    placeholder={isEmailFocused ? "" : "Klik 2x untuk login..."}
-                    className="placeholder:opacity-25"
-                    onFocus={() => setIsEmailFocused(true)}
-                    onBlur={() => setIsEmailFocused(false)}
+                    placeholder="Klik 2x untuk login..."
+                    className="!placeholder:text-base-content/40 !placeholder:text-xs !placeholder:font-normal"
                     onClick={handleEmailTap}
-                    title="Klik 1x untuk mengetik, Klik 2x (atau Tap 2x) untuk menuju halaman Login"
+                    onDoubleClick={() => navigate("/signin", { state: { from: "/#kontak" } })}
+                    title="Klik 2x untuk menuju halaman Login"
                   />
                 </div>
 
@@ -275,8 +245,7 @@ function Kontak() {
                   whileHover={selectedMethod && (isFormDisabled || isFormValid) ? { scale: 1.02 } : {}}
                   whileTap={selectedMethod && (isFormDisabled || isFormValid) ? { scale: 0.97 } : {}}
                   onClick={handleSendMessage}
-                  className={`btn btn-lg w-full rounded-2xl font-bold shadow-lg ${!selectedMethod ? "btn-disabled" : isFormDisabled ? "btn-info text-base-100" : isFormValid ? "btn-primary" : "btn-disabled"
-                    }`}
+                  className={`btn btn-lg w-full rounded-2xl font-bold shadow-lg ${!selectedMethod ? "btn-disabled" : isFormDisabled ? "btn-info text-base-100" : isFormValid ? "btn-primary" : "btn-disabled"}`}
                 >
                   {getButtonText()}
                   <Icon icon={selectedMethod === "telegram" ? "mdi:open-in-new" : "mdi:send"} className="w-5 h-5 ml-2" />
