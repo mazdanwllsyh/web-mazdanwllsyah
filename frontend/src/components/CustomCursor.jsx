@@ -1,8 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import React, { useEffect, useState } from "react";
+import { motion, useScroll, useTransform, useSpring, useMotionValue } from "framer-motion";
 
 const CustomCursor = () => {
-    const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+    const cursorX = useMotionValue(-100);
+    const cursorY = useMotionValue(-100);
+
+    const springConfig = { damping: 28, stiffness: 400, mass: 0.1 };
+    const smoothX = useSpring(cursorX, springConfig);
+    const smoothY = useSpring(cursorY, springConfig);
+
     const [isHover, setIsHover] = useState(false);
     const [isDarkMode, setIsDarkMode] = useState(false);
 
@@ -10,20 +16,10 @@ const CustomCursor = () => {
     const scaleX = useTransform(scrollYProgress, [0, 1], [0, 1]);
     const opacity = useTransform(scrollYProgress, [0, 0.05, 1], [0, 1, 1]);
 
-    const springConfig = { damping: 25, stiffness: 400, mass: 0.2 };
-    const cursorX = useSpring(0, springConfig);
-    const cursorY = useSpring(0, springConfig);
-
-    useEffect(() => {
-        cursorX.set(mousePos.x);
-        cursorY.set(mousePos.y);
-    }, [mousePos, cursorX, cursorY]);
-
     useEffect(() => {
         const checkTheme = () => {
             const theme = document.documentElement.getAttribute("data-theme");
-            setIsDarkMode(["synthwave", "dark", "black", "business", "night", "dim", "abyss",
-                "sunset", "forest", "aqua", "luxury", "dracula", "coffee"].includes(theme));
+            setIsDarkMode(["synthwave", "dark", "black", "business", "night", "dim", "abyss", "sunset", "forest", "aqua", "luxury", "dracula", "coffee"].includes(theme));
         };
 
         const observer = new MutationObserver(checkTheme);
@@ -35,9 +31,11 @@ const CustomCursor = () => {
 
         const move = (e) => {
             if (e.touches && e.touches.length > 0) {
-                setMousePos({ x: e.touches[0].clientX, y: e.touches[0].clientY });
+                cursorX.set(e.touches[0].clientX);
+                cursorY.set(e.touches[0].clientY);
             } else {
-                setMousePos({ x: e.clientX, y: e.clientY });
+                cursorX.set(e.clientX);
+                cursorY.set(e.clientY);
             }
         };
 
@@ -54,8 +52,8 @@ const CustomCursor = () => {
             }
         };
 
-        window.addEventListener('mousemove', move);
-        window.addEventListener('mouseover', checkHover);
+        window.addEventListener('mousemove', move, { passive: true });
+        window.addEventListener('mouseover', checkHover, { passive: true });
         window.addEventListener('touchmove', move, { passive: true });
         window.addEventListener('touchstart', (e) => { move(e); checkHover(e); }, { passive: true });
 
@@ -66,7 +64,7 @@ const CustomCursor = () => {
             window.removeEventListener('touchmove', move);
             window.removeEventListener('touchstart', move);
         }
-    }, []);
+    }, [cursorX, cursorY]);
 
     return (
         <>
@@ -77,14 +75,14 @@ const CustomCursor = () => {
 
             <motion.div
                 className="fixed top-0 left-0 w-0 h-0 pointer-events-none z-[999999]"
-                style={{ x: cursorX, y: cursorY }}
+                style={{ x: smoothX, y: smoothY }}
             >
                 {isDarkMode && (
                     <motion.div
-                        className="absolute rounded-full bg-primary/20 blur-[50px] mix-blend-screen"
+                        className="absolute rounded-full bg-primary/30 blur-[60px] mix-blend-screen"
                         animate={{
-                            width: isHover ? 160 : 80,
-                            height: isHover ? 160 : 80,
+                            width: isHover ? 180 : 100,
+                            height: isHover ? 180 : 100,
                             x: "-50%",
                             y: "-50%",
                         }}
@@ -93,21 +91,21 @@ const CustomCursor = () => {
                 )}
 
                 <motion.div
-                    className={`absolute rounded-full bg-gradient-to-br from-accent to-primary ${!isDarkMode ? "shadow-[0_5px_22px_rgba(0,0,0,12)] border border-white/30" : ""}`}
+                    className={`absolute rounded-full bg-gradient-to-br from-accent to-primary ${!isDarkMode ? "shadow-[0_4px_16px_rgba(0,0,0,0.3)] border border-white/50" : ""}`}
                     animate={{
                         width: isHover ? 0 : 12,
                         height: isHover ? 0 : 12,
                         opacity: isHover ? 0 : 1,
-                        x: "-30%",
-                        y: "-30%"
+                        x: "-50%",
+                        y: "-50%"
                     }}
-                    transition={{ type: "spring", stiffness: 500, damping: 25 }}
+                    transition={{ type: "spring", stiffness: 600, damping: 25 }}
                 />
 
                 <motion.div
                     className={`absolute border rounded-full backdrop-blur-sm ${isDarkMode
-                        ? "border-primary/50 bg-primary/10"
-                        : "border-primary/30 bg-primary/5 shadow-[0_8px_24px_rgba(0,0,0,0.3)]"
+                        ? "border-primary/60 bg-primary/10"
+                        : "border-primary/40 bg-primary/5 shadow-[0_8px_24px_rgba(0,0,0,0.15)]"
                         }`}
                     animate={{
                         width: isHover ? 48 : 0,

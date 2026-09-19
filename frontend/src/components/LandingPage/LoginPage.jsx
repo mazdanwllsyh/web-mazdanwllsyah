@@ -231,7 +231,7 @@ function LoginPage() {
               ATAU
             </div>
 
-            <div className="aura aura-rainbow duration-2000 w-full rounded-[var(--rounded-btn,0.5rem)]">
+            <div className="aura aura-rainbow duration-2000 w-full rounded-[var(--rounded-btn,0.5rem)] disabled:cursor-not-allowed disabled:aura aura-dual">
               <div className="relative group">
                 {!isLoading && (
                   <div
@@ -244,7 +244,7 @@ function LoginPage() {
                 <button
                   type="button"
                   disabled={isLoading}
-                  className="btn w-full text-sm bg-neutral hover:bg-neutral-focus text-neutral-content relative z-10 flex items-center justify-center gap-3 normal-case font-medium shadow-sm transition-all group-hover:shadow-md disabled:bg-neutral disabled:text-neutral-content disabled:border-primary/30 disabled:cursor-not-allowed"
+                  className="btn w-full rounded-[var(--rounded-btn,0.5rem)] text-sm bg-neutral hover:bg-neutral-focus text-neutral-content relative z-10 flex items-center justify-center gap-3 normal-case font-medium shadow-sm transition-all group-hover:shadow-md disabled:bg-neutral disabled:text-neutral-content disabled:border-primary/30 disabled:cursor-not-allowed"
                 >
                   {isLoading ? (
                     <span className="loading loading-bars loading-sm"></span>

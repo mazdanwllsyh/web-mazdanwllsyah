@@ -260,7 +260,7 @@ function Profile() {
               {isAdmin && (
                 <Link
                   to="/dashboard"
-                  className="btn btn-neutral w-full rounded-2xl shadow-sm hover:shadow-md transition-all h-14"
+                  className="btn bg-gradient-to-br from-accent to-primary text-base-100 w-full rounded-2xl shadow-sm hover:shadow-md transition-all h-14"
                 >
                   <Icon icon="solar:widget-5-bold-duotone" className="w-6 h-6 mr-1" />
                   Ke Dashboard

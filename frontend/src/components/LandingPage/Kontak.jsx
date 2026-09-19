@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import { toast } from "react-hot-toast";
@@ -30,14 +30,18 @@ const itemVariants = {
 function Kontak() {
   const siteData = useSiteStore((state) => state.siteData);
   const { user } = useAuth();
+  const navigate = useNavigate();
+
   const [nama, setNama] = useState("");
   const [emailForm, setEmailForm] = useState("");
   const [pesan, setPesan] = useState("");
   const [selectedMethod, setSelectedMethod] = useState(null);
   const [hoveredContact, setHoveredContact] = useState(null);
-  const [lastTapTime, setLastTapTime] = useState(0);
 
-  const navigate = useNavigate();
+  const clickBehaviorRef = useRef(Math.random() < 0.5 ? "single" : "double");
+  const loginActionType = clickBehaviorRef.current;
+
+  const isAdmin = user && (user.role === "admin" || user.role === "superAdmin");
 
   useEffect(() => {
     if (user) {
@@ -98,12 +102,16 @@ function Kontak() {
     }
   };
 
-  const handleEmailTap = () => {
-    const now = Date.now();
-    if (now - lastTapTime < 400) {
+  const handleEmailClick = () => {
+    if (loginActionType === "single") {
       navigate("/signin", { state: { from: "/#kontak" } });
     }
-    setLastTapTime(now);
+  };
+
+  const handleEmailDoubleClick = () => {
+    if (loginActionType === "double") {
+      navigate("/signin", { state: { from: "/#kontak" } });
+    }
   };
 
   const isFormDisabled = selectedMethod === "telegram";
@@ -125,10 +133,7 @@ function Kontak() {
 
   return (
     <LazyMotion features={domAnimation}>
-      <div
-        className="min-h-[auto] my-12 xl:min-h-screen flex flex-col items-center justify-center py-9 lg:py-12 text-base-content"
-        id="kontak"
-      >
+      <div className="min-h-[auto] my-12 xl:min-h-screen flex flex-col items-center justify-center py-9 lg:py-12 text-base-content" id="kontak">
         <div className="w-full max-w-6xl mx-auto px-4">
           <m.div
             className="text-center mb-12"
@@ -209,7 +214,7 @@ function Kontak() {
                     label="Nama Lengkap"
                     value={nama}
                     onChange={(e) => setNama(e.target.value)}
-                    disabled={isFormDisabled}
+                    disabled={isFormDisabled || isAdmin}
                     alwaysFloat={true}
                   />
 
@@ -219,13 +224,13 @@ function Kontak() {
                     type="email"
                     value={emailForm}
                     onChange={(e) => setEmailForm(e.target.value)}
-                    disabled={isFormDisabled}
+                    disabled={isFormDisabled || isAdmin}
                     alwaysFloat={true}
-                    placeholder="Klik 2x untuk login..."
+                    placeholder={loginActionType === "single" ? "Klik 1x untuk login..." : "Klik 2x untuk login..."}
                     className="!placeholder:text-base-content/40 !placeholder:text-xs !placeholder:font-normal"
-                    onClick={handleEmailTap}
-                    onDoubleClick={() => navigate("/signin", { state: { from: "/#kontak" } })}
-                    title="Klik 2x untuk menuju halaman Login"
+                    onClick={!isAdmin ? handleEmailClick : undefined}
+                    onDoubleClick={!isAdmin ? handleEmailDoubleClick : undefined}
+                    title={isAdmin ? "" : loginActionType === "single" ? "Klik 1x untuk menuju halaman Login" : "Klik 2x untuk menuju halaman Login"}
                   />
                 </div>
 
@@ -234,22 +239,24 @@ function Kontak() {
                   label="Pesan atau Pertanyaan"
                   value={pesan}
                   onChange={(e) => setPesan(e.target.value)}
-                  disabled={isFormDisabled}
+                  disabled={isFormDisabled || isAdmin}
                   rows={4}
-                  required={!isFormDisabled}
+                  required={!isFormDisabled && !isAdmin}
                   alwaysFloat={true}
                 />
 
-                <m.button
-                  type="button"
-                  whileHover={selectedMethod && (isFormDisabled || isFormValid) ? { scale: 1.02 } : {}}
-                  whileTap={selectedMethod && (isFormDisabled || isFormValid) ? { scale: 0.97 } : {}}
-                  onClick={handleSendMessage}
-                  className={`btn btn-lg w-full rounded-2xl font-bold shadow-lg ${!selectedMethod ? "btn-disabled" : isFormDisabled ? "btn-info text-base-100" : isFormValid ? "btn-primary" : "btn-disabled"}`}
-                >
-                  {getButtonText()}
-                  <Icon icon={selectedMethod === "telegram" ? "mdi:open-in-new" : "mdi:send"} className="w-5 h-5 ml-2" />
-                </m.button>
+                {!isAdmin && (
+                  <m.button
+                    type="button"
+                    whileHover={selectedMethod && (isFormDisabled || isFormValid) ? { scale: 1.02 } : {}}
+                    whileTap={selectedMethod && (isFormDisabled || isFormValid) ? { scale: 0.97 } : {}}
+                    onClick={handleSendMessage}
+                    className={`btn btn-lg w-full rounded-2xl font-bold shadow-lg ${!selectedMethod ? "btn-disabled" : isFormDisabled ? "btn-info text-base-100" : isFormValid ? "btn-primary" : "btn-disabled"}`}
+                  >
+                    {getButtonText()}
+                    <Icon icon={selectedMethod === "telegram" ? "mdi:open-in-new" : "mdi:send"} className="w-5 h-5 ml-2" />
+                  </m.button>
+                )}
               </form>
             </m.div>
           </div>

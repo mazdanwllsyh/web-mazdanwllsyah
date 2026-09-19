@@ -26,13 +26,11 @@ function NotFoundRedirect() {
 
 const PublicOnlyWrapper = () => {
   const { user, isUserLoading } = useAuth();
-  const location = useLocation();
 
   if (isUserLoading) return null;
   if (user) {
     const isAdmin = user.role === "admin" || user.role === "superAdmin";
-    const from = location.state?.from || (isAdmin ? "/dashboard" : "/profil");
-    return <Navigate to={from} replace />;
+    return <Navigate to={isAdmin ? "/dashboard" : "/profil"} replace />;
   }
   return <Outlet />;
 };
