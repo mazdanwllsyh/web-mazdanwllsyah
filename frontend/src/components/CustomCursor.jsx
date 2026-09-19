@@ -1,22 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { motion, useScroll, useTransform, useSpring, useMotionValue } from "framer-motion";
+import { isBot } from "../App";
 
 const CustomCursor = () => {
     const cursorX = useMotionValue(-100);
     const cursorY = useMotionValue(-100);
 
-    const springConfig = { damping: 28, stiffness: 400, mass: 0.1 };
+    const springConfig = { damping: 30, stiffness: 450, mass: 0.1 };
     const smoothX = useSpring(cursorX, springConfig);
     const smoothY = useSpring(cursorY, springConfig);
 
     const [isHover, setIsHover] = useState(false);
     const [isDarkMode, setIsDarkMode] = useState(false);
+    const [isTouchDevice, setIsTouchDevice] = useState(false);
 
     const { scrollYProgress } = useScroll();
     const scaleX = useTransform(scrollYProgress, [0, 1], [0, 1]);
     const opacity = useTransform(scrollYProgress, [0, 0.05, 1], [0, 1, 1]);
 
     useEffect(() => {
+        if (isBot) return;
+
+        const checkTouch = () => {
+            const hasTouch = window.matchMedia("(hover: none) and (pointer: coarse)").matches || 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+            setIsTouchDevice(hasTouch);
+        };
+        checkTouch();
+
         const checkTheme = () => {
             const theme = document.documentElement.getAttribute("data-theme");
             setIsDarkMode(["synthwave", "dark", "black", "business", "night", "dim", "abyss", "sunset", "forest", "aqua", "luxury", "dracula", "coffee"].includes(theme));
@@ -30,10 +40,7 @@ const CustomCursor = () => {
         checkTheme();
 
         const move = (e) => {
-            if (e.touches && e.touches.length > 0) {
-                cursorX.set(e.touches[0].clientX);
-                cursorY.set(e.touches[0].clientY);
-            } else {
+            if (!isTouchDevice) {
                 cursorX.set(e.clientX);
                 cursorY.set(e.clientY);
             }
@@ -52,30 +59,32 @@ const CustomCursor = () => {
             }
         };
 
-        window.addEventListener('mousemove', move, { passive: true });
-        window.addEventListener('mouseover', checkHover, { passive: true });
-        window.addEventListener('touchmove', move, { passive: true });
-        window.addEventListener('touchstart', (e) => { move(e); checkHover(e); }, { passive: true });
+        if (!isTouchDevice) {
+            window.addEventListener('mousemove', move, { passive: true });
+            window.addEventListener('mouseover', checkHover, { passive: true });
+        }
 
         return () => {
             observer.disconnect();
-            window.removeEventListener('mousemove', move);
-            window.removeEventListener('mouseover', checkHover);
-            window.removeEventListener('touchmove', move);
-            window.removeEventListener('touchstart', move);
+            if (!isTouchDevice) {
+                window.removeEventListener('mousemove', move);
+                window.removeEventListener('mouseover', checkHover);
+            }
         }
-    }, [cursorX, cursorY]);
+    }, [cursorX, cursorY, isTouchDevice]);
+
+    if (isBot || isTouchDevice) return null;
 
     return (
         <>
             <motion.div
                 className="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-accent to-primary z-[99998] pointer-events-none origin-left"
-                style={{ scaleX, opacity }}
+                style={{ scaleX, opacity, willChange: "transform, opacity" }}
             />
 
             <motion.div
                 className="fixed top-0 left-0 w-0 h-0 pointer-events-none z-[999999]"
-                style={{ x: smoothX, y: smoothY }}
+                style={{ x: smoothX, y: smoothY, willChange: "transform" }}
             >
                 {isDarkMode && (
                     <motion.div
@@ -87,6 +96,7 @@ const CustomCursor = () => {
                             y: "-50%",
                         }}
                         transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                        style={{ willChange: "width, height" }}
                     />
                 )}
 
@@ -100,6 +110,7 @@ const CustomCursor = () => {
                         y: "-50%"
                     }}
                     transition={{ type: "spring", stiffness: 600, damping: 25 }}
+                    style={{ willChange: "width, height, opacity" }}
                 />
 
                 <motion.div
@@ -115,6 +126,7 @@ const CustomCursor = () => {
                         y: "-50%"
                     }}
                     transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                    style={{ willChange: "width, height, opacity" }}
                 />
             </motion.div>
         </>

@@ -40,7 +40,7 @@ function Header() {
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [activeSection]);
 
@@ -77,26 +77,35 @@ function Header() {
           layout
           initial={false}
           animate={{
-            paddingTop: isScrolled ? "0.5rem" : "1rem",
-            paddingBottom: isScrolled ? "0.5rem" : "1rem",
+            paddingTop: isScrolled ? "0.6rem" : "1rem",
+            paddingBottom: isScrolled ? "0.6rem" : "1rem",
             paddingLeft: isScrolled ? "1.5rem" : "0.5rem",
             paddingRight: isScrolled ? "1.5rem" : "0.5rem",
-            marginTop: isScrolled ? "0.75rem" : "0rem",
-            backgroundColor: isScrolled ? "var(--fallback-b1,oklch(var(--b1)/0.7))" : "transparent",
-            borderColor: isScrolled ? "var(--fallback-bc,oklch(var(--bc)/0.1))" : "transparent",
+            marginTop: isScrolled ? "1rem" : "0rem",
+            backgroundColor: isScrolled ? "var(--fallback-b1,oklch(var(--b1)/0.75))" : "transparent",
             borderRadius: isScrolled ? "9999px" : "0px",
-            boxShadow: isScrolled ? "0 10px 20px -5px rgba(0, 0, 0, 0.1), 0 0 10px -2px rgba(0,0,0,0.05)" : "none",
-            backdropFilter: isScrolled ? "blur(12px)" : "blur(0px)",
-            width: isScrolled ? "92%" : "92%",
-            maxWidth: "72rem",
-            borderBottom: isScrolled ? "1px solid var(--fallback-p,oklch(var(--p)/0.2))" : "1px solid transparent"
+            boxShadow: isScrolled ? "0 20px 40px -15px rgba(0, 0, 0, 0.15)" : "none",
+            backdropFilter: isScrolled ? "blur(24px)" : "blur(0px)",
+            width: isScrolled ? "85%" : "92%",
+            maxWidth: "72rem"
           }}
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          className="mx-auto border-t-0 border-l-0 border-r-0"
+          className="mx-auto"
         >
           <div className="flex items-center justify-between relative">
             <div className="flex-1">
-              <a href="/" className="flex items-center gap-2 group w-fit overflow-hidden">
+              <a
+                href="/"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (window.location.pathname === "/") {
+                    window.location.reload();
+                  } else {
+                    window.location.href = "/";
+                  }
+                }}
+                className="flex items-center gap-2 group w-fit overflow-hidden outline-none"
+              >
                 <m.div
                   layout
                   initial={false}
@@ -106,7 +115,7 @@ function Header() {
                     fontSize: isScrolled ? "0.875rem" : "1.125rem",
                   }}
                   transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                  className="rounded-2xl bg-gradient-to-br from-accent to-primary text-base-100 flex items-center justify-center font-black shrink-0"
+                  className="mask mask-hexagon bg-gradient-to-br from-accent to-primary text-base-100 flex items-center justify-center font-bold shrink-0"
                 >
                   {siteData?.brandName?.charAt(0) || "M"}
                 </m.div>
@@ -115,17 +124,17 @@ function Header() {
                   initial={false}
                   animate={{
                     fontSize: isScrolled ? "1.125rem" : "1.25rem",
-                    opacity: isScrolled ? 0.9 : 1,
+                    opacity: isScrolled ? 0.95 : 1,
                   }}
                   transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                  className="font-display font-black tracking-tighter whitespace-nowrap"
+                  className="font-display font-bold tracking-tight whitespace-nowrap"
                 >
                   {siteData?.brandName || "Mazda"}
                 </m.span>
               </a>
             </div>
 
-            <nav className="hidden xl:flex items-center gap-1 bg-base-200/50 p-1 rounded-full border border-base-content/5 relative shadow-inner">
+            <nav className="hidden xl:flex items-center gap-1 bg-base-200/40 p-1 rounded-full border border-base-content/5 relative shadow-inner backdrop-blur-sm">
               {navLinks.map((link) => {
                 const isAtHome = location.pathname === "/";
                 const isActive = isAtHome && (
@@ -138,16 +147,16 @@ function Header() {
                     key={link.to}
                     to={link.to}
                     scroll={(el) => scrollWithOffset(el)}
-                    className="relative px-5 py-2 rounded-full text-sm font-bold z-10"
+                    className="relative px-5 py-2 rounded-full text-sm font-bold z-10 outline-none"
                   >
-                    <span className={`relative z-20 ${isActive ? "text-primary-content" : "text-base-content hover:text-primary transition-colors"}`}>
+                    <span className={`relative z-20 transition-colors duration-300 ${isActive ? "text-primary-content" : "text-base-content/80 hover:text-primary"}`}>
                       {link.text}
                     </span>
                     {isActive && (
                       <m.div
                         layoutId="activeNavIndicator"
-                        className="absolute inset-0 bg-gradient-to-br from-accent to-primary rounded-full shadow-[0_0_12px_rgba(var(--p),0.4)] z-10"
-                        transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                        className="absolute inset-0 bg-gradient-to-br from-accent to-primary rounded-full shadow-lg shadow-primary/20 z-10"
+                        transition={{ type: "spring", stiffness: 400, damping: 35 }}
                       />
                     )}
                   </HashLink>
@@ -164,13 +173,13 @@ function Header() {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    className="btn btn-ghost btn-circle avatar border-2 border-primary/20 hover:border-primary transition-colors"
+                    className="btn btn-ghost btn-circle avatar border-2 border-primary/20 hover:border-primary transition-colors outline-none"
                   >
                     <div className="w-9 rounded-full overflow-hidden bg-base-200">
                       {user.profilePicture && user.profilePicture !== "null" && user.profilePicture.trim() !== "" ? (
                         <img src={user.profilePicture} alt={user.fullName} className="object-cover w-full h-full" />
                       ) : (
-                        <div className="bg-primary text-primary-content flex items-center justify-center h-full w-full text-xs font-bold">
+                        <div className="bg-gradient-to-br from-accent to-primary text-primary-content flex items-center justify-center h-full w-full text-xs font-bold">
                           {user.fullName?.charAt(0).toUpperCase()}
                         </div>
                       )}
@@ -185,20 +194,20 @@ function Header() {
                           onClick={() => setIsDropdownOpen(false)}
                         />
                         <m.ul
-                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                          initial={{ opacity: 0, y: 15, scale: 0.95 }}
                           animate={{ opacity: 1, y: 0, scale: 1 }}
                           exit={{ opacity: 0, y: 10, scale: 0.95 }}
                           transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                          className="absolute right-0 mt-4 z-50 p-2 shadow-2xl menu menu-md bg-base-100 rounded-2xl w-64 border border-base-content/10 origin-top-right backdrop-blur-md bg-opacity-95"
+                          className="absolute right-0 mt-4 z-50 p-2 shadow-2xl menu menu-md bg-base-100/90 backdrop-blur-xl rounded-2xl w-64 border border-base-content/10 origin-top-right"
                         >
-                          <li className="menu-title px-4 py-3 border-b border-base-content/30 mb-2 text-xs opacity-50 uppercase font-bold text-base-content text-end">
+                          <li className="menu-title px-4 py-3 border-b border-base-content/10 mb-2 text-xs opacity-60 uppercase font-bold text-base-content text-end">
                             {user?.fullName || "Akun Saya"}
                           </li>
                           <li>
                             <Link
                               to="/profil"
                               onClick={() => setIsDropdownOpen(false)}
-                              className="flex items-center gap-3 py-3 rounded-xl hover:bg-primary/10 font-bold"
+                              className="flex items-center gap-3 py-3 rounded-xl hover:bg-base-200/50 font-bold transition-colors"
                             >
                               <Icon
                                 icon="solar:user-circle-bold-duotone"
@@ -212,7 +221,7 @@ function Header() {
                               <Link
                                 to="/dashboard"
                                 onClick={() => setIsDropdownOpen(false)}
-                                className="flex items-center gap-3 py-3 rounded-xl hover:bg-secondary/10 font-bold text-secondary"
+                                className="flex items-center gap-3 py-3 rounded-xl hover:bg-base-200/50 font-bold transition-colors"
                               >
                                 <Icon
                                   icon="solar:widget-5-bold-duotone"
@@ -229,7 +238,7 @@ function Header() {
                                 handleSignOut();
                                 setIsDropdownOpen(false);
                               }}
-                              className="flex items-center gap-3 py-3 rounded-xl text-error hover:bg-error/10 font-bold"
+                              className="flex items-center gap-3 py-3 rounded-xl text-error hover:bg-error/10 font-bold transition-colors"
                             >
                               <Icon
                                 icon="solar:logout-3-bold-duotone"
@@ -250,7 +259,7 @@ function Header() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                  className="btn btn-ghost btn-circle border border-base-content/10"
+                  className="btn btn-ghost btn-circle border border-base-content/10 outline-none"
                 >
                   <Icon icon="solar:hamburger-menu-linear" className="w-6 h-6" />
                 </m.button>
@@ -263,11 +272,11 @@ function Header() {
                         onClick={() => setIsMobileMenuOpen(false)}
                       />
                       <m.ul
-                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        initial={{ opacity: 0, y: 15, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                        className="absolute right-0 mt-4 z-50 p-3 shadow-2xl bg-base-100/95 backdrop-blur-md rounded-2xl w-60 border border-base-content/10 origin-top-right menu menu-md"
+                        className="absolute right-0 mt-4 z-50 p-3 shadow-2xl bg-base-100/90 backdrop-blur-xl rounded-2xl w-60 border border-base-content/10 origin-top-right menu menu-md"
                       >
                         {navLinks.map((link) => {
                           const isAtHome = location.pathname === "/";
@@ -277,7 +286,7 @@ function Header() {
                               <HashLink
                                 to={link.to}
                                 scroll={(el) => scrollWithOffset(el)}
-                                className={`font-bold py-3 rounded-xl ${isActive ? "bg-primary/10 text-primary" : "hover:bg-base-200"}`}
+                                className={`font-bold py-3 rounded-xl transition-colors ${isActive ? "bg-primary/10 text-primary" : "text-base-content/80 hover:bg-base-200/50"}`}
                               >
                                 <Icon
                                   icon={link.icon}

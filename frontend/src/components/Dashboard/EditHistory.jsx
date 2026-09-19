@@ -151,8 +151,8 @@ function EditHistory() {
   if (isHistoryLoading) return <div className="text-center py-20"><span className="loading loading-ring loading-lg text-primary"></span></div>;
 
   return (
-    <div className="flex flex-col xl:flex-row gap-8 items-start w-full">
-      <div className="w-full xl:w-5/12 h-fit xl:sticky xl:top-24 card bg-base-100 border border-base-content/20 shadow-sm rounded-[2.5rem] overflow-hidden">
+    <div className="flex flex-col xl:flex-row gap-8 items-start w-full animate-fade-in">
+      <div className="w-full xl:w-5/12 h-fit xl:sticky xl:top-24 card bg-base-100 border border-base-content/20 shadow-sm hover:shadow-md transition-shadow duration-300 rounded-[2.5rem] overflow-hidden z-10">
         <div className="p-6 border-b border-base-content/10 bg-base-200/50 flex items-center gap-3">
           <div className="p-2 bg-primary/10 text-primary rounded-xl">
             <Icon icon="mdi:timeline-plus-outline" className="w-6 h-6" />
@@ -219,7 +219,7 @@ function EditHistory() {
 
           <div className="flex justify-end gap-3 pt-2">
             {editingItemId && <button type="button" className="btn btn-ghost rounded-xl" onClick={resetForm}>Batal</button>}
-            <button type="submit" className="btn btn-primary rounded-xl flex-1" disabled={isSaving}>
+            <button type="submit" className="btn btn-primary rounded-xl flex-1 shadow-lg shadow-primary/30 hover:-translate-y-0.5 transition-transform" disabled={isSaving}>
               {isSaving ? <span className="loading loading-ring loading-md"></span> : <Icon icon="mdi:content-save" className="w-5 h-5" />}
               {isSaving ? "Menyimpan..." : (editingItemId ? "Simpan Perubahan" : "Simpan Riwayat")}
             </button>
@@ -227,57 +227,60 @@ function EditHistory() {
         </form>
       </div>
 
-      <div className="w-full xl:w-7/12 space-y-8">
+      <div className="w-full xl:w-7/12 space-y-12">
         {["education", "experience"].map((section) => {
           const items = sortedHistory[section];
           if (!items || items.length === 0) return null;
 
           return (
             <div key={section} className="flex flex-col">
-              <div className="flex items-center gap-3 mb-4 px-2">
+              <div className="flex items-center gap-3 mb-6 px-2">
                 <div className={`p-2 rounded-xl ${section === 'education' ? 'bg-secondary/10 text-secondary' : 'bg-accent/10 text-accent'}`}>
                   <Icon icon={section === "education" ? "mdi:school" : "mdi:briefcase"} className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-bold font-display capitalize">{section === "education" ? "Pendidikan" : "Pengalaman"}</h3>
+                <h3 className="text-2xl font-black font-display capitalize">{section === "education" ? "Pendidikan" : "Pengalaman"}</h3>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+              <div className="columns-1 md:columns-2 gap-5 space-y-5">
                 {items.map((item) => (
-                  <div key={item._id} className="relative group p-5 bg-base-100 border border-base-content/10 rounded-[2rem] hover:border-primary transition-all shadow-sm hover:shadow-lg flex flex-col gap-4">
+                  <div
+                    key={item._id}
+                    className="relative group p-6 bg-base-100 border border-base-content/10 rounded-[2rem] hover:border-primary transition-all duration-300 shadow-sm hover:shadow-lg hover:-translate-y-1 flex flex-col gap-4 break-inside-avoid"
+                  >
                     <div className="flex gap-4 items-start">
                       {item.logoUrl ? (
-                        <img src={item.logoUrl} className="w-12 h-12 rounded-xl object-contain bg-base-200 p-1 border border-base-content/10 shrink-0" alt="logo" />
+                        <img src={item.logoUrl} className="w-14 h-14 rounded-2xl object-contain bg-base-200 p-2 border border-base-content/10 shrink-0" alt="logo" />
                       ) : (
-                        <div className="w-12 h-12 rounded-xl bg-base-200 flex items-center justify-center border border-base-content/10 shrink-0 opacity-50">
+                        <div className="w-14 h-14 rounded-2xl bg-base-200 flex items-center justify-center border border-base-content/10 shrink-0 opacity-50">
                           <Icon icon="mdi:image-off-outline" className="w-6 h-6" />
                         </div>
                       )}
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-bold text-base leading-tight truncate" title={item.institution}>{item.institution}</h4>
-                        <span className="text-xs font-black text-primary mt-1 block">{item.years}</span>
+                      <div className="flex-1 min-w-0 pr-6">
+                        <h4 className="font-bold text-base leading-tight line-clamp-2" title={item.institution}>{item.institution}</h4>
+                        <span className="text-xs font-black text-primary mt-1.5 block">{item.years}</span>
                       </div>
                     </div>
 
                     {item.detail && (
-                      <p className="text-xs opacity-70 bg-base-200/50 p-3 rounded-xl font-medium line-clamp-3 leading-relaxed">
+                      <p className="text-xs opacity-70 bg-base-200/50 p-4 rounded-2xl font-medium leading-relaxed mt-2 border border-base-content/5">
                         {item.detail}
                       </p>
                     )}
 
                     {section === "experience" && item.badge && (
-                      <div className="flex justify-center mt-2">
-                        <span className="px-4 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase bg-accent/10 text-accent border border-accent/20">
+                      <div className="flex justify-start mt-1">
+                        <span className="px-3 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase bg-accent/10 text-accent border border-accent/20 truncate max-w-full">
                           {item.badge}
                         </span>
                       </div>
                     )}
 
-                    <div className="absolute top-4 right-4 flex gap-2 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity bg-base-100/90 p-1 rounded-xl shadow-sm backdrop-blur-sm">
-                      <button className="btn btn-square btn-sm btn-ghost text-warning hover:bg-warning/20" onClick={() => handleEdit(item, section)}>
-                        <Icon icon="solar:pen-bold" className="w-4 h-4" />
+                    <div className="absolute top-4 right-4 flex gap-1 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-base-100/90 p-1 rounded-xl shadow-sm backdrop-blur-sm border border-base-content/10">
+                      <button className="btn btn-square btn-xs btn-ghost text-warning hover:bg-warning/20" onClick={() => handleEdit(item, section)}>
+                        <Icon icon="solar:pen-bold" className="w-3.5 h-3.5" />
                       </button>
-                      <button className="btn btn-square btn-sm btn-ghost text-error hover:bg-error/20" onClick={() => handleDelete(item._id, section)}>
-                        <Icon icon="solar:trash-bin-trash-bold" className="w-4 h-4" />
+                      <button className="btn btn-square btn-xs btn-ghost text-error hover:bg-error/20" onClick={() => handleDelete(item._id, section)}>
+                        <Icon icon="solar:trash-bin-trash-bold" className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   </div>
