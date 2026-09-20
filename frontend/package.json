@@ -1,7 +1,7 @@
 {
   "name": "portomazda",
   "private": true,
-  "version": "0.8.8",
+  "version": "0.9.6",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -23,7 +23,6 @@
     "react-is": "^19.2.6",
     "react-router-dom": "^7.9.4",
     "react-router-hash-link": "^2.4.3",
-    "react-type-animation": "^3.2.0",
     "recharts": "^3.8.1",
     "sweetalert2": "^11.26.24",
     "zustand": "^5.0.12"

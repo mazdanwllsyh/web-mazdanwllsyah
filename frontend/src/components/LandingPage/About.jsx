@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { HashLink } from "react-router-hash-link";
 import { Icon } from "@iconify/react";
-import { m, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence, LazyMotion, domAnimation } from "framer-motion";
 import SeoHelmet from "../SEOHelmet";
 import { useSiteStore } from "../../stores/siteStore";
 import { useProjectStore } from "../../stores/projectStore";
@@ -38,6 +38,29 @@ const slideVariants = {
   }
 };
 
+const AboutSkeleton = () => (
+  <div className="w-full max-w-6xl mx-auto px-4 flex flex-col lg:flex-row gap-12 lg:gap-16 items-center hover:cursor-wait">
+    <div className="w-full lg:w-5/12 flex justify-center">
+      <div className="skeleton w-64 h-80 sm:w-72 sm:h-96 md:w-80 md:h-[28rem] lg:w-[22rem] lg:h-[30rem] xl:w-[24rem] xl:h-[34rem] rounded-[2.5rem]"></div>
+    </div>
+    <div className="w-full lg:w-7/12 flex flex-col space-y-6">
+      <div className="skeleton h-12 w-3/4 md:w-1/2"></div>
+      <div className="space-y-3">
+        <div className="skeleton h-4 w-full"></div>
+        <div className="skeleton h-4 w-full"></div>
+        <div className="skeleton h-4 w-5/6"></div>
+        <div className="skeleton h-4 w-4/6"></div>
+      </div>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-8 w-full h-32">
+        <div className="skeleton h-full w-full rounded-3xl"></div>
+        <div className="skeleton h-full w-full rounded-3xl"></div>
+        <div className="skeleton h-full w-full rounded-3xl"></div>
+        <div className="skeleton h-full w-full rounded-3xl"></div>
+      </div>
+    </div>
+  </div>
+);
+
 function About() {
   const fetchHistoryData = usePortfolioStore((state) => state.fetchHistoryData);
   const fetchSertifikat = usePortfolioStore((state) => state.fetchSertifikat);
@@ -58,12 +81,21 @@ function About() {
   const [currentIndices, setCurrentIndices] = useState([0, 1, 2]);
   const [hoveredStat, setHoveredStat] = useState(null);
 
+  const [isFakeLoading, setIsFakeLoading] = useState(!isBot);
+
   useEffect(() => {
     fetchHistoryData();
     fetchSertifikat();
     fetchSkillsData();
     if (fetchProjects) fetchProjects();
   }, [fetchHistoryData, fetchSertifikat, fetchSkillsData, fetchProjects]);
+
+  useEffect(() => {
+    if (!isBot) {
+      const timer = setTimeout(() => setIsFakeLoading(false), 1980);
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   const profileImages = siteData?.profileImages || [];
 
@@ -121,112 +153,114 @@ function About() {
       document.head.appendChild(script);
     }
     script.innerHTML = JSON.stringify(structuredData);
-
-    return () => {
-      if (script) script.remove();
-    };
+    return () => { if (script) script.remove(); };
   }, [structuredData]);
+
+  const isDataReady = !isFakeLoading && !isHistoryLoading && !isSertifikatLoading && !isSkillsLoading;
+  const shouldRenderContent = isBot || isDataReady;
 
   return (
     <div className="min-h-[auto] xl:min-h-screen flex flex-col items-center justify-center py-16 lg:py-20 scroll-mt-12 lg:scroll-mt-18 text-base-content relative overflow-hidden" id="tentang">
-      <SeoHelmet
-        title="Tentang Saya"
-        description={cleanDescription}
-        url="/tentang"
-      />
+      <SeoHelmet title="Tentang Saya" description={cleanDescription} url="/tentang" />
 
-      <div className="w-full max-w-6xl mx-auto px-4 z-10">
-        <m.div
-          variants={containerVariants}
-          initial={isBot ? "visible" : "hidden"}
-          whileInView={isBot ? "visible" : "visible"}
-          viewport={isBot ? { once: true } : { once: true, margin: "-100px" }}
-          className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-center"
-        >
-          <m.div variants={itemVariants} className="w-full lg:w-5/12 flex justify-center relative">
-            <div className="relative w-64 h-80 sm:w-72 sm:h-96 md:w-80 md:h-[28rem] lg:w-[22rem] lg:h-[30rem] xl:w-[24rem] xl:h-[34rem] group cursor-pointer">
-              {profileImages.length > 2 && (
-                <div className="absolute inset-0 bg-base-300 shadow-xl transform -rotate-6 translate-x-4 translate-y-4 overflow-hidden border border-base-content/20 rounded-[2.5rem] transition-all duration-1000 group-hover:-rotate-12 group-hover:translate-x-6 group-hover:translate-y-6">
-                  <img src={transformCloudinaryUrl(profileImages[currentIndices[2]], 600, 800)} className="w-full h-full object-cover grayscale opacity-40" alt="bg3" />
-                </div>
-              )}
-              {profileImages.length > 1 && (
-                <div className="absolute inset-0 bg-base-200 shadow-xl transform rotate-6 -translate-x-3 translate-y-2 overflow-hidden border border-base-content/20 rounded-[2.5rem] transition-all duration-1000 group-hover:rotate-12 group-hover:-translate-x-5 group-hover:translate-y-4">
-                  <img src={transformCloudinaryUrl(profileImages[currentIndices[1]], 600, 800)} className="w-full h-full object-cover grayscale opacity-70" alt="bg2" />
-                </div>
-              )}
-              <div className="absolute inset-0 bg-base-100 shadow-2xl z-10 overflow-hidden border border-base-content/20 rounded-[2.5rem] transition-transform duration-700 group-hover:scale-105">
-                {profileImages.length > 0 ? (
-                  <AnimatePresence mode="wait">
-                    <m.img
-                      key={currentIndices[0]}
-                      src={transformCloudinaryUrl(profileImages[currentIndices[0]], 600, 800)}
-                      variants={slideVariants}
-                      initial="initial"
-                      animate="animate"
-                      exit="exit"
-                      className="w-full h-full object-cover"
-                      alt="Tentang Mazda Nawallsyah"
-                    />
-                  </AnimatePresence>
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-base-content/50">
-                    <Icon icon="mdi:image-off-outline" className="w-16 h-16 opacity-50" />
-                  </div>
-                )}
-              </div>
-            </div>
-          </m.div>
-
-          <div className="w-full lg:w-7/12 flex flex-col">
-            <m.div variants={itemVariants} className="mb-6 lg:mb-8 text-center lg:text-left">
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-black font-display text-base-content leading-tight">
-                Tentang <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-primary">Saya</span>
-              </h2>
-            </m.div>
-
-            <m.div variants={itemVariants} className="prose prose-base md:prose-lg max-w-none text-base-content/80 text-justify mb-10 leading-relaxed font-medium">
-              {siteData?.aboutParagraph ? (
-                <div dangerouslySetInnerHTML={{ __html: siteData.aboutParagraph }} />
-              ) : (
-                <p className="italic opacity-60">Sedang memuat informasi tentang saya...</p>
-              )}
-            </m.div>
-
-            <m.div variants={itemVariants} className="mt-auto">
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 w-full h-full">
-                {stats.map((stat) => (
-                  <m.div
-                    key={stat.label}
-                    whileHover={{ y: -8, scale: 1.02 }}
-                    whileTap={{ scale: 0.95 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                    className="tooltip tooltip-bottom w-full h-full cursor-pointer flex"
-                    data-tip={stat.tooltip}
-                    onClick={stat.onClick}
-                    onMouseEnter={() => setHoveredStat(stat.label)}
-                    onMouseLeave={() => setHoveredStat(null)}
-                    onFocus={() => setHoveredStat(stat.label)}
-                    onBlur={() => setHoveredStat(null)}
-                  >
-                    <div className={`w-full h-full rounded-3xl transition-all duration-[3500ms] ${hoveredStat === stat.label ? "aura aura-dual text-primary" : ""}`}>
-                      <HashLink
-                        to={stat.link}
-                        smooth={stat.link.startsWith("/#")}
-                        className="w-full h-full card bg-base-100 shadow-sm border border-base-content/20 p-5 rounded-3xl text-center flex flex-col justify-center items-center outline-none"
-                      >
-                        <Icon icon={stat.icon} className="w-8 h-8 md:w-10 md:h-10 text-primary mb-3" />
-                        <div className="text-2xl md:text-3xl font-bold font-display">{stat.value}</div>
-                        <div className="text-xs text-base-content/70 font-semibold uppercase tracking-wider mt-1">{stat.label}</div>
-                      </HashLink>
+      {!shouldRenderContent ? (
+        <AboutSkeleton />
+      ) : (
+        <LazyMotion features={domAnimation}>
+          <div className="w-full max-w-6xl mx-auto px-4 z-10">
+            <m.div
+              variants={containerVariants}
+              initial={isBot ? "visible" : "hidden"}
+              whileInView="visible"
+              viewport={isBot ? { once: true } : { once: true, margin: "-100px" }}
+              className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-center"
+            >
+              <m.div variants={itemVariants} className="w-full lg:w-5/12 flex justify-center relative">
+                <div className="relative w-64 h-80 sm:w-72 sm:h-96 md:w-80 md:h-[28rem] lg:w-[22rem] lg:h-[30rem] xl:w-[24rem] xl:h-[34rem] group cursor-pointer">
+                  {profileImages.length > 2 && (
+                    <div className="absolute inset-0 bg-base-300 shadow-xl transform -rotate-6 translate-x-4 translate-y-4 overflow-hidden border border-base-content/20 rounded-[2.5rem] transition-all duration-1000 group-hover:-rotate-12 group-hover:translate-x-6 group-hover:translate-y-6">
+                      <img src={transformCloudinaryUrl(profileImages[currentIndices[2]], 600, 800)} className="w-full h-full object-cover grayscale opacity-40" alt="bg3" />
                     </div>
-                  </m.div>
-                ))}
+                  )}
+                  {profileImages.length > 1 && (
+                    <div className="absolute inset-0 bg-base-200 shadow-xl transform rotate-6 -translate-x-3 translate-y-2 overflow-hidden border border-base-content/20 rounded-[2.5rem] transition-all duration-1000 group-hover:rotate-12 group-hover:-translate-x-5 group-hover:translate-y-4">
+                      <img src={transformCloudinaryUrl(profileImages[currentIndices[1]], 600, 800)} className="w-full h-full object-cover grayscale opacity-70" alt="bg2" />
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-base-100 shadow-2xl z-10 overflow-hidden border border-base-content/20 rounded-[2.5rem] transition-transform duration-700 group-hover:scale-105">
+                    {profileImages.length > 0 ? (
+                      <AnimatePresence mode="wait">
+                        <m.img
+                          key={currentIndices[0]}
+                          src={transformCloudinaryUrl(profileImages[currentIndices[0]], 600, 800)}
+                          variants={isBot ? {} : slideVariants}
+                          initial={isBot ? false : "initial"}
+                          animate={isBot ? false : "animate"}
+                          exit={isBot ? false : "exit"}
+                          className="w-full h-full object-cover"
+                          alt="Tentang Mazda Nawallsyah"
+                        />
+                      </AnimatePresence>
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-base-content/50">
+                        <Icon icon="mdi:image-off-outline" className="w-16 h-16 opacity-50" />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </m.div>
+
+              <div className="w-full lg:w-7/12 flex flex-col">
+                <m.div variants={itemVariants} className="mb-6 lg:mb-8 text-center lg:text-left">
+                  <h2 className="text-3xl md:text-4xl lg:text-5xl font-black font-display text-base-content leading-tight">
+                    Tentang <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-primary">Saya</span>
+                  </h2>
+                </m.div>
+
+                <m.div variants={itemVariants} className="prose prose-base md:prose-lg max-w-none text-base-content/80 text-justify mb-10 leading-relaxed font-medium">
+                  {siteData?.aboutParagraph ? (
+                    <div dangerouslySetInnerHTML={{ __html: siteData.aboutParagraph }} />
+                  ) : (
+                    <p className="italic opacity-60">Sedang memuat informasi tentang saya...</p>
+                  )}
+                </m.div>
+
+                <m.div variants={itemVariants} className="mt-auto">
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 w-full h-full">
+                    {stats.map((stat) => (
+                      <m.div
+                        key={stat.label}
+                        whileHover={isBot ? {} : { y: -8, scale: 1.02 }}
+                        whileTap={isBot ? {} : { scale: 0.95 }}
+                        transition={isBot ? {} : { type: "spring", stiffness: 400, damping: 25 }}
+                        className="tooltip tooltip-bottom w-full h-full cursor-pointer flex"
+                        data-tip={stat.tooltip}
+                        onClick={stat.onClick}
+                        onMouseEnter={() => setHoveredStat(stat.label)}
+                        onMouseLeave={() => setHoveredStat(null)}
+                        onFocus={() => setHoveredStat(stat.label)}
+                        onBlur={() => setHoveredStat(null)}
+                      >
+                        <div className={`w-full h-full rounded-3xl transition-all duration-[3500ms] ${hoveredStat === stat.label ? "aura aura-dual text-primary" : ""}`}>
+                          <HashLink
+                            to={stat.link}
+                            smooth={stat.link.startsWith("/#")}
+                            className="w-full h-full card bg-base-100 shadow-sm border border-base-content/20 p-5 rounded-3xl text-center flex flex-col justify-center items-center outline-none"
+                          >
+                            <Icon icon={stat.icon} className="w-8 h-8 md:w-10 md:h-10 text-primary mb-3" />
+                            <div className="text-2xl md:text-3xl font-bold font-display">{stat.value}</div>
+                            <div className="text-xs text-base-content/70 font-semibold uppercase tracking-wider mt-1">{stat.label}</div>
+                          </HashLink>
+                        </div>
+                      </m.div>
+                    ))}
+                  </div>
+                </m.div>
               </div>
             </m.div>
           </div>
-        </m.div>
-      </div>
+        </LazyMotion>
+      )}
     </div>
   );
 }

@@ -25,7 +25,7 @@ function App() {
   const { isUserLoading, checkUserSession } = useAuth();
 
   const [isVisualLoading, setIsVisualLoading] = useState(!isBot && !isDashboard);
-  const [canRenderRoutes, setCanRenderRoutes] = useState(isBot || isDashboard);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   useEffect(() => {
     fetchSiteData();
@@ -35,15 +35,15 @@ function App() {
   useLayoutEffect(() => {
     if (isBot || isDashboard) {
       setIsVisualLoading(false);
-      setCanRenderRoutes(true);
+      setIsInitialLoad(false);
       return;
     }
 
     setIsVisualLoading(true);
-    setCanRenderRoutes(false);
 
     const transitionTimer = setTimeout(() => {
       setIsVisualLoading(false);
+      setIsInitialLoad(false);
     }, 1200);
 
     return () => clearTimeout(transitionTimer);
@@ -52,21 +52,7 @@ function App() {
   const isAppInitializing = isSiteDataLoading || isUserLoading;
   const showTransition = !isBot && (isAppInitializing || isVisualLoading);
 
-  useEffect(() => {
-    if (isBot) {
-      setCanRenderRoutes(true);
-      return;
-    }
-
-    if (!showTransition) {
-      const safetyTimer = setTimeout(() => {
-        setCanRenderRoutes(true);
-      }, 500);
-      return () => clearTimeout(safetyTimer);
-    } else {
-      setCanRenderRoutes(false);
-    }
-  }, [showTransition]);
+  const shouldRenderContent = isBot || !isInitialLoad || !isAppInitializing;
 
   return (
     <>
@@ -99,9 +85,10 @@ function App() {
       </Suspense>
 
       <GlobalModal />
+
       {!isBot && <Transition isLoading={showTransition} />}
 
-      {canRenderRoutes && (
+      {shouldRenderContent && (
         <main className="w-full min-h-screen">
           <ErrorBoundary>
             <Suspense fallback={!isBot && (<div className="fixed inset-0 bg-base-100 z-[9997] flex items-center justify-center"><span className="loading loading-ring loading-lg text-primary"></span></div>)}>
