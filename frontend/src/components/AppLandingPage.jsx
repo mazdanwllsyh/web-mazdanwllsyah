@@ -54,16 +54,19 @@ function AppLandingPage() {
       }, 150);
       return () => clearTimeout(timer);
     } else {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      if (!location.state?.preventScroll) {
+        window.scrollTo({ top: 0, behavior: "instant" }); 
+      }
     }
   }, [location.pathname, location.hash]);
 
   const appContent = (
     <>
       <Header />
-      <main className="flex-grow pt-18 xl:pb-8 w-full flex flex-col items-center">
+      
+      <main className="flex-grow pt-18 xl:pb-8 w-full flex flex-col items-center" style={{ willChange: "transform, opacity" }}>
         <div className="w-[92%] md:w-[88%] lg:w-[85%] max-w-7xl">
-          <React.Suspense fallback={null}>
+          <React.Suspense fallback={<div className="h-screen"></div>}>
             <Routes key={location.pathname}>
               <Route element={<PublicOnlyWrapper />}>
                 <Route path="signin" element={<LoginPage />} />
@@ -91,9 +94,9 @@ function AppLandingPage() {
   );
 
   return (
-    <div className="flex flex-col min-h-screen overflow-x-hidden relative">
+    <div className="flex flex-col min-h-screen overflow-x-hidden relative bg-base-100">
       <HexagonBackground />
-      {isBot ? appContent : <LazyMotion features={domAnimation}>{appContent}</LazyMotion>}
+      {isBot ? appContent : <LazyMotion features={domAnimation} strict>{appContent}</LazyMotion>}
     </div>
   );
 }

@@ -11,7 +11,7 @@ import FloatingLabelInput, { FloatingLabelSelect } from "../FloatingLabelInput";
 
 const ProfileSkeleton = () => {
   return (
-    <section className="container mx-auto px-4 py-12 max-w-6xl">
+    <section className="container mx-8 lg:mx-auto px-4 py-12 max-w-6xl">
       <div className="flex flex-col lg:flex-row gap-8">
         <div className="w-full lg:w-1/3">
           <div className="card bg-base-100 border border-base-content/10 rounded-[2rem] overflow-hidden">
@@ -196,7 +196,7 @@ function Profile() {
         }
         url="/profil"
       />
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-8 lg:mx-auto">
         <div className="text-sm breadcrumbs mb-8 font-medium text-base-content/60">
           <ul>
             <li>
