@@ -25,7 +25,7 @@ const techIcons = [
   { id: "zustand", icon: "devicon:zustand", position: "top-[15%] left-[-5%]", customClass: "text-[#5A29E4]" },
 ];
 
-const textContainerVariants = {
+const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -33,9 +33,16 @@ const textContainerVariants = {
   }
 };
 
-const textItemVariants = {
+const itemVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+};
+
+const floatVariants = {
+  animate: {
+    y: [0, -15, 0],
+    transition: { duration: 6, ease: "easeInOut", repeat: Infinity }
+  }
 };
 
 const ZeroRenderTypewriter = ({ rawSequence }) => {
@@ -90,7 +97,7 @@ const ZeroRenderTypewriter = ({ rawSequence }) => {
   return (
     <span className="relative">
       <span ref={elRef} className="whitespace-nowrap"></span>
-      <span className="animate-pulse ml-[2px]">|</span>
+      <span className="animate-pulse ml-[2px] text-primary">|</span>
     </span>
   );
 };
@@ -150,19 +157,24 @@ function Hero() {
 
   return (
     <div className="hero flex items-center justify-center pt-10 pb-16 lg:py-0 min-h-[auto] xl:min-h-screen relative" id="home">
-      <div className="hero-content flex flex-col lg:flex-row-reverse items-center justify-between w-full max-w-6xl mx-auto px-0 lg:px-4">
-        <LazyMotion features={domAnimation}>
-          <div className="relative w-64 h-64 md:w-80 md:h-80 lg:w-[400px] lg:h-[400px] mb-12 lg:mb-0 lg:ml-10 flex items-center justify-center z-10" style={{ willChange: "transform" }}>
+      <LazyMotion features={domAnimation}>
+        <m.div
+          className="hero-content flex flex-col lg:flex-row-reverse items-center justify-between w-full max-w-6xl mx-auto px-0 lg:px-4"
+          variants={containerVariants}
+          initial={isBot ? "visible" : "hidden"}
+          animate="visible"
+          viewport={{ once: true, amount: 0.1 }}
+        >
+          <m.div variants={itemVariants} className="relative w-64 h-64 md:w-80 md:h-80 lg:w-[400px] lg:h-[400px] mb-12 lg:mb-0 lg:ml-10 flex items-center justify-center z-10" style={{ willChange: "transform, opacity" }}>
             <div className="absolute inset-0 bg-primary/20 mask mask-hexagon mix-blend-multiply opacity-40 pointer-events-none"></div>
 
             {techIcons.map((tech, i) => (
               <m.div
                 key={tech.id}
-                initial={isBot ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: isBot ? 0 : 0.2 + (i * 0.1), type: "spring", stiffness: 200, damping: 20 }}
+                variants={isBot ? {} : floatVariants}
+                animate="animate"
+                style={{ animationDelay: `${i}s` }}
                 className={`absolute ${tech.position} z-20 w-12 h-12 md:w-14 md:h-14 bg-base-100 rounded-xl shadow-xl border border-base-content/10 flex items-center justify-center hover:scale-110 transition-transform duration-300 hover:z-30 hover:bg-gradient-to-br from-accent to-primary cursor-pointer`}
-                style={{ willChange: "transform" }}
               >
                 <Icon icon={tech.icon} className={`w-6 h-6 md:w-8 md:h-8 ${tech.customClass || ''}`} />
               </m.div>
@@ -186,49 +198,47 @@ function Hero() {
                 </AnimatePresence>
               </div>
             </div>
-          </div>
-        </LazyMotion>
+          </m.div>
 
-        <div className="flex flex-row items-start max-w-xl text-center lg:text-left w-full px-4 lg:px-0">
-          <div className="hidden sm:flex flex-col space-y-4 mr-6 mt-3 min-w-[24px]">
-            <LazyMotion features={domAnimation}>
-              <m.div className="flex flex-col space-y-4" initial={isBot ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: isBot ? 0 : 0.4, duration: 0.6 }}>
+          <div className="flex flex-row items-start max-w-xl text-center lg:text-left w-full px-4 lg:px-0">
+            <m.div variants={itemVariants} className="hidden sm:flex flex-col space-y-4 mr-6 mt-3 min-w-[24px]">
+              <div className="flex flex-col space-y-4">
                 {socialLinkConfig.filter((link) => availableLinks[link.key]).map((link) => (
                   <a key={link.key} href={link.baseUrl + availableLinks[link.key]} target="_blank" rel="noopener noreferrer" aria-label={link.label} className="text-base-content/70 hover:text-primary transition-colors">
                     <Icon icon={link.icon} className="w-6 h-6 lg:w-7 lg:h-7" />
                   </a>
                 ))}
-              </m.div>
-            </LazyMotion>
-          </div>
+              </div>
+            </m.div>
 
-          <div className="w-full">
-            <LazyMotion features={domAnimation}>
-              <m.div initial={isBot ? "visible" : "hidden"} animate="visible" variants={textContainerVariants} className="flex flex-col" style={{ willChange: "transform, opacity" }}>
-                <m.h1 variants={textItemVariants} className="text-4xl md:text-5xl lg:text-6xl font-bold font-display tracking-tight">Mazda Nawallsyah</m.h1>
+            <div className="w-full">
+              <div className="flex flex-col">
+                <m.h1 variants={itemVariants} className="text-4xl md:text-5xl lg:text-6xl font-bold font-display tracking-tight text-base-content">
+                  {siteData?.fullName || "Mazda Nawallsyah"}
+                </m.h1>
 
-                <m.div variants={textItemVariants} className="w-full">
-                  <div className="divider before:bg-base-content/20 after:bg-base-content/20 lg:hidden text-2xl md:text-3xl font-semibold px-2 my-4">
+                <m.div variants={itemVariants} className="w-full">
+                  <div className="divider before:bg-base-content/20 after:bg-base-content/20 lg:hidden text-2xl md:text-3xl font-semibold px-2 my-4 text-base-content">
                     <ZeroRenderTypewriter rawSequence={siteData?.typeAnimationSequenceString} />
                   </div>
                   <div className="hidden lg:flex items-center gap-3 my-3">
                     <div className="h-1.5 flex-1 max-w-[8rem] bg-gradient-to-br from-accent to-primary rounded-full opacity-80"></div>
-                    <div className="text-4xl font-semibold">
+                    <div className="text-4xl font-semibold text-base-content">
                       <ZeroRenderTypewriter rawSequence={siteData?.typeAnimationSequenceString} />
                     </div>
                   </div>
                 </m.div>
 
-                <m.p variants={textItemVariants} className="py-4 lg:py-6 text-base md:text-lg lg:text-xl text-base-content/80 text-justify min-h-[80px] leading-relaxed">
+                <m.p variants={itemVariants} className="py-4 lg:py-6 text-base md:text-lg lg:text-xl text-base-content/80 text-justify min-h-[80px] leading-relaxed">
                   {displayParagraph}
                 </m.p>
 
-                <m.div variants={textItemVariants} className="flex flex-wrap items-center justify-center lg:justify-start gap-4 mt-2">
+                <m.div variants={itemVariants} className="flex flex-wrap items-center justify-center lg:justify-start gap-4 mt-2">
                   <div className="tooltip tooltip-bottom" data-tip="Kenali saya lebih dekat">
                     <div className="aura text-primary/90 bg-accent/70 duration-[2900ms] rounded-2xl">
                       <Link to="/tentang" className="btn btn-md bg-base-300/90 text-base-content font-display border-base-content/20 border-2 shadow-sm hover:border-primary/50 group rounded-2xl px-5 relative z-10">
                         Tentang Saya?
-                        <Icon icon="streamline-flex:finger-snapping" className="w-5 h-5 ml-1 group-hover:scale-110 text-primary" />
+                        <Icon icon="carbon:point" className="w-5 h-5 ml-1 group-hover:scale-110 text-primary" />
                       </Link>
                     </div>
                   </div>
@@ -237,7 +247,7 @@ function Hero() {
                     <div className="aura aura-dual duration-[2900ms] rounded-2xl">
                       <Link to="/sertifikasi" className="btn btn-md bg-primary text-primary-content font-display border-primary border-2 shadow-md hover:shadow-primary/40 group rounded-2xl px-5 relative z-10">
                         Sertifikat
-                        <Icon icon="solar:diploma-verified-bold-duotone" className="w-5 h-5 ml-1 group-hover:scale-110" />
+                        <Icon icon="solar:medal-star-bold-duotone" className="w-5 h-5 ml-1 group-hover:scale-110" />
                         <span className="text-[11px] font-black opacity-90 border-l border-primary-content/30 pl-2 ml-1">
                           {sertifikatData?.length || 0}
                         </span>
@@ -246,18 +256,18 @@ function Hero() {
                   </div>
                 </m.div>
 
-                <m.div variants={textItemVariants} className="flex sm:hidden space-x-5 mt-8 justify-center min-h-[24px]">
+                <m.div variants={itemVariants} className="flex sm:hidden space-x-5 mt-8 justify-center min-h-[24px]">
                   {socialLinkConfig.filter((link) => availableLinks[link.key]).map((link) => (
                     <a key={link.key} href={link.baseUrl + availableLinks[link.key]} target="_blank" rel="noopener noreferrer" aria-label={link.label} className="text-base-content/70 hover:text-primary transition-colors">
                       <Icon icon={link.icon} className="w-7 h-7" />
                     </a>
                   ))}
                 </m.div>
-              </m.div>
-            </LazyMotion>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </m.div>
+      </LazyMotion>
     </div>
   );
 }

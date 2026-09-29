@@ -66,7 +66,8 @@ function Sertifikasi() {
         "@type": "EducationalOccupationalCredential",
         "name": cert.title,
         "recognizedBy": { "@type": "Organization", "name": cert.issuer },
-        "credentialCategory": cert.category
+        "credentialCategory": cert.category,
+        "url": "https://mazdaweb.bejalen.com/sertifikasi"
       }
     }))
   }), [currentItems, sertifikatData.length]);
@@ -88,74 +89,79 @@ function Sertifikasi() {
         <div className="w-full max-w-6xl mx-auto px-4 lg:px-4">
           <LazyMotion features={domAnimation}>
             <m.div
-              className="text-center mb-12"
-              initial={isBot ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              style={{ willChange: "transform, opacity" }}
-            >
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-2 tracking-tight">
-                Sertifikat <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-primary">Saya</span>
-              </h2>
-              <p className="text-base md:text-lg text-base-content/60">Beberapa sertifikat dan lisensi yang telah saya peroleh</p>
-            </m.div>
-
-            <m.div className="grid grid-cols-12 gap-4 mb-10 w-full" initial={isBot ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} style={{ willChange: "transform, opacity" }}>
-              <div className="order-3 sm:order-1 flex justify-center md:justify-start w-full md:w-auto col-span-12 sm:col-span-6 lg:col-span-4">
-                <PaginationComponent />
-              </div>
-              <div className="col-span-12 sm:col-span-6 lg:col-span-4 order-1 sm:order-2">
-                <div className="relative w-full sm:w-48 float-end">
-                  <Icon icon="mdi:filter" className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-base-content/50 pointer-events-none z-10" />
-                  <select className="select select-bordered w-full pl-10 rounded-2xl bg-base-200 cursor-pointer focus:bg-base-100 transition-colors" value={activeCategory} onChange={(e) => setActiveCategory(e.target.value)} aria-label="Filter Kategori">
-                    {categories.map((category) => (<option key={category} value={category}>{category}</option>))}
-                  </select>
-                </div>
-              </div>
-              <div className="lg:col-span-4 order-2 md:order-3 col-span-12">
-                <div className="relative w-full">
-                  <input type="search" placeholder="Cari sertifikat..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="input input-bordered w-full rounded-2xl bg-base-200/50 pl-10 focus:bg-base-100 transition-colors" />
-                  <Icon icon="mdi:magnify" className="absolute left-4 top-1/2 -translate-y-1/2 opacity-40 w-5 h-5" />
-                </div>
-              </div>
-            </m.div>
-
-            <m.div
-              key={`cert-grid-${searchTerm}-${activeCategory}-${currentItems[0]?._id || "empty"}`}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
               variants={containerVariants}
               initial={isBot ? "visible" : "hidden"}
               animate="visible"
               viewport={{ once: true, amount: 0.1 }}
             >
-              {currentItems.map((cert) => (
-                <m.div
-                  key={cert._id}
-                  variants={itemVariants}
-                  whileHover={!isBot ? { y: -5 } : {}}
-                  whileTap={!isBot ? { scale: 0.95 } : {}}
-                  tabIndex={0}
-                  className="card bg-base-200 border border-base-content/40 shadow-lg overflow-hidden group transition-[border-color,box-shadow,transform] duration-300 hover:border-primary hover:shadow-xl hover:shadow-primary/5 rounded-3xl cursor-pointer focus:outline-none focus:border-primary"
-                  onClick={() => handleOpenModal(cert)}
-                  style={{ willChange: "transform, opacity" }}
-                >
-                  <figure className="relative aspect-[849/600] w-full overflow-hidden border-b border-base-content/10 bg-base-300">
-                    <img src={transformCloudinaryUrl(cert.imageUrl, 700, 495)} alt={cert.title} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-110 group-focus:scale-110" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-base-200/90 via-base-200/20 to-transparent opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                      <button className="btn btn-primary rounded-full shadow-lg scale-90 group-hover:scale-100 group-focus:scale-100 transition-transform duration-300">
-                        <Icon icon="mdi:eye" className="w-5 h-5 mr-1" /> Lihat Detail
-                      </button>
-                    </div>
-                  </figure>
-                  <div className="card-body p-6 pt-5 space-y-1">
-                    <h3 className="card-title text-lg font-display font-bold text-base-content line-clamp-2 leading-tight">{cert.title}</h3>
-                    <p className="text-sm font-bold text-primary">{cert.issuer}</p>
-                    <div className="mt-2 pt-4 border-t border-base-content/5">
-                      <span className="text-[11px] font-black uppercase tracking-wider px-3 py-1.5 bg-base-300 text-base-content border border-base-content/20 rounded-md inline-block">{cert.category}</span>
-                    </div>
+              <m.div
+                variants={itemVariants}
+                className="text-center mb-12"
+                style={{ willChange: "transform, opacity" }}
+              >
+                <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-2 tracking-tight">
+                  Sertifikat <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-primary">Saya</span>
+                </h2>
+                <p className="text-base md:text-lg text-base-content/60">Beberapa sertifikat dan lisensi yang telah saya peroleh</p>
+              </m.div>
+
+              <m.div variants={itemVariants} className="grid grid-cols-12 gap-4 mb-10 w-full" style={{ willChange: "transform, opacity" }}>
+                <div className="order-3 sm:order-1 flex justify-center md:justify-start w-full md:w-auto col-span-12 sm:col-span-6 lg:col-span-4">
+                  <PaginationComponent />
+                </div>
+                <div className="col-span-12 sm:col-span-6 lg:col-span-4 order-1 sm:order-2">
+                  <div className="relative w-full sm:w-48 float-end">
+                    <Icon icon="mdi:filter" className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-base-content/50 pointer-events-none z-10" />
+                    <select className="select select-bordered w-full pl-10 rounded-2xl bg-base-200 cursor-pointer focus:bg-base-100 transition-colors" value={activeCategory} onChange={(e) => setActiveCategory(e.target.value)} aria-label="Filter Kategori">
+                      {categories.map((category) => (<option key={category} value={category}>{category}</option>))}
+                    </select>
                   </div>
-                </m.div>
-              ))}
+                </div>
+                <div className="lg:col-span-4 order-2 md:order-3 col-span-12">
+                  <div className="relative w-full">
+                    <input type="search" placeholder="Cari sertifikat..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="input input-bordered w-full rounded-2xl bg-base-200/50 pl-10 focus:bg-base-100 transition-colors" />
+                    <Icon icon="mdi:magnify" className="absolute left-4 top-1/2 -translate-y-1/2 opacity-40 w-5 h-5" />
+                  </div>
+                </div>
+              </m.div>
+
+              <m.div
+                key={`cert-grid-${searchTerm}-${activeCategory}-${currentItems[0]?._id || "empty"}`}
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                variants={containerVariants}
+                initial={isBot ? "visible" : "hidden"}
+                animate="visible"
+                viewport={{ once: true, amount: 0.1 }}
+              >
+                {currentItems.map((cert) => (
+                  <m.div
+                    key={cert._id}
+                    variants={itemVariants}
+                    whileHover={!isBot ? { y: -5 } : {}}
+                    whileTap={!isBot ? { scale: 0.95 } : {}}
+                    tabIndex={0}
+                    className="card bg-base-200 border border-base-content/40 shadow-lg overflow-hidden group transition-[border-color,box-shadow,transform] duration-300 hover:border-primary hover:shadow-xl hover:shadow-primary/5 rounded-3xl cursor-pointer focus:outline-none focus:border-primary"
+                    onClick={() => handleOpenModal(cert)}
+                    style={{ willChange: "transform, opacity" }}
+                  >
+                    <figure className="relative aspect-[849/600] w-full overflow-hidden border-b border-base-content/10 bg-base-300">
+                      <img src={transformCloudinaryUrl(cert.imageUrl, 700, 495)} alt={cert.title} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-110 group-focus:scale-110" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-base-200/90 via-base-200/20 to-transparent opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <button className="btn btn-primary rounded-full shadow-lg scale-90 group-hover:scale-100 group-focus:scale-100 transition-transform duration-300">
+                          <Icon icon="mdi:eye" className="w-5 h-5 mr-1" /> Lihat Detail
+                        </button>
+                      </div>
+                    </figure>
+                    <div className="card-body p-6 pt-5 space-y-1">
+                      <h3 className="card-title text-lg font-display font-bold text-base-content line-clamp-2 leading-tight">{cert.title}</h3>
+                      <p className="text-sm font-bold text-primary">{cert.issuer}</p>
+                      <div className="mt-2 pt-4 border-t border-base-content/5">
+                        <span className="text-[11px] font-black uppercase tracking-wider px-3 py-1.5 bg-base-300 text-base-content border border-base-content/20 rounded-md inline-block">{cert.category}</span>
+                      </div>
+                    </div>
+                  </m.div>
+                ))}
+              </m.div>
             </m.div>
           </LazyMotion>
         </div>
