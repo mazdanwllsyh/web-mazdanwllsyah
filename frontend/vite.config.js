@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { visualizer } from "rollup-plugin-visualizer";
+import Sitemap from "vite-plugin-sitemap";
 
 export default defineConfig({
   base: "/",
@@ -9,23 +10,6 @@ export default defineConfig({
     tailwindcss({
       config: {
         content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: [
-                '"SF UI Text"',
-                '"SF Pro Text"',
-                "system-ui",
-                "-apple-system",
-                "BlinkMacSystemFont",
-                "Segoe UI",
-                "Roboto",
-                "sans-serif",
-              ],
-              display: ['"SF UI Display"', '"SF Pro Display"', "sans-serif"],
-            },
-          },
-        },
         daisyui: {
           themes: [
             "emerald",
@@ -66,7 +50,27 @@ export default defineConfig({
       },
     }),
     react(),
-    visualizer({ open: true }),
+    visualizer({ open: false }),
+    Sitemap({
+      hostname: "https://mazdaweb.bejalen.com",
+      dynamicRoutes: [
+        "/",
+        "/tentang",
+        "/sertifikasi",
+        "/donasi",
+        "/signin",
+        "/signup",
+        "/verifikasi",
+      ],
+      generateRobotsTxt: true,
+      robots: [
+        {
+          userAgent: "*",
+          allow: "/",
+          disallow: ["/dashboard/", "/profil/"],
+        },
+      ],
+    }),
   ],
   server: {
     headers: {
@@ -75,15 +79,18 @@ export default defineConfig({
     },
   },
   build: {
+    target: "esnext",
+    minify: "esbuild",
+    cssCodeSplit: true,
     rollupOptions: {
       output: {
         manualChunks(id) {
           if (id.includes("node_modules")) {
-            return id
-              .toString()
-              .split("node_modules/")[1]
-              .split("/")[0]
-              .toString();
+            if (id.includes("framer-motion")) return "motion";
+            if (id.includes("react-router-dom")) return "routing";
+            if (id.includes("react") || id.includes("react-dom"))
+              return "vendor";
+            return "core";
           }
         },
       },

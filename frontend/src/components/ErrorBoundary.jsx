@@ -23,22 +23,22 @@ class ErrorBoundary extends React.Component {
     render() {
         if (this.state.hasError) {
             return (
-                <div className="h-screen w-full flex flex-col items-center justify-center bg-base-100 text-base-content relative overflow-hidden">
-                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/10 via-base-100 to-base-100 pointer-events-none"></div>
+                <div className="min-h-screen w-full flex flex-col items-center justify-center bg-base-200/50 text-base-content relative overflow-hidden font-sans">
+                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/15 via-base-100 to-base-100 pointer-events-none"></div>
 
-                    <div className="relative z-10 flex flex-col items-center max-w-md text-center px-6">
-                        <div className="relative flex items-center justify-center mb-10">
-                            <div className="absolute w-28 h-28 bg-primary/20 rounded-full animate-ping opacity-60"></div>
-                            <div className="mask mask-hexagon w-20 h-20 bg-gradient-to-br from-accent to-primary flex items-center justify-center shadow-2xl">
-                                <Icon icon="mdi:refresh-auto" className="w-10 h-10 text-primary-content animate-spin" style={{ animationDuration: '3s' }} />
+                    <div className="relative z-10 flex flex-col items-center w-[90%] max-w-lg p-10 rounded-3xl bg-base-100/60 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.1)] text-center">
+                        <div className="relative flex items-center justify-center mb-8">
+                            <div className="absolute w-24 h-24 bg-primary/20 rounded-full blur-xl animate-pulse"></div>
+                            <div className="w-16 h-16 bg-gradient-to-br from-base-200 to-base-300 rounded-2xl flex items-center justify-center shadow-inner border border-base-content/5 z-10">
+                                <Icon icon="solar:server-square-update-broken" className="w-8 h-8 text-primary" />
                             </div>
                         </div>
 
-                        <h1 className="text-2xl md:text-3xl font-display font-black tracking-tight mb-3">
-                            Sinkronisasi Sistem
+                        <h1 className="text-2xl md:text-3xl font-display font-bold tracking-tight mb-3">
+                            Sinkronisasi Sistem Terputus
                         </h1>
-                        <p className="text-sm md:text-base font-medium text-base-content/70 mb-8 leading-relaxed">
-                            Mendeteksi pembaruan arsitektur atau koneksi yang terputus. Sistem sedang berusaha menyeimbangkan ulang data portofolio.
+                        <p className="text-sm md:text-base font-medium text-base-content/60 mb-8 leading-relaxed">
+                            Kami mendeteksi pembaruan arsitektur atau koneksi yang tidak stabil. Silakan muat ulang halaman untuk memulihkan sesi Anda.
                         </p>
 
                         <button
@@ -46,9 +46,9 @@ class ErrorBoundary extends React.Component {
                                 sessionStorage.removeItem('reloaded_chunk_error');
                                 window.location.reload();
                             }}
-                            className="btn btn-primary btn-md rounded-2xl shadow-lg shadow-primary/30 font-bold tracking-wide transition-all hover:scale-105 hover:-translate-y-1 outline-none"
+                            className="btn btn-primary rounded-xl px-8 shadow-lg shadow-primary/20 font-semibold tracking-wide transition-all hover:scale-[1.02] active:scale-95 outline-none border-none"
                         >
-                            <Icon icon="mdi:reload" className="w-5 h-5 mr-1" /> Muat Ulang Sekarang
+                            <Icon icon="solar:restart-bold" className="w-5 h-5 mr-2" /> Muat Ulang
                         </button>
                     </div>
                 </div>

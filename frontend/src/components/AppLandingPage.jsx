@@ -1,12 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Routes, Route, useLocation, Navigate, Outlet } from "react-router-dom";
-import Header from "../components/LandingPage/Header";
-import ProtectedRoute from "../routes/ProtectedRoute";
+import { LazyMotion, domAnimation, AnimatePresence, m } from "framer-motion";
+import { isBot } from "../App";
 import { useAuth } from "../hooks/useAuth";
-import { LazyMotion, domAnimation } from "framer-motion";
+import ProtectedRoute from "../routes/ProtectedRoute";
+import Header from "../components/LandingPage/Header";
 import Beranda from "../components/LandingPage/Beranda";
 import HexagonBackground from "../components/HexagonBackground";
-import { isBot } from "../App";
 
 const FABDonate = React.lazy(() => import("../components/FABDonate"));
 const ScrollToTop = React.lazy(() => import("../components/ScrollToTop"));
@@ -20,13 +20,11 @@ const Donasi = React.lazy(() => import("./LandingPage/Donasi"));
 const Footer = React.lazy(() => import("./LandingPage/Footer"));
 
 function NotFoundRedirect() {
-  const location = useLocation();
   return <Navigate to="/" replace />;
 }
 
 const PublicOnlyWrapper = () => {
   const { user, isUserLoading } = useAuth();
-
   if (isUserLoading) return null;
   if (user) {
     const isAdmin = user.role === "admin" || user.role === "superAdmin";
@@ -35,53 +33,79 @@ const PublicOnlyWrapper = () => {
   return <Outlet />;
 };
 
-function AppLandingPage() {
+function AppLandingPage({ isTransitionComplete }) {
   const location = useLocation();
+  const [isDesktop, setIsDesktop] = useState(true);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const checkMedia = () => setIsDesktop(window.innerWidth > 768);
+      checkMedia();
+      window.addEventListener("resize", checkMedia);
+      return () => window.removeEventListener("resize", checkMedia);
+    }
+  }, []);
 
   useEffect(() => {
     if (isBot) return;
-
     if (location.hash) {
       const timer = setTimeout(() => {
         const id = location.hash.replace("#", "");
         const element = document.getElementById(id);
         if (element) {
-          const headerOffset = 55;
-          const elementPosition = element.getBoundingClientRect().top;
-          const offsetPosition = elementPosition + window.scrollY - headerOffset;
+          const offsetPosition = element.getBoundingClientRect().top + window.scrollY - 55;
           window.scrollTo({ top: offsetPosition, behavior: "smooth" });
         }
       }, 150);
       return () => clearTimeout(timer);
-    } else {
-      if (!location.state?.preventScroll) {
-        window.scrollTo({ top: 0, behavior: "instant" }); 
-      }
+    } else if (!location.state?.preventScroll) {
+      window.scrollTo({ top: 0, behavior: "instant" });
     }
   }, [location.pathname, location.hash]);
 
+  const routingContent = (
+    <Routes location={location}>
+      <Route element={<PublicOnlyWrapper />}>
+        <Route path="signin" element={<LoginPage />} />
+        <Route path="signup" element={<RegisterPage />} />
+        <Route path="verifikasi" element={<VerificationPage />} />
+      </Route>
+      <Route index element={<Beranda />} />
+      <Route path="tentang" element={<About />} />
+      <Route path="sertifikasi" element={<Sertifikasi />} />
+      <Route path="donasi" element={<Donasi />} />
+      <Route path="*" element={<NotFoundRedirect />} />
+      <Route element={<ProtectedRoute />}>
+        <Route path="profil" element={<Profile />} />
+      </Route>
+    </Routes>
+  );
+
   const appContent = (
-    <>
+    <div className="flex flex-col min-h-screen overflow-x-hidden relative">
+      {!isBot && isDesktop && <HexagonBackground />}
       <Header />
-      
-      <main className="flex-grow pt-18 xl:pb-8 w-full flex flex-col items-center" style={{ willChange: "transform, opacity" }}>
+      <main className="flex-grow pt-18 xl:pb-8 w-full flex flex-col items-center">
         <div className="w-[92%] md:w-[88%] lg:w-[85%] max-w-7xl">
-          <React.Suspense fallback={<div className="h-screen"></div>}>
-            <Routes key={location.pathname}>
-              <Route element={<PublicOnlyWrapper />}>
-                <Route path="signin" element={<LoginPage />} />
-                <Route path="signup" element={<RegisterPage />} />
-                <Route path="verifikasi" element={<VerificationPage />} />
-              </Route>
-              <Route index element={<Beranda />} />
-              <Route path="tentang" element={<About />} />
-              <Route path="sertifikasi" element={<Sertifikasi />} />
-              <Route path="donasi" element={<Donasi />} />
-              <Route path="*" element={<NotFoundRedirect />} />
-              <Route element={<ProtectedRoute />}>
-                <Route path="profil" element={<Profile />} />
-              </Route>
-            </Routes>
+          <React.Suspense fallback={<div className="h-screen w-full"></div>}>
+            {isBot ? (
+              routingContent
+            ) : (
+              <AnimatePresence mode="wait">
+                {isTransitionComplete && (
+                  <m.div
+                    key={location.pathname}
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -15 }}
+                    transition={{ duration: 0.35, ease: "easeInOut" }}
+                    className="w-full"
+                  >
+                    {routingContent}
+                  </m.div>
+                )}
+              </AnimatePresence>
+            )}
           </React.Suspense>
         </div>
       </main>
@@ -90,15 +114,10 @@ function AppLandingPage() {
         <ScrollToTop />
       </React.Suspense>
       <Footer />
-    </>
-  );
-
-  return (
-    <div className="flex flex-col min-h-screen overflow-x-hidden relative bg-base-100">
-      <HexagonBackground />
-      {isBot ? appContent : <LazyMotion features={domAnimation} strict>{appContent}</LazyMotion>}
     </div>
   );
+
+  return isBot ? appContent : <LazyMotion features={domAnimation} strict>{appContent}</LazyMotion>;
 }
 
 export default AppLandingPage;

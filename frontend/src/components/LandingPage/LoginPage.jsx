@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Icon } from "@iconify/react";
-import SeoHelmet from "../SEOHelmet";
+import SEO from "../../components/SEO";
 import { useAuth } from "../../hooks/useAuth";
 import { useSiteStore } from "../../stores/siteStore";
 import useCustomSwals from "../../hooks/useCustomSwals";
@@ -19,9 +19,7 @@ function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   const cleanupGoogleOneTap = () => {
     if (window.google?.accounts?.id) {
@@ -38,9 +36,7 @@ function LoginPage() {
   const handleLoginSuccess = (user) => {
     cleanupGoogleOneTap();
     login(user);
-
     const from = location.state?.from;
-
     if (from) {
       navigate(from);
     } else {
@@ -53,24 +49,14 @@ function LoginPage() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await instance.post("/users/login", {
-        email,
-        password,
-      });
-
+      const response = await instance.post("/users/login", { email, password });
       const user = response.data.user;
       login(user);
-      await showSuccessSwal(
-        `Selamat Datang, ${user.fullName}!`,
-        "Login berhasil."
-      );
+      await showSuccessSwal(`Selamat Datang, ${user.fullName}!`, "Login berhasil.");
       handleLoginSuccess(user);
     } catch (err) {
       console.error("Gagal login:", err);
-      showErrorSwal(
-        "Login Gagal",
-        err.response?.data?.message || "Terjadi kesalahan"
-      );
+      showErrorSwal("Login Gagal", err.response?.data?.message || "Terjadi kesalahan");
     } finally {
       setIsLoading(false);
     }
@@ -79,9 +65,7 @@ function LoginPage() {
   const handleGoogleLogin = async (credentialResponse) => {
     setIsLoading(true);
     try {
-      const response = await instance.post("/users/google", {
-        credential: credentialResponse.credential,
-      });
+      const response = await instance.post("/users/google", { credential: credentialResponse.credential });
       const user = response.data.user;
       cleanupGoogleOneTap();
       await showSuccessSwal(`Selamat Datang, ${user.fullName}!`, "Login dengan Google berhasil.");
@@ -107,10 +91,8 @@ function LoginPage() {
   useEffect(() => {
     let isMounted = true;
     let timeoutId;
-
     const initializeGoogle = () => {
       if (!isMounted) return;
-
       if (window.google && window.google.accounts) {
         window.google.accounts.id.initialize({
           client_id: import.meta.env.VITE_APP_GOOGLE_CLIENT_ID,
@@ -119,29 +101,18 @@ function LoginPage() {
           cancel_on_tap_outside: false,
           itp_support: true,
         });
-
         if (location.pathname === "/signin") {
           window.google.accounts.id.prompt((notification) => {
-            if (notification.isNotDisplayed()) {
-              console.warn("FedCM hidden:", notification.getNotDisplayedReason());
-            }
+            if (notification.isNotDisplayed()) console.warn("FedCM hidden:", notification.getNotDisplayedReason());
           });
         }
-
         const buttonDiv = document.getElementById("hiddenGoogleBtn");
-        if (buttonDiv) {
-          window.google.accounts.id.renderButton(
-            buttonDiv,
-            { theme: "outline", size: "large", width: "100%" }
-          );
-        }
+        if (buttonDiv) window.google.accounts.id.renderButton(buttonDiv, { theme: "outline", size: "large", width: "100%" });
       } else {
         timeoutId = setTimeout(initializeGoogle, 500);
       }
     };
-
     initializeGoogle();
-
     return () => {
       isMounted = false;
       if (timeoutId) clearTimeout(timeoutId);
@@ -150,125 +121,64 @@ function LoginPage() {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center px-4 py-8">
-      <SeoHelmet
-        title="Login ke Sistem Portfolio?"
-        description={
-          siteData.aboutParagraph
-            ? siteData.aboutParagraph.substring(0, 160)
-            : "Login Sistem."
-        }
+    <div className="w-full flex justify-center py-10 z-10 relative">
+      <SEO
+        title="Login Sistem"
+        description={siteData.aboutParagraph ? siteData.aboutParagraph.substring(0, 160) : "Masuk ke akun Anda untuk melanjutkan."}
         url="/signin"
       />
+      <div className="card lg:card-side bg-base-100/60 backdrop-blur-xl shadow-2xl border border-base-content/10 w-full max-w-5xl overflow-hidden rounded-[2.5rem]">
 
-      <div className="w-full max-w-sm flex flex-col">
-        <div className="text-sm breadcrumbs mb-2 px-1">
-          <ul>
-            <li>
-              <Link to="/">Beranda</Link>
-            </li>
-            <li>Login</li>
-          </ul>
+        <div className="hidden lg:flex lg:w-1/2 order-1 bg-base-200/50 p-12 flex-col items-center justify-center text-center relative border-r border-base-content/10">
+          <div className="w-40 h-40 bg-primary/10 rounded-full flex items-center justify-center mb-8 border border-primary/20 shadow-[0_0_40px_rgba(var(--p),0.2)]">
+            <Icon icon="solar:shield-keyhole-minimalistic-bold-duotone" className="w-20 h-20 text-primary" />
+          </div>
+          <h2 className="text-3xl font-black font-display tracking-tight mb-4 text-base-content">Akses Portofolio</h2>
+          <p className="text-sm font-medium opacity-70 leading-relaxed max-w-sm text-base-content">
+            Sistem manajemen autentikasi terpusat. Masuk untuk mengelola data dan konfigurasi personal Anda.
+          </p>
         </div>
 
-        <div className="card w-full shadow-2xl bg-base-200 border border-base-300">
-          <form className="card-body" onSubmit={handleSubmit}>
-            <h2 className="card-title text-2xl font-bold font-display justify-center mb-2">
-              Login
-            </h2>
+        <div className="w-full lg:w-1/2 p-8 md:p-12 order-2 flex flex-col justify-center bg-base-100/40">
+          <div className="text-sm breadcrumbs font-medium text-base-content/60 mb-2">
+            <ul>
+              <li><Link to="/" className="hover:text-primary transition-colors">Beranda</Link></li>
+              <li className="text-base-content">Login</li>
+            </ul>
+          </div>
+          <h1 className="text-3xl md:text-4xl font-black font-display tracking-tight text-base-content mb-2">Welcome Back</h1>
+          <p className="text-base-content/60 text-sm font-medium mb-8">Silakan masukkan detail akun Anda.</p>
 
-            <div className="divider my-0"></div>
-
-            <div className="mt-2">
-              <FloatingLabelInput
-                id="emailLogin"
-                label="Email"
-                type="text"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                name="email"
-                required
-              />
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <FloatingLabelInput id="emailLogin" label="Email Anda" type="email" value={email} onChange={(e) => setEmail(e.target.value)} name="email" required />
+            <div className="relative">
+              <FloatingLabelInput id="passwordLogin" label="Password" type={showPassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} name="password" required rightElement={
+                <button type="button" onClick={togglePasswordVisibility} className="text-base-content/40 hover:text-primary transition-colors p-2 outline-none">
+                  <Icon icon={showPassword ? "solar:eye-closed-bold" : "solar:eye-bold"} className="w-5 h-5" />
+                </button>
+              } />
+              <div className="flex justify-end mt-2"><a href="#" className="text-xs font-semibold text-primary hover:underline">Lupa password?</a></div>
             </div>
 
-            <div className="mt-4">
-              <FloatingLabelInput
-                id="passwordLogin"
-                label="Password"
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                name="password"
-                required
-                rightElement={
-                  <button
-                    type="button"
-                    onClick={togglePasswordVisibility}
-                    className="text-base-content/50 hover:text-primary transition-colors cursor-pointer"
-                    aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
-                  >
-                    <Icon icon={showPassword ? "mdi:eye-off" : "mdi:eye"} className="w-5 h-5" />
-                  </button>
-                }
-              />
-            </div>
+            <button type="submit" className="btn btn-primary w-full h-12 rounded-xl font-bold shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all text-base" disabled={isLoading}>
+              {isLoading ? <span className="loading loading-dots loading-md"></span> : "Sign In"}
+            </button>
 
-            <div className="form-control mt-6">
-              <button
-                type="submit"
-                className="btn btn-primary font-semibold w-full text-base shadow-lg hover:shadow-primary/40 transition-shadow"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <span className="loading loading-bars loading-sm"></span>
-                ) : (
-                  "Login"
-                )}
+            <div className="divider text-xs text-base-content/40 font-bold tracking-widest my-6">ATAU</div>
+
+            <div className="relative group aura aura-rainbow duration-3000 rounded-xl w-full h-12">
+              {!isLoading && <div id="hiddenGoogleBtn" className="absolute inset-0 w-full h-full z-20 opacity-0 overflow-hidden cursor-pointer"></div>}
+              <button type="button" disabled={isLoading} className="btn w-full h-full rounded-xl bg-base-100 hover:bg-base-200 border-base-content/20 text-base-content relative z-10 flex items-center justify-center gap-3 normal-case shadow-sm">
+                <Icon icon="logos:google-icon" className="w-5 h-5" />
+                <span className="font-semibold text-sm">Sign in with Google</span>
               </button>
             </div>
-
-            <div className="divider text-xs text-base-content/60 my-3">
-              ATAU
-            </div>
-
-            <div className="aura aura-rainbow duration-2000 w-full rounded-[var(--rounded-btn,0.5rem)] disabled:cursor-not-allowed disabled:aura aura-dual">
-              <div className="relative group">
-                {!isLoading && (
-                  <div
-                    id="hiddenGoogleBtn"
-                    className="absolute inset-0 w-full h-full z-20 opacity-0 overflow-hidden cursor-pointer"
-                    style={{ transform: "scale(1.05)" }}
-                  ></div>
-                )}
-
-                <button
-                  type="button"
-                  disabled={isLoading}
-                  className="btn w-full rounded-[var(--rounded-btn,0.5rem)] text-sm bg-neutral hover:bg-neutral-focus text-neutral-content relative z-10 flex items-center justify-center gap-3 normal-case font-medium shadow-sm transition-all group-hover:shadow-md disabled:bg-neutral disabled:text-neutral-content disabled:border-primary/30 disabled:cursor-not-allowed"
-                >
-                  {isLoading ? (
-                    <span className="loading loading-bars loading-sm"></span>
-                  ) : (
-                    <>
-                      <Icon icon="logos:google-icon" className="w-6 h-6" />
-                      <span>Lanjutkan dengan Google</span>
-                    </>
-                  )}
-                </button>
-              </div>
-            </div>
-
-            <p className="text-center text-sm mt-4">
-              Belum punya akun?
-              <Link
-                to="/signup"
-                className="link link-primary mx-2 font-semibold no-underline hover:underline"
-              >
-                Daftar di sini
-              </Link>
-            </p>
           </form>
+          <p className="text-center text-sm mt-8 font-medium text-base-content/70">
+            Belum punya akun? <Link to="/signup" className="text-primary font-bold hover:underline ml-1">Daftar sekarang</Link>
+          </p>
         </div>
+
       </div>
     </div>
   );

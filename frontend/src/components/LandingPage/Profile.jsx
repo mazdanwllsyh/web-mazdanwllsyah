@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react";
-import SeoHelmet from "../SEOHelmet";
+import SEO from "../../components/SEO";
 import { useAuth } from "../../hooks/useAuth";
 import { useSiteStore } from "../../stores/siteStore";
 import { useCustomToast } from "../../hooks/useCustomToast";
@@ -187,13 +187,9 @@ function Profile() {
 
   return (
     <section id="userprofile" className="py-12 px-2 lg:px-12">
-      <SeoHelmet
+      <SEO
         title={`Profil | ${user?.fullName || "Akun"}`}
-        description={
-          siteData.aboutParagraph
-            ? siteData.aboutParagraph.substring(0, 160)
-            : "Manajemen profil dan akun Anda."
-        }
+        description={siteData.aboutParagraph ? siteData.aboutParagraph.substring(0, 160) : "Manajemen profil dan akun Anda."}
         url="/profil"
       />
       <div className="max-w-6xl mx-8 lg:mx-auto">
