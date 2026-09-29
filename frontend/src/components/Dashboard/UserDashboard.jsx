@@ -45,7 +45,6 @@ function UserDashboard() {
     password: "",
   });
 
-  // State Pagination Terpisah
   const [adminLimit, setAdminLimit] = useState(5);
   const [adminPage, setAdminPage] = useState(1);
   const [userLimit, setUserLimit] = useState(5);
@@ -96,12 +95,10 @@ function UserDashboard() {
     );
   }, [allUsers, searchTerm]);
 
-  // Pemisahan Kategori Pengguna Sesuai Logika Asli
   const superAdminUser = useMemo(() => filteredUsers.find((user) => user.role === "superAdmin"), [filteredUsers]);
   const adminUsers = useMemo(() => filteredUsers.filter((user) => user.role === "admin"), [filteredUsers]);
   const regularUsers = useMemo(() => filteredUsers.filter((user) => user.role === "user"), [filteredUsers]);
 
-  // Logika Slicing Pagination
   const totalAdminData = adminUsers.length;
   const totalAdminPages = Math.ceil(totalAdminData / adminLimit) || 1;
   const paginatedAdmins = useMemo(() => {
@@ -176,7 +173,7 @@ function UserDashboard() {
   };
 
   if (isLoading) return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+    <div className="flex flex-col items-center justify-center min-h-[80vh] gap-4">
       <span className="loading loading-ring w-16 h-16 text-primary"></span>
       <p className="font-bold opacity-60 animate-pulse tracking-widest text-sm uppercase">Memuat Data...</p>
     </div>
@@ -185,7 +182,6 @@ function UserDashboard() {
   return (
     <SuperAdminGate>
       <div className="space-y-6">
-        {/* HEADER & PENCARIAN */}
         <div className="card bg-base-100 shadow-sm border border-base-content/20 rounded-[2.5rem]">
           <div className="card-body p-6 md:p-8 flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="w-full md:w-auto">

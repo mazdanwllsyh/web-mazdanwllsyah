@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Icon } from "@iconify/react";
-import SEO from "../../components/SEO";
 import { useAuth } from "../../hooks/useAuth";
 import { useSiteStore } from "../../stores/siteStore";
 import useCustomSwals from "../../hooks/useCustomSwals";
@@ -107,7 +106,14 @@ function LoginPage() {
           });
         }
         const buttonDiv = document.getElementById("hiddenGoogleBtn");
-        if (buttonDiv) window.google.accounts.id.renderButton(buttonDiv, { theme: "outline", size: "large", width: "100%" });
+        if (buttonDiv) {
+          window.google.accounts.id.renderButton(buttonDiv, {
+            theme: "outline",
+            size: "large",
+            width: 400,
+            text: "signin_with"
+          });
+        }
       } else {
         timeoutId = setTimeout(initializeGoogle, 500);
       }
@@ -122,12 +128,11 @@ function LoginPage() {
 
   return (
     <div className="w-full flex justify-center py-10 z-10 relative">
-      <SEO
-        title="Login Sistem"
-        description={siteData.aboutParagraph ? siteData.aboutParagraph.substring(0, 160) : "Masuk ke akun Anda untuk melanjutkan."}
-        url="/signin"
-      />
-      <div className="card lg:card-side bg-base-100/60 backdrop-blur-xl shadow-2xl border border-base-content/10 w-full max-w-5xl overflow-hidden rounded-[2.5rem]">
+      <title>Login Sistem | Mazda Nawallsyah</title>
+      <meta name="description" content={siteData.aboutParagraph ? siteData.aboutParagraph.substring(0, 160) : "Login ke akun Anda untuk melanjutkan."} />
+      <link rel="canonical" href={`https://mazdaweb.bejalen.com/signin`} />
+
+      <div className="card lg:card-side bg-base-100/60 backdrop-blur-xl shadow-2xl border border-base-content/10 w-full max-w-6xl overflow-hidden rounded-[2.5rem]">
 
         <div className="hidden lg:flex lg:w-1/2 order-1 bg-base-200/50 p-12 flex-col items-center justify-center text-center relative border-r border-base-content/10">
           <div className="w-40 h-40 bg-primary/10 rounded-full flex items-center justify-center mb-8 border border-primary/20 shadow-[0_0_40px_rgba(var(--p),0.2)]">
@@ -135,7 +140,7 @@ function LoginPage() {
           </div>
           <h2 className="text-3xl font-black font-display tracking-tight mb-4 text-base-content">Akses Portofolio</h2>
           <p className="text-sm font-medium opacity-70 leading-relaxed max-w-sm text-base-content">
-            Sistem manajemen autentikasi terpusat. Masuk untuk mengelola data dan konfigurasi personal Anda.
+            Sistem manajemen autentikasi terpusat. Login untuk mengelola data dan konfigurasi personal Anda.
           </p>
         </div>
 
@@ -146,7 +151,7 @@ function LoginPage() {
               <li className="text-base-content">Login</li>
             </ul>
           </div>
-          <h1 className="text-3xl md:text-4xl font-black font-display tracking-tight text-base-content mb-2">Welcome Back</h1>
+          <h1 className="text-3xl md:text-4xl font-black font-display tracking-tight text-base-content mb-2">Login Sistem</h1>
           <p className="text-base-content/60 text-sm font-medium mb-8">Silakan masukkan detail akun Anda.</p>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -166,12 +171,28 @@ function LoginPage() {
 
             <div className="divider text-xs text-base-content/40 font-bold tracking-widest my-6">ATAU</div>
 
-            <div className="relative group aura aura-rainbow duration-3000 rounded-xl w-full h-12">
-              {!isLoading && <div id="hiddenGoogleBtn" className="absolute inset-0 w-full h-full z-20 opacity-0 overflow-hidden cursor-pointer"></div>}
-              <button type="button" disabled={isLoading} className="btn w-full h-full rounded-xl bg-base-100 hover:bg-base-200 border-base-content/20 text-base-content relative z-10 flex items-center justify-center gap-3 normal-case shadow-sm">
-                <Icon icon="logos:google-icon" className="w-5 h-5" />
-                <span className="font-semibold text-sm">Sign in with Google</span>
+            <div className="relative group w-full h-12 flex items-center justify-center rounded-xl aura aura-rainbow duration-3000">
+
+              <button
+                type="button"
+                className="btn w-full h-full rounded-xl bg-base-100 hover:bg-base-200 border-base-content/20 text-base-content absolute inset-0 z-10 flex items-center justify-center gap-3 normal-case shadow-sm pointer-events-none"
+              >
+                {isLoading ? (
+                  <span className="loading loading-dots loading-md"></span>
+                ) : (
+                  <>
+                    <Icon icon="logos:google-icon" className="w-5 h-5" />
+                    <span className="font-semibold text-sm">Login dengan Google</span>
+                  </>
+                )}
               </button>
+
+              {!isLoading && (
+                <div
+                  id="hiddenGoogleBtn"
+                  className="absolute inset-0 z-20 flex items-center justify-center opacity-[0.001] cursor-pointer overflow-hidden rounded-xl [&>div]:w-full [&>div]:h-full"
+                ></div>
+              )}
             </div>
           </form>
           <p className="text-center text-sm mt-8 font-medium text-base-content/70">

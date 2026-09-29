@@ -1,7 +1,7 @@
 import React, { Suspense, lazy, useEffect, useState, useMemo } from "react";
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react";
-import { m, LazyMotion, domAnimation, AnimatePresence } from "framer-motion";
+import { m, LazyMotion, domMax, AnimatePresence } from "framer-motion";
 import Sidebar, { menuItems, MobileBottomNav } from "../components/Dashboard/Sidebar";
 import Transition from "./Transition";
 import ThemeSwitcher from "../components/ThemeSwitcher";
@@ -29,6 +29,16 @@ function AppDashboard() {
   const { handleSignOut, user } = useAuth();
   const [isMobileNavVisible, setIsMobileNavVisible] = useState(true);
   const [animDirection, setAnimDirection] = useState(1);
+  const [isMobileView, setIsMobileView] = useState(true);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const checkMobile = () => setIsMobileView(window.innerWidth < 1024);
+      checkMobile();
+      window.addEventListener("resize", checkMobile);
+      return () => window.removeEventListener("resize", checkMobile);
+    }
+  }, []);
 
   const allowedMenuItems = useMemo(() => {
     return menuItems.filter((item) => !item.role || user?.role === item.role);
@@ -44,8 +54,11 @@ function AppDashboard() {
   }, [location.pathname]);
 
   const handleDragEnd = (event, info) => {
-    const swipeThreshold = 50;
+    if (!isMobileView) return;
+
+    const swipeThreshold = window.innerWidth * 0.65;
     const currentIndex = allowedMenuItems.findIndex(item => item.path === location.pathname);
+
     if (currentIndex === -1) return;
 
     if (info.offset.x < -swipeThreshold && currentIndex < allowedMenuItems.length - 1) {
@@ -70,7 +83,7 @@ function AppDashboard() {
       <div className="flex-1 h-full flex flex-col overflow-hidden relative z-10">
         <header className="w-full h-16 md:h-18 bg-base-100/90 backdrop-blur-md border-b border-base-content/10 px-4 md:px-8 flex items-center justify-between shrink-0 z-30 shadow-sm shadow-base-content/5">
           <div className="flex items-center gap-3.5">
-            <a href="/" className="lg:hidden flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-accent to-primary shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all duration-300">
+            <a href="/" className="lg:hidden flex items-center justify-center w-9 h-9 mask mask-hexagon bg-gradient-to-br from-accent to-primary shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all duration-300">
               <span className="font-display font-bold text-[17px] text-white">{siteData?.brandName ? siteData.brandName.charAt(0).toUpperCase() : "M"}</span>
             </a>
             <h1 className="text-lg md:text-xl font-semibold font-display tracking-tight flex items-center gap-2.5">
@@ -93,12 +106,15 @@ function AppDashboard() {
         </header>
 
         <main className="flex-1 overflow-x-hidden bg-base-200/30 flex flex-col justify-between relative">
-          <LazyMotion features={domAnimation}>
+          {/* GUNAKAN domMax DI SINI AGAR FITUR DRAG TERBACA */}
+          <LazyMotion features={domMax}>
             <m.div
               className="p-5 md:p-8 flex-1 w-full max-w-7xl mx-auto overflow-y-auto custom-scrollbar lg:pb-0"
               drag="x"
+              dragListener={isMobileView}
+              dragDirectionLock
               dragConstraints={{ left: 0, right: 0 }}
-              dragElastic={0.2}
+              dragElastic={0.15}
               onDragEnd={handleDragEnd}
             >
               <Suspense fallback={<Transition isLoading={true} />}>

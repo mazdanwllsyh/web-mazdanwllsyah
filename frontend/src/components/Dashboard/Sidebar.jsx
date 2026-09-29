@@ -1,4 +1,3 @@
-// Sidebar.jsx
 import React, { useMemo } from "react";
 import { Icon } from "@iconify/react";
 import { NavLink, Link } from "react-router-dom";
@@ -93,7 +92,7 @@ function Sidebar() {
       <div className="flex flex-col flex-1 overflow-hidden">
         <div className="flex items-center gap-3.5 px-2 pb-6 border-b border-base-content/5 shrink-0">
           <div className="avatar">
-            <a href="/" className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent to-primary flex items-center justify-center shadow-lg shadow-primary/20 hover:scale-105 transition-transform duration-300">
+            <a href="/" className="w-10 h-10 mask mask-hexagon bg-gradient-to-br from-accent to-primary flex items-center justify-center shadow-lg shadow-primary/20 hover:scale-105 transition-transform duration-300">
               <span className="font-display font-semibold text-lg text-black dark:text-white">
                 {siteData?.brandName ? siteData.brandName.charAt(0).toUpperCase() : "M"}
               </span>

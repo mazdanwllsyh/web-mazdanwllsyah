@@ -47,7 +47,7 @@ function RegisterPage() {
         description={siteData.aboutParagraph ? siteData.aboutParagraph.substring(0, 160) : "Buat akun baru untuk mendapatkan akses penuh."}
         url="/signup"
       />
-      <div className="card lg:card-side bg-base-100/60 backdrop-blur-xl shadow-2xl border border-base-content/10 w-full max-w-5xl overflow-hidden rounded-[2.5rem]">
+      <div className="card lg:card-side bg-base-100/60 backdrop-blur-xl shadow-2xl border border-base-content/10 w-full max-w-6xl overflow-hidden rounded-[2.5rem]">
 
         <div className="w-full lg:w-1/2 p-8 md:p-12 order-1 flex flex-col justify-center bg-base-100/40">
           <div className="text-sm breadcrumbs font-medium text-base-content/60 mb-2">

@@ -19,26 +19,15 @@ function Transition({ isLoading, onExitComplete }) {
   useEffect(() => {
     if (!isLoading || isBot) return;
 
-    let currentStep = 0;
-    const textTimer = setInterval(() => {
-      if (currentStep < 2) setStep(++currentStep);
-    }, 500);
-
-    let currentProgress = 0;
-    const progressTimer = setInterval(() => {
-      currentProgress += Math.floor(Math.random() * 5) + 5;
-      if (currentProgress >= 100) {
-        setProgress(100);
-        clearInterval(progressTimer);
-        lagTimerRef.current = setTimeout(() => setIsLagging(true), 1200);
-      } else {
-        setProgress(currentProgress);
-      }
-    }, 45);
+    const t1 = setTimeout(() => { setProgress(35); setStep(1); }, 300);
+    const t2 = setTimeout(() => { setProgress(75); setStep(2); }, 600);
+    const t3 = setTimeout(() => {
+      setProgress(100);
+      lagTimerRef.current = setTimeout(() => setIsLagging(true), 800);
+    }, 900);
 
     return () => {
-      clearInterval(textTimer);
-      clearInterval(progressTimer);
+      clearTimeout(t1); clearTimeout(t2); clearTimeout(t3);
       if (lagTimerRef.current) clearTimeout(lagTimerRef.current);
     };
   }, [isLoading]);
@@ -53,57 +42,61 @@ function Transition({ isLoading, onExitComplete }) {
         {isLoading && (
           <m.div
             key="elite-transition"
-            initial={{ opacity: 1, pointerEvents: "auto" }}
+            initial={{ opacity: 1, scale: 1, pointerEvents: "auto" }}
             exit={{
               opacity: 0,
+              scale: 1.15, // Efek Zoom In saat exit
               pointerEvents: "none",
-              transition: { duration: 0.4, ease: "easeInOut" }
+              transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } // Custom easing Enterprise
             }}
-            className="fixed inset-0 z-[999999] flex flex-col items-center justify-center bg-base-100 overflow-hidden"
-            style={{ willChange: "opacity" }}
+            className="fixed inset-0 z-[999999] flex flex-col items-center justify-center bg-base-100 overflow-hidden transform-origin-center"
+            style={{ willChange: "opacity, transform" }}
           >
-            <div className="flex flex-col items-center gap-6 mb-20">
+            <m.div
+              exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.3 } }}
+              className="flex flex-col items-center gap-6 mb-20"
+            >
               <m.div
-                animate={{ scale: [1, 1.1, 1] }}
-                exit={{ scale: 1.5, opacity: 0 }}
-                transition={{ repeat: Infinity, duration: 1.5 }}
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
                 className="relative w-28 h-28 md:w-36 md:h-36 flex items-center justify-center z-10"
-                style={{ willChange: "transform, opacity" }}
+                style={{ willChange: "transform" }}
               >
-                <svg viewBox="0 0 100 100" className={`absolute w-full h-full fill-transparent stroke-current stroke-[1px] transition-colors duration-300 ${currentProps.color}`}>
+                <svg viewBox="0 0 100 100" className={`absolute w-full h-full fill-transparent stroke-current stroke-[1px] transition-colors duration-500 ${currentProps.color}`}>
                   <polygon points="50,2 91.5,26 91.5,74 50,98 8.5,74 8.5,26" />
                 </svg>
                 <m.svg
                   animate={{ rotate: 360 }}
-                  transition={{ repeat: Infinity, duration: isLagging ? 2 : 6, ease: "linear" }}
+                  transition={{ repeat: Infinity, duration: isLagging ? 2 : 8, ease: "linear" }}
                   viewBox="0 0 100 100"
                   className={`absolute w-[80%] h-[80%] fill-transparent stroke-current stroke-[2px] opacity-70 ${currentProps.color}`}
                   style={{ willChange: "transform" }}
                 >
                   <polygon points="50,2 91.5,26 91.5,74 50,98 8.5,74 8.5,26" />
                 </m.svg>
-                <svg viewBox="0 0 100 100" className={`absolute w-[50%] h-[50%] stroke-current stroke-[3px] transition-colors duration-300 ${currentProps.color} ${currentProps.fill}`}>
+                <svg viewBox="0 0 100 100" className={`absolute w-[50%] h-[50%] stroke-current stroke-[3px] transition-colors duration-500 ${currentProps.color} ${currentProps.fill}`}>
                   <polygon points="50,2 91.5,26 91.5,74 50,98 8.5,74 8.5,26" />
                 </svg>
               </m.div>
 
-              <m.div exit={{ opacity: 0, y: 10 }} className="flex flex-col items-center gap-1 z-20">
-                <span className={`font-mono text-xs md:text-sm font-bold tracking-[0.25em] uppercase transition-colors duration-300 ${currentProps.color}`}>
+              <div className="flex flex-col items-center gap-1 z-20">
+                <span className={`font-mono text-xs md:text-sm font-bold tracking-[0.25em] uppercase transition-colors duration-500 ${currentProps.color}`}>
                   {currentProps.text}_
                 </span>
-              </m.div>
-            </div>
+              </div>
+            </m.div>
 
-            <m.div exit={{ opacity: 0, y: 20 }} className="absolute bottom-0 left-0 right-0 w-full flex flex-col items-center">
-              <div className={`mb-2 font-mono text-2xl md:text-3xl font-black tracking-widest transition-colors duration-300 ${currentProps.color}`}>
+            <m.div
+              exit={{ opacity: 0, y: 30, transition: { duration: 0.3 } }}
+              className="absolute bottom-0 left-0 right-0 w-full flex flex-col items-center"
+            >
+              <div className={`mb-2 font-mono text-2xl md:text-3xl font-black tracking-widest transition-colors duration-500 ${currentProps.color}`}>
                 {progress}%
               </div>
-              <div className="w-full h-3 md:h-4 bg-base-content/5 relative overflow-hidden flex">
-                <m.div
-                  className={`absolute top-0 left-0 h-full transition-colors duration-300 ${isLagging ? 'bg-warning' : 'bg-gradient-to-r from-secondary via-accent to-primary'}`}
-                  initial={{ width: "0%" }}
-                  animate={{ width: `${progress}%` }}
-                  transition={{ ease: "circOut", duration: 0.1 }}
+              <div className="w-full h-3 md:h-4 bg-base-content/10 relative overflow-hidden flex">
+                <div
+                  className={`absolute top-0 left-0 h-full transition-all duration-300 ease-out ${isLagging ? 'bg-warning' : 'bg-gradient-to-r from-secondary via-accent to-primary'}`}
+                  style={{ width: `${progress}%` }}
                 />
               </div>
             </m.div>

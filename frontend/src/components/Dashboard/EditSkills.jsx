@@ -16,13 +16,13 @@ const skillLevels = [
 const categoryIcons = {
   "Markup": "mdi:language-html5",
   "Bahasa Pemrograman": "mdi:code-braces",
-  "Framework & Library": "mdi:react",
+  "Framework & Library": "simple-icons:framework",
   "Styling & UI": "mdi:palette",
-  "State Management": "mdi:database-sync",
+  "State Management": "carbon:ibm-federated-api-management",
   "Database": "mdi:database",
   "Tools & Lainnya": "mdi:toolbox",
   "Cloud & Deploy": "mdi:cloud-upload",
-  "IDE & Office": "mdi:microsoft-visual-studio-code"
+  "IDE & Office": "arcticons:material-you-dynamic-icon-pack"
 };
 
 const hardSkillTabs = [
