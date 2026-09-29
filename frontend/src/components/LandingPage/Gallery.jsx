@@ -120,7 +120,7 @@ function Gallery() {
           {currentItems.map((project, index) => (
             <m.div
               key={project._id}
-              className="card bg-base-200 border border-base-content/40 shadow-lg overflow-visible group hover:border-primary duration-300 hover:shadow-xl hover:shadow-primary/5 rounded-3xl"
+              className="card bg-base-200 border border-base-content/40 shadow-lg overflow-visible group hover:border-primary transition-[border-color,box-shadow] duration-300 hover:shadow-xl hover:shadow-primary/5 rounded-3xl"
               initial={isBot ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.1 }}
@@ -140,12 +140,12 @@ function Gallery() {
                 ) : (
                   <>
                     {project.demoUrl && project.demoUrl !== "#" && (
-                      <a href={project.demoUrl} target="_blank" rel="noreferrer" className="btn btn-sm bg-base-100 text-base-content hover:bg-primary hover:text-primary-content hover:border-primary shadow-md rounded-full border border-base-content/20 px-4 transition-all">
+                      <a href={project.demoUrl} target="_blank" rel="noreferrer" className="btn btn-sm bg-base-100 text-base-content hover:bg-primary hover:text-primary-content hover:border-primary shadow-md rounded-full border border-base-content/20 px-4 transition-colors duration-300">
                         <Icon icon="mdi:external-link" className="w-4 h-4" /> Demo
                       </a>
                     )}
                     {project.sourceUrl && project.sourceUrl !== "#" && (
-                      <a href={project.sourceUrl} target="_blank" rel="noreferrer" className="btn btn-sm bg-base-100 text-base-content hover:bg-secondary hover:text-secondary-content hover:border-secondary shadow-md rounded-full border border-base-content/20 px-4 transition-all">
+                      <a href={project.sourceUrl} target="_blank" rel="noreferrer" className="btn btn-sm bg-base-100 text-base-content hover:bg-secondary hover:text-secondary-content hover:border-secondary shadow-md rounded-full border border-base-content/20 px-4 transition-colors duration-300">
                         <Icon icon="mdi:github" className="w-4 h-4" /> Source
                       </a>
                     )}

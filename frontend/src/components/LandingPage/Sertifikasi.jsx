@@ -70,7 +70,7 @@ function Sertifikasi() {
       }
     }))
   }), [currentItems, sertifikatData.length]);
-  
+
   const handleOpenModal = (sertifikat) => {
     setSelectedCert(sertifikat);
     if (document.getElementById("sertifikasi_modal")) document.getElementById("sertifikasi_modal").showModal();
@@ -135,7 +135,7 @@ function Sertifikasi() {
                   whileHover={!isBot ? { y: -5 } : {}}
                   whileTap={!isBot ? { scale: 0.95 } : {}}
                   tabIndex={0}
-                  className="card bg-base-200 border border-base-content/40 shadow-lg overflow-hidden group transition-all duration-300 hover:border-primary hover:shadow-xl hover:shadow-primary/5 rounded-3xl cursor-pointer focus:outline-none focus:border-primary"
+                  className="card bg-base-200 border border-base-content/40 shadow-lg overflow-hidden group transition-[border-color,box-shadow,transform] duration-300 hover:border-primary hover:shadow-xl hover:shadow-primary/5 rounded-3xl cursor-pointer focus:outline-none focus:border-primary"
                   onClick={() => handleOpenModal(cert)}
                   style={{ willChange: "transform, opacity" }}
                 >

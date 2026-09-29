@@ -87,14 +87,14 @@ function History() {
           <div role="tablist" className="bg-base-200/60 backdrop-blur-sm p-1.5 rounded-2xl flex gap-2 w-full max-w-md border border-base-content/5 shadow-sm relative z-20">
             <button
               onClick={() => { setActiveTab("pendidikan"); localStorage.setItem("activeHistoryTab", "pendidikan"); }}
-              className={`flex-1 py-3 px-4 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 outline-none ${activeTab === 'pendidikan' ? 'bg-primary text-primary-content shadow-md scale-100' : 'bg-transparent text-base-content/70 hover:bg-base-100/50 scale-95 hover:scale-[0.98]'}`}
+              className={`flex-1 py-3 px-4 rounded-xl font-bold transition-[background-color,color,transform,box-shadow] duration-300 flex items-center justify-center gap-2 outline-none ${activeTab === 'pendidikan' ? 'bg-primary text-primary-content shadow-md scale-100' : 'bg-transparent text-base-content/70 hover:bg-base-100/50 scale-95 hover:scale-[0.98]'}`}
             >
               <Icon icon="mdi:school" className="w-5 h-5 shrink-0" />
               <span className="text-sm sm:text-base">Pendidikan</span>
             </button>
             <button
               onClick={() => { setActiveTab("pengalaman"); localStorage.setItem("activeHistoryTab", "pengalaman"); }}
-              className={`flex-1 py-3 px-4 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 outline-none ${activeTab === 'pengalaman' ? 'bg-secondary text-secondary-content shadow-md scale-100' : 'bg-transparent text-base-content/70 hover:bg-base-100/50 scale-95 hover:scale-[0.98]'}`}
+              className={`flex-1 py-3 px-4 rounded-xl font-bold transition-[background-color,color,transform,box-shadow] duration-300 flex items-center justify-center gap-2 outline-none ${activeTab === 'pengalaman' ? 'bg-secondary text-secondary-content shadow-md scale-100' : 'bg-transparent text-base-content/70 hover:bg-base-100/50 scale-95 hover:scale-[0.98]'}`}
             >
               <Icon icon="mdi:briefcase" className="w-5 h-5 shrink-0" />
               <span className="text-sm sm:text-base">Pengalaman</span>
@@ -138,7 +138,7 @@ function History() {
 
                     <div className="absolute inset-0 rounded-[inherit] opacity-0 group-hover:opacity-100 transition-opacity aura aura-dual z-0 pointer-events-none"></div>
 
-                    <div className={`card w-full h-full bg-base-100 shadow-md border border-base-content/20 transition-all duration-300 relative z-10 group-hover:shadow-xl ${activeTab === "pendidikan" ? "group-hover:border-primary" : "group-hover:border-secondary"}`}>
+                    <div className={`card w-full h-full bg-base-100 shadow-md border border-base-content/20 transition-[border-color,box-shadow] duration-300 relative z-10 group-hover:shadow-xl ${activeTab === "pendidikan" ? "group-hover:border-primary" : "group-hover:border-secondary"}`}>
                       <div className="card-body p-6 md:p-8">
                         <h3 className={`card-title text-xl lg:text-2xl font-bold font-display transition-colors duration-300 ${activeTab === "pendidikan" ? "group-hover:text-primary" : "group-hover:text-secondary"}`}>{item.institution}</h3>
                         {item.detail && <p className="text-sm md:text-base text-base-content/80 font-medium text-justify mt-2">{item.detail}</p>}

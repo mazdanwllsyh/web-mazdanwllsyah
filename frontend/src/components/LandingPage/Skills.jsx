@@ -13,12 +13,12 @@ const containerVariants = {
 };
 
 const itemVariants = {
-  hidden: { y: 20, opacity: 0, scale: 0.95 },
+  hidden: { y: 20, opacity: 0, scale: 0.9 },
   visible: {
     y: 0,
     opacity: 1,
     scale: 1,
-    transition: { type: "spring", stiffness: 120, damping: 14 }
+    transition: { type: "spring", stiffness: 200, damping: 15 }
   }
 };
 
@@ -164,28 +164,30 @@ function Skills() {
 
         <div className="flex justify-center mb-12">
           <div role="tablist" aria-label="Kategori Keahlian" className="bg-base-200 p-1.5 rounded-2xl flex gap-2 w-full max-w-md border border-base-content/10 shadow-sm relative z-20">
-            <button
+            <m.button
+              whileTap={{ scale: 0.95 }}
               onClick={() => setActiveTab('hard')}
               role="tab"
               aria-selected={activeTab === 'hard'}
               aria-controls="panel-hard-skills"
               id="tab-hard"
-              className={`flex-1 py-3 px-4 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 outline-none ${activeTab === 'hard' ? 'bg-primary text-primary-content shadow-md scale-100' : 'bg-transparent text-base-content hover:bg-base-100/50 scale-95'}`}
+              className={`flex-1 py-3 px-4 rounded-xl font-bold transition-colors duration-300 flex items-center justify-center gap-2 outline-none ${activeTab === 'hard' ? 'bg-primary text-primary-content shadow-md' : 'bg-transparent text-base-content hover:bg-base-100/50'}`}
             >
               <Icon icon="solar:code-square-bold-duotone" className="w-5 h-5 shrink-0" aria-hidden="true" />
               <span className="text-sm sm:text-base">Hard Skills</span>
-            </button>
-            <button
+            </m.button>
+            <m.button
+              whileTap={{ scale: 0.95 }}
               onClick={() => setActiveTab('soft')}
               role="tab"
               aria-selected={activeTab === 'soft'}
               aria-controls="panel-soft-skills"
               id="tab-soft"
-              className={`flex-1 py-3 px-4 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 outline-none ${activeTab === 'soft' ? 'bg-secondary text-secondary-content shadow-md scale-100' : 'bg-transparent text-base-content hover:bg-base-100/50 scale-95'}`}
+              className={`flex-1 py-3 px-4 rounded-xl font-bold transition-colors duration-300 flex items-center justify-center gap-2 outline-none ${activeTab === 'soft' ? 'bg-secondary text-secondary-content shadow-md' : 'bg-transparent text-base-content hover:bg-base-100/50'}`}
             >
               <Icon icon="solar:medal-star-bold-duotone" className="w-5 h-5 shrink-0" aria-hidden="true" />
               <span className="text-sm sm:text-base">Soft Skills</span>
-            </button>
+            </m.button>
           </div>
         </div>
 
@@ -202,29 +204,35 @@ function Skills() {
                 transition={{ duration: 0.3 }}
                 className="w-full flex flex-col md:flex-row gap-6 md:gap-10"
               >
-                <div className="flex flex-row md:flex-col gap-2.5 overflow-x-auto custom-scrollbar md:w-1/4 lg:w-[26%] pb-3 md:pb-0 shrink-0">
+                <m.div
+                  className="flex flex-row md:flex-col gap-2.5 overflow-x-auto custom-scrollbar md:w-1/4 lg:w-[26%] p-2 -mx-2 md:p-0 md:m-0 shrink-0"
+                  variants={containerVariants}
+                  initial={isBot ? "visible" : "hidden"}
+                  animate="visible"
+                >
                   {categoryOrder.map((category, idx) => {
                     const count = groupedHardSkills[category]?.length || 0;
                     const isActive = currentCategoryIndex === idx;
                     return (
-                      <button
-                        key={category}
-                        onClick={() => setCurrentCategoryIndex(idx)}
-                        className={`relative px-5 py-3.5 rounded-2xl text-[13px] md:text-sm font-bold transition-all whitespace-nowrap md:whitespace-normal flex items-center gap-3 overflow-hidden outline-none ${isActive
-                            ? 'bg-primary text-primary-content shadow-lg shadow-primary/20 scale-100'
-                            : 'bg-base-200/50 hover:bg-base-200 text-base-content/60 hover:text-base-content scale-[0.98]'
-                          }`}
-                      >
-                        <Icon icon={categoryIcons[category] || "solar:folder-bold-duotone"} className="w-5 h-5 shrink-0 relative z-10" />
-                        <span className="leading-tight flex-1 text-left relative z-10">{category}</span>
-                        <span className={`px-2 py-0.5 rounded-md text-[10px] font-black shrink-0 relative z-10 ${isActive ? 'bg-base-100/20 text-primary-content' : 'bg-base-300 text-base-content/70'
-                          }`}>
-                          {count}
-                        </span>
-                      </button>
+                      <m.div key={category} variants={itemVariants} className={`relative shrink-0 rounded-2xl ${isActive ? 'aura aura-dual z-20' : 'z-10'}`}>
+                        <button
+                          onClick={() => setCurrentCategoryIndex(idx)}
+                          className={`w-full relative px-5 py-3.5 rounded-2xl text-[13px] md:text-sm font-bold transition-colors duration-300 whitespace-nowrap md:whitespace-normal flex items-center gap-3 overflow-hidden outline-none ${isActive
+                            ? 'bg-primary text-primary-content shadow-lg shadow-primary/20'
+                            : 'bg-base-200/50 hover:bg-base-200 text-base-content/60 hover:text-base-content'
+                            }`}
+                        >
+                          <Icon icon={categoryIcons[category] || "solar:folder-bold-duotone"} className="w-5 h-5 shrink-0 relative z-10" />
+                          <span className="leading-tight flex-1 text-left relative z-10">{category}</span>
+                          <span className={`px-2 py-0.5 rounded-md text-[10px] font-black shrink-0 relative z-10 transition-colors duration-300 ${isActive ? 'bg-base-100/20 text-primary-content' : 'bg-base-300 text-base-content/70'
+                            }`}>
+                            {count}
+                          </span>
+                        </button>
+                      </m.div>
                     )
                   })}
-                </div>
+                </m.div>
 
                 <div className="flex-1 min-h-[300px]">
                   <AnimatePresence mode="wait">
@@ -252,23 +260,25 @@ function Skills() {
                             <m.div
                               key={`hard-skill-${index}`}
                               variants={itemVariants}
+                              whileHover={{ scale: 1.02 }}
+                              whileTap={{ scale: 0.98 }}
                               className="relative group flex-auto min-w-[12rem] max-w-full sm:max-w-[calc(50%-0.5rem)] lg:max-w-[calc(33.333%-0.75rem)] xl:max-w-[24rem]"
                             >
                               <div className="absolute inset-0 rounded-2xl transition-opacity aura text-primary bg-accent pointer-events-none -z-10 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100"></div>
 
                               <div
                                 tabIndex={0}
-                                className="relative h-16 md:h-[4.5rem] w-full p-4 rounded-2xl flex items-center gap-4 overflow-hidden cursor-pointer transition-[background-color,border-color,box-shadow] duration-300 ease-out focus:outline-none z-10 bg-base-200/90 border border-base-content/10 hover:bg-base-100 focus-within:bg-base-100"
+                                className="relative h-16 md:h-[4.5rem] w-full p-4 rounded-2xl flex items-center gap-4 overflow-hidden cursor-pointer focus:outline-none z-10 bg-base-200/90 border border-base-content/10 hover:bg-base-100 focus-within:bg-base-100 transition-[background-color,border-color,box-shadow] duration-300"
                               >
                                 <div className="w-10 h-10 flex items-center justify-center shrink-0 relative z-10 bg-base-300/50 rounded-xl group-hover:bg-primary/10 transition-colors duration-300">
-                                  <Icon icon={skill.icon} className="w-6 h-6 md:w-7 md:h-7 transition-transform duration-300 drop-shadow-sm group-hover:scale-110 group-focus-within:scale-110 text-base-content group-hover:text-primary" />
+                                  <Icon icon={skill.icon} className="w-6 h-6 md:w-7 md:h-7 drop-shadow-sm text-base-content group-hover:text-primary transition-colors duration-300" />
                                 </div>
 
                                 <div className="flex flex-col whitespace-nowrap overflow-hidden">
-                                  <span className="font-bold font-headings text-sm md:text-[15px] text-base-content group-hover:text-primary transition-colors leading-tight truncate">
+                                  <span className="font-bold font-headings text-sm md:text-[15px] text-base-content group-hover:text-primary transition-colors duration-300 leading-tight truncate">
                                     {skill.name}
                                   </span>
-                                  <span className="text-[9px] md:text-[10px] font-black tracking-widest uppercase text-primary/80 group-hover:text-primary mt-1 truncate">
+                                  <span className="text-[9px] md:text-[10px] font-black tracking-widest uppercase text-primary/80 group-hover:text-primary mt-1 truncate transition-colors duration-300">
                                     {skill.level || "Expert"}
                                   </span>
                                 </div>
@@ -299,16 +309,30 @@ function Skills() {
                 transition={{ duration: 0.3 }}
                 className="w-full max-w-6xl mx-auto"
               >
-                <m.div className="grid grid-cols-1 md:grid-cols-2 gap-4 group/softlist" variants={containerVariants} initial={isBot ? "visible" : "hidden"} whileInView="visible" viewport={{ once: true, amount: 0.1 }}>
+                <m.div
+                  className="grid grid-cols-1 md:grid-cols-2 gap-4 group/softlist"
+                  variants={containerVariants}
+                  initial={isBot ? "visible" : "hidden"}
+                  animate="visible"
+                >
                   {displayedSoftSkills.length > 0 ? (
                     displayedSoftSkills.map((skill, index) => (
-                      <m.div key={`soft-skill-${index}`} variants={itemVariants} className="relative group/item w-full">
-                        <div className="absolute inset-0 rounded-2xl opacity-0 group-hover/item:opacity-100 group-focus-within/item:opacity-100 transition-opacity aura aura-glow pointer-events-none -z-10"></div>
+                      <m.div
+                        key={`soft-skill-${index}`}
+                        variants={itemVariants}
+                        whileHover={{ scale: 1.01 }}
+                        whileTap={{ scale: 0.99 }}
+                        className="relative group/item w-full"
+                      >
+                        <div className="absolute inset-0 rounded-2xl opacity-0 group-hover/item:opacity-100 group-focus-within/item:opacity-100 transition-opacity duration-300 aura aura-glow pointer-events-none -z-10"></div>
 
-                        <div tabIndex={0} className="relative w-full p-5 md:p-6 rounded-2xl bg-base-200/90 border border-base-content/10 outline-none text-left flex flex-col justify-start cursor-pointer transition-[background-color,border-color,box-shadow] duration-300 hover:bg-base-100 focus-within:bg-base-100 z-10">
+                        <div
+                          tabIndex={0}
+                          className="relative w-full p-5 md:p-6 rounded-2xl bg-base-200/90 border border-base-content/10 outline-none text-left flex flex-col justify-start cursor-pointer transition-[background-color,border-color,box-shadow] duration-300 hover:bg-base-100 focus-within:bg-base-100 z-10"
+                        >
                           <div className="flex items-center gap-4 relative z-10 w-full">
-                            <div className="w-2.5 h-2.5 rounded-full shrink-0 shadow-[0_0_8px_rgba(var(--s),0.5)] bg-secondary/50 group-hover/item:bg-secondary group-focus-within/item:bg-secondary group-hover/item:scale-150 group-focus-within/item:scale-150 transition-[background-color,transform] duration-300" />
-                            <h3 className="font-bold text-base md:text-lg leading-tight text-base-content group-hover/item:text-secondary group-focus-within/item:text-secondary transition-colors">
+                            <div className="w-2.5 h-2.5 rounded-full shrink-0 shadow-[0_0_8px_rgba(var(--s),0.5)] bg-secondary/50 group-hover/item:bg-secondary group-focus-within/item:bg-secondary transition-colors duration-300" />
+                            <h3 className="font-bold text-base md:text-lg leading-tight text-base-content group-hover/item:text-secondary group-focus-within/item:text-secondary transition-colors duration-300">
                               {skill.name}
                             </h3>
                           </div>

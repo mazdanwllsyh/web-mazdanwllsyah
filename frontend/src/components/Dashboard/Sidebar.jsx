@@ -3,7 +3,7 @@ import { Icon } from "@iconify/react";
 import { NavLink, Link } from "react-router-dom";
 import { useSiteStore } from "../../stores/siteStore";
 import { useAuth } from "../../hooks/useAuth";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 
 export const menuItems = [
   { name: "Beranda", icon: "mdi:home-outline", path: "/dashboard" },
@@ -20,7 +20,7 @@ const NavItem = ({ to, icon, label }) => {
       to={to}
       end={to === "/dashboard"}
       className={({ isActive }) =>
-        `flex items-center gap-4 px-4 py-3.5 rounded-2xl font-headings font-bold text-sm tracking-tight transition-all duration-300 group ${isActive
+        `flex items-center gap-4 px-4 py-3.5 rounded-2xl font-headings font-bold text-sm tracking-tight transition-[background-color,color,transform,box-shadow] duration-300 group ${isActive
           ? "bg-gradient-to-br from-accent to-primary text-base-100/90 shadow-md shadow-primary/20 scale-[1.02]"
           : "text-base-content/70 hover:bg-base-200 hover:text-base-content hover:translate-x-1"
         }`
@@ -45,7 +45,7 @@ export function MobileBottomNav({ isVisible }) {
   return (
     <AnimatePresence>
       {isVisible && (
-        <motion.div
+        <m.div
           initial={{ y: 120, opacity: 0, x: "-50%", scale: 0.92 }}
           animate={{ y: 0, opacity: 1, x: "-50%", scale: 1 }}
           exit={{ y: 120, opacity: 0, x: "-50%", scale: 0.92 }}
@@ -58,19 +58,19 @@ export function MobileBottomNav({ isVisible }) {
               to={item.path}
               end={item.path === "/dashboard"}
               className={({ isActive }) =>
-                `flex flex-col items-center justify-center flex-1 h-[3.5rem] px-1 py-1.5 rounded-[1.15rem] transition-all duration-300 ${isActive
+                `flex flex-col items-center justify-center flex-1 h-[3.5rem] px-1 py-1.5 rounded-[1.15rem] transition-[background-color,color,transform,box-shadow] duration-300 ${isActive
                   ? "bg-gradient-to-br from-accent to-primary text-base-100 shadow-lg shadow-primary/30 scale-105"
                   : "text-base-content/60 hover:text-base-content hover:bg-base-200/50"
                 }`
               }
             >
-              <Icon icon={item.icon} className="w-5 h-5 mb-0.5 shrink-0" />
+              <Icon icon={item.icon} className="w-5 h-5 mb-0.5 shrink-0 transition-transform duration-300" />
               <span className="text-[9px] sm:text-[10px] font-bold tracking-tight text-center leading-[1.1] whitespace-pre-wrap break-words w-full">
                 {item.name.replace(" ", "\n")}
               </span>
             </NavLink>
           ))}
-        </motion.div>
+        </m.div>
       )}
     </AnimatePresence>
   );
@@ -118,9 +118,9 @@ function Sidebar() {
       <div className="flex flex-col gap-4 pt-4 border-t border-base-content/5 shrink-0 bg-base-100">
         <Link
           to="/profil"
-          className="flex items-center gap-4 p-3 bg-base-200/50 hover:bg-base-200 rounded-2xl border border-base-content/5 transition-all duration-300 group"
+          className="flex items-center gap-4 p-3 bg-base-200/50 hover:bg-base-200 rounded-2xl border border-base-content/5 transition-[background-color,color,border-color] duration-300 group"
         >
-          <div className="avatar placeholder group-hover:scale-105 transition-transform">
+          <div className="avatar placeholder group-hover:scale-105 transition-transform duration-300">
             <div className="w-11 h-11 rounded-xl overflow-hidden bg-base-300 border border-base-content/10 flex items-center justify-center shadow-inner">
               {user?.avatarUrl || user?.profilePicture || user?.avatar || user?.image ? (
                 <img
@@ -147,7 +147,7 @@ function Sidebar() {
 
         <button
           type="button"
-          className="btn btn-error w-full text-base-100 rounded-2xl shadow-sm hover:shadow-lg hover:shadow-error/30 hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center gap-2 border-0"
+          className="btn btn-error w-full text-base-100 rounded-2xl shadow-sm hover:shadow-lg hover:shadow-error/30 hover:-translate-y-0.5 transition-[transform,box-shadow,background-color] duration-300 flex items-center justify-center gap-2 border-0"
           onClick={handleSignOut}
           title="Logout"
         >

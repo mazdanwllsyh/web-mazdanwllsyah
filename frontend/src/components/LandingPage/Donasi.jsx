@@ -52,14 +52,14 @@ function Donasi() {
 
           <div className="max-w-lg mx-auto flex flex-col items-center">
             <m.div className="grid grid-cols-2 gap-3 md:gap-4 w-full mb-8" variants={containerVariants} initial={isBot ? "visible" : "hidden"} animate="visible">
-              <m.div variants={itemVariants} whileHover={isBot ? {} : { y: -5 }} whileTap={isBot ? {} : { scale: 0.95 }} className={`w-full rounded-3xl transition-all duration-[3500ms] ${(hoveredMethod === "gopay" || selectedMethod === "gopay") ? "aura aura-dual text-success" : ""}`} style={{ willChange: "transform, opacity" }}>
+              <m.div variants={itemVariants} whileHover={isBot ? {} : { y: -5 }} whileTap={isBot ? {} : { scale: 0.95 }} className={`w-full rounded-3xl transition-[color,box-shadow,filter] duration-[3500ms] ${(hoveredMethod === "gopay" || selectedMethod === "gopay") ? "aura aura-dual text-success" : ""}`} style={{ willChange: "transform, opacity" }}>
                 <button
                   onClick={() => handleSelectMethod("gopay")}
                   onMouseEnter={() => setHoveredMethod("gopay")}
                   onMouseLeave={() => setHoveredMethod(null)}
                   onFocus={() => setHoveredMethod("gopay")}
                   onBlur={() => setHoveredMethod(null)}
-                  className={`w-full h-full card shadow-sm p-3 md:p-4 flex flex-col items-center justify-center transition-all duration-300 rounded-3xl border-2 outline-none ${selectedMethod === "gopay" ? "bg-base-200 border-success shadow-lg" : "border-base-content/10 bg-base-100 hover:border-success/50"}`}
+                  className={`w-full h-full card shadow-sm p-3 md:p-4 flex flex-col items-center justify-center transition-[background-color,border-color,box-shadow] duration-300 rounded-3xl border-2 outline-none ${selectedMethod === "gopay" ? "bg-base-200 border-success shadow-lg" : "border-base-content/10 bg-base-100 hover:border-success/50"}`}
                 >
                   <div className="bg-white p-1.5 md:p-2 rounded-xl shadow-inner w-full flex justify-center items-center h-12 md:h-16">
                     <img src="https://brandlogos.net/wp-content/uploads/2022/10/gopay-logo_brandlogos.net_gph3u.png" alt="Gopay Logo" className="h-6 md:h-8 w-auto object-contain" />
@@ -67,14 +67,14 @@ function Donasi() {
                 </button>
               </m.div>
 
-              <m.div variants={itemVariants} whileHover={isBot ? {} : { y: -5 }} whileTap={isBot ? {} : { scale: 0.95 }} className={`w-full rounded-3xl transition-all duration-[3500ms] ${(hoveredMethod === "dana" || selectedMethod === "dana") ? "aura aura-dual text-info" : ""}`} style={{ willChange: "transform, opacity" }}>
+              <m.div variants={itemVariants} whileHover={isBot ? {} : { y: -5 }} whileTap={isBot ? {} : { scale: 0.95 }} className={`w-full rounded-3xl transition-[color,box-shadow,filter] duration-[3500ms] ${(hoveredMethod === "dana" || selectedMethod === "dana") ? "aura aura-dual text-info" : ""}`} style={{ willChange: "transform, opacity" }}>
                 <button
                   onClick={() => handleSelectMethod("dana")}
                   onMouseEnter={() => setHoveredMethod("dana")}
                   onMouseLeave={() => setHoveredMethod(null)}
                   onFocus={() => setHoveredMethod("dana")}
                   onBlur={() => setHoveredMethod(null)}
-                  className={`w-full h-full card shadow-sm p-3 md:p-4 flex flex-col items-center justify-center transition-all duration-300 rounded-3xl border-2 outline-none ${selectedMethod === "dana" ? "bg-base-200 border-info shadow-lg" : "border-base-content/10 bg-base-100 hover:border-info/50"}`}
+                  className={`w-full h-full card shadow-sm p-3 md:p-4 flex flex-col items-center justify-center transition-[background-color,border-color,box-shadow] duration-300 rounded-3xl border-2 outline-none ${selectedMethod === "dana" ? "bg-base-200 border-info shadow-lg" : "border-base-content/10 bg-base-100 hover:border-info/50"}`}
                 >
                   <div className="bg-white p-1.5 md:p-2 rounded-xl shadow-inner w-full flex justify-center items-center h-12 md:h-16">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/5/52/Dana_logo.png" alt="Dana Logo" className="h-5 md:h-7 w-auto object-contain" />

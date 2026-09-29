@@ -116,12 +116,12 @@ function About() {
             <m.div variants={itemVariants} className="w-full lg:w-5/12 flex justify-center relative" style={{ willChange: "transform, opacity" }}>
               <div className="relative w-64 h-80 sm:w-72 sm:h-96 md:w-80 md:h-[28rem] lg:w-[22rem] lg:h-[30rem] xl:w-[24rem] xl:h-[34rem] group cursor-pointer">
                 {profileImages.length > 2 && (
-                  <div className="absolute inset-0 bg-base-300 shadow-xl transform -rotate-6 translate-x-4 translate-y-4 overflow-hidden border border-base-content/20 rounded-[2.5rem] transition-all duration-700 group-hover:-rotate-12 group-hover:translate-x-6 group-hover:translate-y-6">
+                  <div className="absolute inset-0 bg-base-300 shadow-xl transform -rotate-6 translate-x-4 translate-y-4 overflow-hidden border border-base-content/20 rounded-[2.5rem] transition-transform duration-700 group-hover:-rotate-12 group-hover:translate-x-6 group-hover:translate-y-6">
                     <img src={transformCloudinaryUrl(profileImages[currentIndices[2]], 600, 800)} className="w-full h-full object-cover grayscale opacity-40" alt="bg3" />
                   </div>
                 )}
                 {profileImages.length > 1 && (
-                  <div className="absolute inset-0 bg-base-200 shadow-xl transform rotate-6 -translate-x-3 translate-y-2 overflow-hidden border border-base-content/20 rounded-[2.5rem] transition-all duration-700 group-hover:rotate-12 group-hover:-translate-x-5 group-hover:translate-y-4">
+                  <div className="absolute inset-0 bg-base-200 shadow-xl transform rotate-6 -translate-x-3 translate-y-2 overflow-hidden border border-base-content/20 rounded-[2.5rem] transition-transform duration-700 group-hover:rotate-12 group-hover:-translate-x-5 group-hover:translate-y-4">
                     <img src={transformCloudinaryUrl(profileImages[currentIndices[1]], 600, 800)} className="w-full h-full object-cover grayscale opacity-70" alt="bg2" />
                   </div>
                 )}
@@ -171,7 +171,7 @@ function About() {
                       onMouseEnter={() => setHoveredStat(stat.label)}
                       onMouseLeave={() => setHoveredStat(null)}
                     >
-                      <div className={`w-full h-full rounded-3xl transition-all duration-[3500ms] ${hoveredStat === stat.label ? "aura aura-dual text-primary" : ""}`}>
+                      <div className={`w-full h-full rounded-3xl transition-[color,box-shadow,filter] duration-[3500ms] ${hoveredStat === stat.label ? "aura aura-dual text-primary" : ""}`}>
                         <HashLink to={stat.link} smooth={stat.link.startsWith("/#")} className="w-full h-full card bg-base-100 shadow-sm border border-base-content/20 p-5 rounded-3xl text-center flex flex-col justify-center items-center outline-none">
                           <Icon icon={stat.icon} className="w-8 h-8 md:w-10 md:h-10 text-primary mb-3" />
                           <div className="text-2xl md:text-3xl font-bold font-display">{stat.value}</div>

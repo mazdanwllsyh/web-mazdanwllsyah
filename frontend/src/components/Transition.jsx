@@ -45,15 +45,15 @@ function Transition({ isLoading, onExitComplete }) {
             initial={{ opacity: 1, scale: 1, pointerEvents: "auto" }}
             exit={{
               opacity: 0,
-              scale: 1.15, // Efek Zoom In saat exit
+              scale: 3,
               pointerEvents: "none",
-              transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } // Custom easing Enterprise
+              transition: { duration: 0.75, ease: [0.76, 0, 0.24, 1] }
             }}
-            className="fixed inset-0 z-[999999] flex flex-col items-center justify-center bg-base-100 overflow-hidden transform-origin-center"
-            style={{ willChange: "opacity, transform" }}
+            className="fixed inset-0 z-[999999] flex flex-col items-center justify-center bg-base-100 overflow-hidden"
+            style={{ transformOrigin: "center center", willChange: "opacity, transform" }}
           >
             <m.div
-              exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.3 } }}
+              exit={{ opacity: 0, scale: 1.5, transition: { duration: 0.35, ease: "easeIn" } }}
               className="flex flex-col items-center gap-6 mb-20"
             >
               <m.div
@@ -62,7 +62,7 @@ function Transition({ isLoading, onExitComplete }) {
                 className="relative w-28 h-28 md:w-36 md:h-36 flex items-center justify-center z-10"
                 style={{ willChange: "transform" }}
               >
-                <svg viewBox="0 0 100 100" className={`absolute w-full h-full fill-transparent stroke-current stroke-[1px] transition-colors duration-500 ${currentProps.color}`}>
+                <svg viewBox="0 0 100 100" className={`absolute w-full h-full fill-transparent stroke-current stroke-[1px] ${currentProps.color}`}>
                   <polygon points="50,2 91.5,26 91.5,74 50,98 8.5,74 8.5,26" />
                 </svg>
                 <m.svg
@@ -74,29 +74,31 @@ function Transition({ isLoading, onExitComplete }) {
                 >
                   <polygon points="50,2 91.5,26 91.5,74 50,98 8.5,74 8.5,26" />
                 </m.svg>
-                <svg viewBox="0 0 100 100" className={`absolute w-[50%] h-[50%] stroke-current stroke-[3px] transition-colors duration-500 ${currentProps.color} ${currentProps.fill}`}>
+                <svg viewBox="0 0 100 100" className={`absolute w-[50%] h-[50%] stroke-current stroke-[3px] ${currentProps.color} ${currentProps.fill}`}>
                   <polygon points="50,2 91.5,26 91.5,74 50,98 8.5,74 8.5,26" />
                 </svg>
               </m.div>
 
               <div className="flex flex-col items-center gap-1 z-20">
-                <span className={`font-mono text-xs md:text-sm font-bold tracking-[0.25em] uppercase transition-colors duration-500 ${currentProps.color}`}>
+                <span className={`font-mono text-xs md:text-sm font-bold tracking-[0.25em] uppercase ${currentProps.color}`}>
                   {currentProps.text}_
                 </span>
               </div>
             </m.div>
 
             <m.div
-              exit={{ opacity: 0, y: 30, transition: { duration: 0.3 } }}
+              exit={{ opacity: 0, y: 40, transition: { duration: 0.3, ease: "easeIn" } }}
               className="absolute bottom-0 left-0 right-0 w-full flex flex-col items-center"
             >
-              <div className={`mb-2 font-mono text-2xl md:text-3xl font-black tracking-widest transition-colors duration-500 ${currentProps.color}`}>
+              <div className={`mb-2 font-mono text-2xl md:text-3xl font-black tracking-widest ${currentProps.color}`}>
                 {progress}%
               </div>
               <div className="w-full h-3 md:h-4 bg-base-content/10 relative overflow-hidden flex">
-                <div
-                  className={`absolute top-0 left-0 h-full transition-all duration-300 ease-out ${isLagging ? 'bg-warning' : 'bg-gradient-to-r from-secondary via-accent to-primary'}`}
-                  style={{ width: `${progress}%` }}
+                <m.div
+                  className={`absolute top-0 left-0 h-full ${isLagging ? 'bg-warning' : 'bg-gradient-to-r from-secondary via-accent to-primary'}`}
+                  initial={{ width: "0%" }}
+                  animate={{ width: `${progress}%` }}
+                  transition={{ ease: "easeOut", duration: 0.3 }}
                 />
               </div>
             </m.div>
