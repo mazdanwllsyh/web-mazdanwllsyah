@@ -4,9 +4,8 @@ import tailwindcss from "@tailwindcss/vite";
 import { visualizer } from "rollup-plugin-visualizer";
 import Sitemap from "vite-plugin-sitemap";
 
-export default defineConfig({
-  base: "/",
-  plugins: [
+export default defineConfig(({ mode }) => {
+  const plugins = [
     tailwindcss({
       config: {
         content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
@@ -50,10 +49,9 @@ export default defineConfig({
       },
     }),
     react(),
-    visualizer({ open: false }),
     Sitemap({
       hostname: "https://mazdaweb.bejalen.com",
-      dynamicRoutes: ["/tentang", "/sertifikasi", "/donasi"],
+      dynamicRoutes: ["/", "/tentang", "/sertifikasi", "/donasi"],
       exclude: ["/signin", "/signup", "/verifikasi", "/dashboard", "/profil"],
       generateRobotsTxt: true,
       robots: [
@@ -70,29 +68,38 @@ export default defineConfig({
         },
       ],
     }),
-  ],
-  server: {
-    headers: {
-      "Cross-Origin-Opener-Policy": "same-origin-allow-popups",
-      "Cross-Origin-Embedder-Policy": "unsafe-none",
+  ];
+
+  if (process.env.ANALYZE === "true") {
+    plugins.push(visualizer({ open: true, filename: "stats.html" }));
+  }
+
+  return {
+    base: "/",
+    plugins: plugins,
+    server: {
+      headers: {
+        "Cross-Origin-Opener-Policy": "same-origin-allow-popups",
+        "Cross-Origin-Embedder-Policy": "unsafe-none",
+      },
     },
-  },
-  build: {
-    target: "esnext",
-    minify: "esbuild",
-    cssCodeSplit: true,
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (id.includes("node_modules")) {
-            if (id.includes("framer-motion")) return "motion";
-            if (id.includes("react-router-dom")) return "routing";
-            if (id.includes("react") || id.includes("react-dom"))
-              return "vendor";
-            return "core";
-          }
+    build: {
+      target: "esnext",
+      minify: "esbuild",
+      cssCodeSplit: true,
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes("node_modules")) {
+              if (id.includes("framer-motion")) return "motion";
+              if (id.includes("react-router-dom")) return "routing";
+              if (id.includes("react") || id.includes("react-dom"))
+                return "vendor";
+              return "core";
+            }
+          },
         },
       },
     },
-  },
+  };
 });

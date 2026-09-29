@@ -45,59 +45,50 @@ const floatVariants = {
   }
 };
 
-const ZeroRenderTypewriter = ({ rawSequence }) => {
-  const elRef = useRef(null);
+const CssTypewriter = ({ rawSequence }) => {
+  const strings = useMemo(() => {
+    if (!rawSequence || rawSequence === "...") return ["Frontend Developer"];
+    return rawSequence.split(",").map(s => s.trim()).filter(Boolean);
+  }, [rawSequence]);
+
+  const [displayText, setDisplayText] = useState(strings[0] || "");
+  const [wordIndex, setWordIndex] = useState(0);
+  const [charIndex, setCharIndex] = useState(strings[0]?.length || 0);
+  const [isDeleting, setIsDeleting] = useState(true);
 
   useEffect(() => {
-    if (!rawSequence || rawSequence === "..." || isBot) {
-      if (elRef.current) elRef.current.textContent = rawSequence?.split(",")[0] || "Frontend Developer";
+    if (isBot || strings.length <= 1) {
+      setDisplayText(strings[0]);
       return;
     }
 
-    const strings = rawSequence.split(",").map(s => s.trim()).filter(Boolean);
-    let isCancelled = false;
-    let wordIndex = 0;
-    let charIndex = 0;
-    let isDeleting = false;
-    let typeTimeout;
+    const currentWord = strings[wordIndex];
+    let timeout;
 
-    const type = () => {
-      if (isCancelled || !elRef.current) return;
-      const currentWord = strings[wordIndex];
+    if (!isDeleting && charIndex < currentWord.length) {
+      timeout = setTimeout(() => {
+        setDisplayText(currentWord.substring(0, charIndex + 1));
+        setCharIndex(c => c + 1);
+      }, 80);
+    } else if (!isDeleting && charIndex === currentWord.length) {
+      timeout = setTimeout(() => setIsDeleting(true), 1500);
+    } else if (isDeleting && charIndex > 0) {
+      timeout = setTimeout(() => {
+        setDisplayText(currentWord.substring(0, charIndex - 1));
+        setCharIndex(c => c - 1);
+      }, 35);
+    } else if (isDeleting && charIndex === 0) {
+      setIsDeleting(false);
+      setWordIndex((prev) => (prev + 1) % strings.length);
+    }
 
-      if (isDeleting) {
-        elRef.current.textContent = currentWord.substring(0, charIndex - 1);
-        charIndex--;
-      } else {
-        elRef.current.textContent = currentWord.substring(0, charIndex + 1);
-        charIndex++;
-      }
-
-      let typeSpeed = isDeleting ? 30 : 80;
-
-      if (!isDeleting && charIndex === currentWord.length) {
-        typeSpeed = 1500;
-        isDeleting = true;
-      } else if (isDeleting && charIndex === 0) {
-        isDeleting = false;
-        wordIndex = (wordIndex + 1) % strings.length;
-        typeSpeed = 300;
-      }
-
-      typeTimeout = setTimeout(type, typeSpeed);
-    };
-
-    type();
-    return () => {
-      isCancelled = true;
-      clearTimeout(typeTimeout);
-    };
-  }, [rawSequence]);
+    return () => clearTimeout(timeout);
+  }, [charIndex, isDeleting, wordIndex, strings, isBot]);
 
   return (
-    <span className="relative">
-      <span ref={elRef} className="whitespace-nowrap"></span>
-      <span className="animate-pulse ml-[2px] text-primary">|</span>
+    <span className="relative inline-flex items-center">
+      <span className="whitespace-nowrap">{displayText}</span>
+      <span className="ml-[2px] text-primary animate-pulse">|</span>
     </span>
   );
 };
@@ -137,7 +128,7 @@ function Hero() {
     "@type": "Person",
     "name": siteData?.brandNameShort || "Mazda Nawallsyah",
     "jobTitle": siteData?.jobTitle || "Front-End Developer",
-    "url": window.location.href,
+    "url": "https://mazdaweb.bejalen.com",
     "image": profileImages[0] || "",
     "sameAs": Object.values(availableLinks).filter((url) => url && url.trim() !== ""),
     "description": siteData?.aboutParagraph || "Portofolio pribadi Mazda Nawallsyah",
@@ -173,7 +164,7 @@ function Hero() {
                 key={tech.id}
                 variants={isBot ? {} : floatVariants}
                 animate="animate"
-                style={{ animationDelay: `${i}s` }}
+                style={{ animation: isBot ? 'none' : `float 6s ease-in-out ${i}s infinite` }}
                 className={`absolute ${tech.position} z-20 w-12 h-12 md:w-14 md:h-14 bg-base-100 rounded-xl shadow-xl border border-base-content/10 flex items-center justify-center hover:scale-110 transition-transform duration-300 hover:z-30 hover:bg-gradient-to-br from-accent to-primary cursor-pointer`}
               >
                 <Icon icon={tech.icon} className={`w-6 h-6 md:w-8 md:h-8 ${tech.customClass || ''}`} />
@@ -184,6 +175,9 @@ function Hero() {
               <div className="mask mask-hexagon w-full h-full bg-base-300 relative z-10 overflow-hidden" onContextMenu={(e) => e.preventDefault()}>
                 <AnimatePresence mode="wait">
                   <m.img
+                    fetchPriority="high"
+                    loading="eager"
+                    decoding="async"
                     key={currentImgIndex}
                     src={profileImages.length > 0 ? transformCloudinaryUrl(profileImages[currentImgIndex], 600, 600) : "/default-avatar.png"}
                     initial={isBot ? { opacity: 1 } : { opacity: 0 }}
@@ -219,12 +213,12 @@ function Hero() {
 
                 <m.div variants={itemVariants} className="w-full">
                   <div className="divider before:bg-base-content/20 after:bg-base-content/20 lg:hidden text-2xl md:text-3xl font-semibold px-2 my-4 text-base-content">
-                    <ZeroRenderTypewriter rawSequence={siteData?.typeAnimationSequenceString} />
+                    <CssTypewriter rawSequence={siteData?.typeAnimationSequenceString} />
                   </div>
                   <div className="hidden lg:flex items-center gap-3 my-3">
                     <div className="h-1.5 flex-1 max-w-[8rem] bg-gradient-to-br from-accent to-primary rounded-full opacity-80"></div>
                     <div className="text-4xl font-semibold text-base-content">
-                      <ZeroRenderTypewriter rawSequence={siteData?.typeAnimationSequenceString} />
+                      <CssTypewriter rawSequence={siteData?.typeAnimationSequenceString} />
                     </div>
                   </div>
                 </m.div>

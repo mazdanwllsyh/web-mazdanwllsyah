@@ -1,6 +1,7 @@
 @font-face {
   font-family: "SF UI Text";
-  src: url("/fonts/SFUIText-Regular.woff2") format("woff2"),
+  src:
+    url("/fonts/SFUIText-Regular.woff2") format("woff2"),
     url("/fonts/SFUIText-Regular.woff") format("woff");
   font-weight: normal;
   font-style: normal;
@@ -9,7 +10,8 @@
 
 @font-face {
   font-family: "SF UI Display";
-  src: url("/fonts/SFUIDisplay-Medium.woff2") format("woff2"),
+  src:
+    url("/fonts/SFUIDisplay-Medium.woff2") format("woff2"),
     url("/fonts/SFUIDisplay-Medium.woff") format("woff");
   font-weight: 500;
   font-style: normal;
@@ -18,7 +20,8 @@
 
 @font-face {
   font-family: "SF UI Display";
-  src: url("/fonts/SFUIDisplay-Bold.woff2") format("woff2"),
+  src:
+    url("/fonts/SFUIDisplay-Bold.woff2") format("woff2"),
     url("/fonts/SFUIDisplay-Bold.woff") format("woff");
   font-weight: bold;
   font-style: normal;
@@ -48,12 +51,36 @@
   }
 }
 
-.swal2-container { 
-  z-index: 9999999 !important; 
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+  }
+}
+
+.swal2-container {
+  z-index: 9999999 !important;
 }
 
 .animate-enter {
-  animation: toast-enter 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; 
+  animation: toast-enter 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
 .animate-leave {
