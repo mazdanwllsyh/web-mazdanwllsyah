@@ -3,7 +3,7 @@ import { Icon } from "@iconify/react";
 import { NavLink, Link } from "react-router-dom";
 import { useSiteStore } from "../../stores/siteStore";
 import { useAuth } from "../../hooks/useAuth";
-import { m, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 export const menuItems = [
   { name: "Beranda", icon: "mdi:home-outline", path: "/dashboard" },
@@ -45,7 +45,7 @@ export function MobileBottomNav({ isVisible }) {
   return (
     <AnimatePresence>
       {isVisible && (
-        <m.div
+        <motion.div
           initial={{ y: 120, opacity: 0, x: "-50%", scale: 0.92 }}
           animate={{ y: 0, opacity: 1, x: "-50%", scale: 1 }}
           exit={{ y: 120, opacity: 0, x: "-50%", scale: 0.92 }}
@@ -70,7 +70,7 @@ export function MobileBottomNav({ isVisible }) {
               </span>
             </NavLink>
           ))}
-        </m.div>
+        </motion.div>
       )}
     </AnimatePresence>
   );
