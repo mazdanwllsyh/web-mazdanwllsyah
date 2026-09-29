@@ -53,21 +53,20 @@ export default defineConfig({
     visualizer({ open: false }),
     Sitemap({
       hostname: "https://mazdaweb.bejalen.com",
-      dynamicRoutes: [
-        "/",
-        "/tentang",
-        "/sertifikasi",
-        "/donasi",
-        "/signin",
-        "/signup",
-        "/verifikasi",
-      ],
+      dynamicRoutes: ["/tentang", "/sertifikasi", "/donasi"],
+      exclude: ["/signin", "/signup", "/verifikasi", "/dashboard", "/profil"],
       generateRobotsTxt: true,
       robots: [
         {
           userAgent: "*",
           allow: "/",
-          disallow: ["/dashboard/", "/profil/"],
+          disallow: [
+            "/dashboard/",
+            "/profil/",
+            "/signin/",
+            "/signup/",
+            "/verifikasi/",
+          ],
         },
       ],
     }),
