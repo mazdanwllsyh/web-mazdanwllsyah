@@ -10,7 +10,7 @@
 [![DaisyUI](https://img.shields.io/badge/DaisyUI-5.7-5A0EF8?style=flat&logo=daisyui&logoColor=white)](https://daisyui.com/)
 [![Zustand](https://img.shields.io/badge/State-Zustand-443E38?style=flat)](https://github.com/pmndrs/zustand)
 
-A high-performance personal portfolio built with modern client-side rendering optimizations, dynamic CMS integration, structured data validation, and custom crawler bypass logic.
+A high-performance personal portfolio built with modern client-side rendering optimizations, dynamic CMS integration, structured data validation, and progressive crawler accessibility.
 
 <br />
 
@@ -22,8 +22,8 @@ A high-performance personal portfolio built with modern client-side rendering op
 
 ## Architectural Highlights
 
-- **Crawler Rendering Engine**: Custom bot detection heuristic (`isBot`) that strips heavy visual blocking components, transitions, and timers exclusively for Googlebot/WRS to guarantee full DOM indexing within crawl budgets.
-- **Granular Manual Chunking**: Tuned Rollup vendor splitting (`motion`, `routing`, `vendor`, `core`) via Vite to eliminate main-thread bottlenecks and maintain optimal Core Web Vitals (FCP 0.8s, TBT 0ms).
+- **Progressive Crawler Hydration**: Lightweight lifecycle pipeline that skips non-critical introductory animations during headless crawler inspections, ensuring immediate DOM availability and zero render-blocking penalties.
+- **Granular Manual Chunking**: Tuned Rollup vendor splitting (`motion`, `routing`, `vendor`, `core`) via Vite to eliminate main-thread bottlenecks and maintain optimal Core Web Vitals.
 - **Responsive Navigation Gestures**: Adaptive touch-drag boundaries utilizing Framer Motion's `domMax` engine with directional locks, scoped strictly to tablet/mobile viewports with a 65% swipe threshold.
 - **Micro-Engineered SEO Injection**: React-native dynamic meta injection paired with Schema.org JSON-LD structured data (`WebSite`, `Person`, `ProfilePage`, `ItemList`) for rich snippet compliance in Google Search Console.
 - **Dedicated Management Console**: Fully isolated protected administrative dashboard to update projects, certifications, and career history dynamically via external API stores.
@@ -57,4 +57,4 @@ src/
 ├── routes/              # Protected admin route wrappers & layout routing
 ├── stores/              # Zustand centralized atomic state stores
 ├── utils/               # Axios instances & Cloudinary image transformation helpers
-└── App.jsx              # App orchestration, global styling, & bot sniffing logic
+└── App.jsx              # App orchestration, global styling, & bot rendering checks
