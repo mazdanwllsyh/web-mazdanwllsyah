@@ -1,24 +1,32 @@
-# Mazda Nawallasyah — Portfolio
+<div align="center">
 
-> Fast, SEO-ready personal portfolio with custom CMS Dashboard.
+# Mazda Nawallasyah
 
-Live: **https://mazdaweb.bejalen.com** | Status: 🟢 Active
+### Frontend Engineer — Based in Ambarawa, ID
 
-![Preview](https://res.cloudinary.com/dr7olcn4r/image/upload/w_600,c_fill/v1761989348/portfolio_profile/portfolio_profile/MazdaN_Profile_Image_1761989345137.webp)
+[![Live Website](https://img.shields.io/badge/Live-mazdaweb.bejalen.com-000000?style=for-the-badge&logo=vercel)](https://mazdaweb.bejalen.com)
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=flat&logo=react)](https://react.dev/)
+[![Vercel](https://img.shields.io/badge/Deployed-Vercel-black?style=flat)](#)
 
-## ✨ Features
-- **Dashboard CMS** - Manage History, Sertifikasi, Gallery, Skills without code
-- **Custom Interactions** - Custom Cursor, Zero-render Typewriter, Motion animations
-- **Cloudinary CDN** - Auto responsive image (w_600, w_1200)
+_Fast • SEO-ready • Self-hosted fonts • CMS Dashboard_
 
-## 🛠️ Tech Stack
-- **Frontend:** React 19, Vite 6, Zustand, Framer Motion, Tailwind 4, DaisyUI 5.7
-- **Backend:** Node.js, Express, MongoDB
-- **Infra:** Vercel, Cloudinary
+<img src="https://res.cloudinary.com/dr7olcn4r/image/upload/w_1200,c_fill/v1761989348/portfolio_profile/portfolio_profile/MazdaN_Profile_Image_1761989345137.webp" width="800" style="border-radius: 24px" />
 
-## 🚀 Quick Start
-```bash
-cd frontend
-npm install
-# buat .env dari .env.example
-npm run dev
+</div>
+
+---
+
+### Why this portfolio is different?
+
+> **Dashboard CMS** untuk update sertifikat & history .   
+> **Manual chunk splitting** & react-snap prerender.
+
+### Stack
+
+| Layer | Technology |
+| :--- | :--- |
+| **Core** | React 19, Vite 6, JavaScript |
+| **State** | Zustand |
+| **Styling** | Tailwind CSS 4, DaisyUI 5.7, Framer Motion |
+| **Media** | Cloudinary (auto format & responsive) |
+| **SEO** | react-snap, JSON-LD, Local Fonts via Transfonter |
