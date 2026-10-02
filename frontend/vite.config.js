@@ -51,7 +51,7 @@ export default defineConfig(({ mode }) => {
     react(),
     Sitemap({
       hostname: "https://mazdaweb.bejalen.com",
-      dynamicRoutes: ["/", "/tentang", "/sertifikasi", "/donasi"],
+      dynamicRoutes: ["/tentang", "/sertifikasi", "/donasi"],
       exclude: ["/signin", "/signup", "/verifikasi", "/dashboard", "/profil"],
       generateRobotsTxt: true,
       robots: [
