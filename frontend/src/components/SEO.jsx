@@ -1,29 +1,54 @@
-export default function SEO({ title, description, url, type = "website", image, structuredData }) {
-    const siteUrl = "https://mazdaweb.bejalen.com";
-    const fullUrl = url ? `${siteUrl}${url}` : siteUrl;
-    const defaultImage = "https://res.cloudinary.com/dr7olcn4r/image/upload/v1761989348/portfolio_profile/portfolio_profile/MazdaN_Profile_Image_1761989345137.webp";
-    const finalImage = image || defaultImage;
-    const finalTitle = title ? `${title} | Mazda Nawallsyah` : "Mazda Nawallsyah — Frontend Developer";
+import { useEffect } from "react";
 
-    return (
-        <>
-            <title>{finalTitle}</title>
-            <meta name="description" content={description} />
-            <meta property="og:type" content={type} />
-            <meta property="og:title" content={finalTitle} />
-            <meta property="og:description" content={description} />
-            <meta property="og:image" content={finalImage} />
-            <meta property="og:url" content={fullUrl} />
-            <meta name="twitter:card" content="summary_large_image" />
-            <meta name="twitter:title" content={finalTitle} />
-            <meta name="twitter:description" content={description} />
-            <meta name="twitter:image" content={finalImage} />
-            <link rel="canonical" href={fullUrl} />
-            {structuredData && (
-                <script type="application/ld+json">
-                    {JSON.stringify(structuredData)}
-                </script>
-            )}
-        </>
-    );
+export default function SEO({ title, description, url, type = "website", image, structuredData }) {
+    useEffect(() => {
+        const siteUrl = "https://mazdaweb.bejalen.com";
+        const fullUrl = url ? `${siteUrl}${url}` : siteUrl;
+        const defaultImage = "https://res.cloudinary.com/dr7olcn4r/image/upload/v1761989348/portfolio_profile/portfolio_profile/MazdaN_Profile_Image_1761989345137.webp";
+        const finalImage = image || defaultImage;
+        const finalTitle = title ? `${title} | Mazda Nawallsyah` : "Mazda Nawallsyah — Frontend Developer";
+
+        document.title = finalTitle;
+
+        const updateMeta = (name, content, isProperty = false) => {
+            const attr = isProperty ? "property" : "name";
+            let tag = document.querySelector(`meta[${attr}="${name}"]`);
+            if (!tag) {
+                tag = document.createElement("meta");
+                tag.setAttribute(attr, name);
+                document.head.appendChild(tag);
+            }
+            tag.setAttribute("content", content);
+        };
+
+        updateMeta("description", description);
+        updateMeta("og:type", type, true);
+        updateMeta("og:title", finalTitle, true);
+        updateMeta("og:description", description, true);
+        updateMeta("og:image", finalImage, true);
+        updateMeta("og:url", fullUrl, true);
+        updateMeta("twitter:title", finalTitle);
+        updateMeta("twitter:description", description);
+        updateMeta("twitter:image", finalImage);
+
+        let canonical = document.querySelector("link[rel='canonical']");
+        if (!canonical) {
+            canonical = document.createElement("link");
+            canonical.setAttribute("rel", "canonical");
+            document.head.appendChild(canonical);
+        }
+        canonical.setAttribute("href", fullUrl);
+
+        let ldJson = document.getElementById("ld-json");
+        if (ldJson) ldJson.remove();
+        if (structuredData) {
+            const script = document.createElement("script");
+            script.id = "ld-json";
+            script.type = "application/ld+json";
+            script.textContent = JSON.stringify(structuredData);
+            document.head.appendChild(script);
+        }
+    }, [title, description, url, type, image, structuredData]);
+
+    return null;
 }
