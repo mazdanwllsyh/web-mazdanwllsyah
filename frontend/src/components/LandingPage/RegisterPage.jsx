@@ -18,7 +18,7 @@ function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  
+
   const togglePasswordVisibility = () => setShowPasswords(!showPasswords);
 
   const handleSubmit = async (e) => {
@@ -29,7 +29,13 @@ function RegisterPage() {
     }
     setIsLoading(true);
     try {
-      const response = await instance.post("/users/register-request", { fullName, email, phone, password, confirmPassword });
+      const response = await instance.post("/users/register-request", {
+        fullName,
+        email,
+        phone,
+        password,
+        confirmPassword,
+      });
       await showSuccessSwal("Registrasi Berhasil!", response.data.message);
       navigate("/verifikasi", { state: { email } });
     } catch (err) {
@@ -44,7 +50,11 @@ function RegisterPage() {
     <div className="w-full flex justify-center py-10 z-10 relative">
       <SEO
         title="Registrasi Akun"
-        description={siteData.aboutParagraph ? siteData.aboutParagraph.substring(0, 160) : "Buat akun baru untuk mendapatkan akses penuh."}
+        description={
+          siteData.aboutParagraph
+            ? siteData.aboutParagraph.substring(0, 160)
+            : "Buat akun baru untuk mendapatkan akses penuh."
+        }
         url="/signup"
       />
       <div className="card lg:card-side bg-base-100/60 backdrop-blur-xl shadow-2xl border border-base-content/10 w-full max-w-6xl overflow-hidden rounded-[2.5rem]">
@@ -52,33 +62,91 @@ function RegisterPage() {
         <div className="w-full lg:w-1/2 p-8 md:p-12 order-1 flex flex-col justify-center bg-base-100/40">
           <div className="text-sm breadcrumbs font-medium text-base-content/60 mb-2">
             <ul>
-              <li><Link to="/" className="hover:text-primary transition-colors">Beranda</Link></li>
+              <li>
+                <Link to="/" className="hover:text-primary transition-colors">
+                  Beranda
+                </Link>
+              </li>
               <li className="text-base-content">Register</li>
             </ul>
           </div>
-          <h1 className="text-3xl md:text-4xl font-black font-display tracking-tight text-base-content mb-2">Buat Akun</h1>
-          <p className="text-base-content/60 text-sm font-medium mb-6">Lengkapi form di bawah ini untuk memulai.</p>
+          <h1 className="text-3xl md:text-4xl font-black font-display tracking-tight text-base-content mb-2">
+            Buat Akun
+          </h1>
+          <p className="text-base-content/60 text-sm font-medium mb-6">
+            Lengkapi form di bawah ini untuk memulai.
+          </p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <FloatingLabelInput id="nama" label="Nama Lengkap" type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
-            <FloatingLabelInput id="email" label="Email Address" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-            <FloatingLabelInput id="whatsapp" label="Nomor WhatsApp" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} required />
+            <FloatingLabelInput
+              id="nama"
+              label="Nama Lengkap"
+              type="text"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              required
+            />
+            <FloatingLabelInput
+              id="email"
+              label="Email Address"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <FloatingLabelInput
+              id="whatsapp"
+              label="Nomor WhatsApp"
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              required
+            />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <FloatingLabelInput id="passwordReg" label="Password" type={showPasswords ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} required />
-              <FloatingLabelInput id="confirmPassword" label="Konfirmasi Password" type={showPasswords ? "text" : "password"} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required rightElement={
-                <button type="button" onClick={togglePasswordVisibility} className="text-base-content/40 hover:text-primary transition-colors p-2 outline-none">
-                  <Icon icon={showPasswords ? "solar:eye-closed-bold" : "solar:eye-bold"} className="w-5 h-5" />
-                </button>
-              } />
+              <FloatingLabelInput
+                id="passwordReg"
+                label="Password"
+                type={showPasswords ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <FloatingLabelInput
+                id="confirmPassword"
+                label="Konfirmasi Password"
+                type={showPasswords ? "text" : "password"}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                rightElement={
+                  <button
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                    className="text-base-content/40 hover:text-primary transition-colors p-2 outline-none"
+                  >
+                    <Icon
+                      icon={showPasswords ? "solar:eye-closed-bold" : "solar:eye-bold"}
+                      className="w-5 h-5"
+                    />
+                  </button>
+                }
+              />
             </div>
 
-            <button type="submit" className="btn btn-primary w-full h-12 mt-4 rounded-xl font-bold shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all text-base" disabled={isLoading}>
+            <button
+              type="submit"
+              className="btn btn-primary w-full h-12 mt-4 rounded-xl font-bold shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all text-base"
+              disabled={isLoading}
+            >
               {isLoading ? <span className="loading loading-dots loading-md"></span> : "Sign Up"}
             </button>
           </form>
 
           <p className="text-center text-sm mt-8 font-medium text-base-content/70">
-            Sudah punya akun? <Link to="/signin" className="text-primary font-bold hover:underline ml-1">Sign in di sini</Link>
+            Sudah punya akun?{" "}
+            <Link to="/signin" className="text-primary font-bold hover:underline ml-1">
+              Sign in di sini
+            </Link>
           </p>
         </div>
 
@@ -86,7 +154,9 @@ function RegisterPage() {
           <div className="w-40 h-40 bg-secondary/10 rounded-full flex items-center justify-center mb-8 border border-secondary/20 shadow-[0_0_40px_rgba(var(--s),0.2)]">
             <Icon icon="solar:user-id-bold-duotone" className="w-20 h-20 text-secondary" />
           </div>
-          <h2 className="text-3xl font-black font-display tracking-tight mb-4 text-base-content">Bergabunglah Sekarang</h2>
+          <h2 className="text-3xl font-black font-display tracking-tight mb-4 text-base-content">
+            Bergabunglah Sekarang
+          </h2>
           <p className="text-sm font-medium opacity-70 leading-relaxed max-w-sm text-base-content">
             Dapatkan akses penuh ke sistem. Registrasi cepat, dan aman yang telah dioptimalkan.
           </p>

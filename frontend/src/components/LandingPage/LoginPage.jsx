@@ -6,6 +6,7 @@ import { useSiteStore } from "../../stores/siteStore";
 import useCustomSwals from "../../hooks/useCustomSwals";
 import instance from "../../utils/axios";
 import FloatingLabelInput from "../FloatingLabelInput";
+import SEO from "../../components/SEO";
 
 function LoginPage() {
   const siteData = useSiteStore((state) => state.siteData);
@@ -128,9 +129,12 @@ function LoginPage() {
 
   return (
     <div className="w-full flex justify-center py-10 z-10 relative">
-      <title>Login Sistem | Mazda Nawallsyah</title>
-      <meta name="description" content={siteData.aboutParagraph ? siteData.aboutParagraph.substring(0, 160) : "Login ke akun Anda untuk melanjutkan."} />
-      <link rel="canonical" href={`https://mazdaweb.bejalen.com/signin`} />
+      
+      <SEO
+        title="Login Sistem"
+        description={siteData.aboutParagraph ? siteData.aboutParagraph.substring(0, 160) : "Login ke akun Anda untuk melanjutkan."}
+        url="/signin"
+      />
 
       <div className="card lg:card-side bg-base-100/60 backdrop-blur-xl shadow-2xl border border-base-content/10 w-full max-w-6xl overflow-hidden rounded-[2.5rem]">
 
