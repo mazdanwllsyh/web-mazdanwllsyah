@@ -66,7 +66,7 @@ const getInitialTheme = () => {
     const osPrefersDark = window.matchMedia(
       "(prefers-color-scheme: dark)",
     ).matches;
-    return osPrefersDark ? "dracula" : "cmyk";
+    return osPrefersDark ? "sunset" : "cmyk";
   }
   return "cmyk";
 };

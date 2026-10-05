@@ -112,12 +112,12 @@
             ],
             t = localStorage.getItem("theme"),
             a = window.matchMedia("(prefers-color-scheme: dark)").matches;
-          let r = t || (a ? "dracula" : "cmyk");
+          let r = t || (a ? "sunset" : "cmyk");
           (e.includes(r) || (r = "dim"),
             document.documentElement.setAttribute("data-theme", r));
           const o = document.getElementById("theme-color-meta");
           o &&
-            o.setAttribute("content", "dracula" === r ? "#282a36" : "#ffffff");
+            o.setAttribute("content", "sunset" === r ? "#121c22" : "#ffffff");
         } catch (e) {}
       })();
     </script>
