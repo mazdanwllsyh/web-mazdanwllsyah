@@ -50,6 +50,7 @@ export default defineConfig(({ mode }) => {
       Sitemap({
         hostname: "https://mazdaweb.bejalen.com",
         outDir: "dist",
+        dynamicRoutes: ["/tentang", "/sertifikasi", "/donasi"],
         customRouteConfig: [
           { url: "/", priority: 1.0, changefreq: "daily" },
           { url: "/tentang", priority: 0.9, changefreq: "weekly" },
