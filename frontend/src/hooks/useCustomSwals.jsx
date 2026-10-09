@@ -1,95 +1,54 @@
-import Swal from "sweetalert2";
-
-const swalCustomStyle = `
-  div:where(.swal2-container) div:where(.swal2-popup) {
-    background-color: hsl(var(--b1)) !important; 
-    color: hsl(var(--bc)) !important;
-    border: 2px solid hsl(var(--p));
-    border-radius: 1.5rem;
-  }
-  
-  div:where(.swal2-container) .swal2-title {
-    color: hsl(var(--bc)) !important;
-    font-family: 'SF UI Display', sans-serif;
-  }
-
-  div:where(.swal2-container) .swal2-html-container {
-    color: hsl(var(--bc) / 0.8) !important;
-  }
-`;
-
-if (typeof document !== 'undefined' && !document.getElementById('swal-theme-style')) {
-  const style = document.createElement('style');
-  style.id = 'swal-theme-style';
-  style.innerHTML = swalCustomStyle;
-  document.head.appendChild(style);
-}
+import { toast } from "sonner";
+import { Icon } from "@iconify/react";
 
 const useCustomSwals = () => {
-  const baseSwalConfig = {
-    customClass: {
-      confirmButton: "btn btn-primary",
-      cancelButton: "btn btn-ghost",
-    },
-    buttonsStyling: false,
-  };
-
-  const buildSwalConfig = (specificConfig = {}, buttonClasses = {}) => {
-    return {
-      ...baseSwalConfig,
-      ...specificConfig,
-      customClass: {
-        ...baseSwalConfig.customClass,
-        ...buttonClasses,
-        actions: 'flex gap-3 mt-3',
-      },
-    };
-  };
-
-  const showConfirmSwal = async (title, text) => {
-    const config = buildSwalConfig(
-      {
-        title: title,
-        text: text,
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: '<div class="flex items-center gap-2"><span class="iconify w-5 h-5" data-icon="mdi:check-circle"></span> Ya, Lanjutkan!</div>',
-        cancelButtonText: '<div class="flex items-center gap-2"><span class="iconify w-5 h-5" data-icon="mdi:close-circle"></span> Batal</div>',
-        reverseButtons: true,
-      },
-      {
-        confirmButton: "btn btn-error text-base-100 px-6 rounded-xl",
-        cancelButton: "btn btn-neutral px-6 rounded-xl",
-      }
-    );
-    const result = await Swal.fire(config);
-    return result.isConfirmed;
+  const showConfirmSwal = (title, text) => {
+    return new Promise((resolve) => {
+      const toastId = toast(
+        <div className="flex flex-col gap-4 w-full">
+          <div className="flex items-start gap-3">
+            <Icon icon="lucide:alert-triangle" className="text-warning w-6 h-6 shrink-0 mt-0.5" />
+            <div className="flex flex-col gap-1">
+              <h2 className="font-display font-bold text-base-content text-base leading-tight text-center">{title}</h2>
+              <p className="text-md text-base-content/70">{text}</p>
+            </div>
+          </div>
+          <div className="flex justify-end gap-2 mt-1">
+            <button
+              className="btn btn-sm btn-outline border-base-content/30 text-base-content/80 hover:bg-base-content/10 hover:text-base-content hover:border-base-content/50 rounded-xl px-4 font-bold"
+              onClick={() => {
+                toast.dismiss(toastId);
+                resolve(false);
+              }}
+            >
+              Batal
+            </button>
+            <button
+              className="btn btn-sm btn-error text-white rounded-xl px-5 shadow-md font-bold"
+              onClick={() => {
+                toast.dismiss(toastId);
+                resolve(true);
+              }}
+            >
+              Ya, Lanjutkan!
+            </button>
+          </div>
+        </div>,
+        {
+          duration: Infinity,
+          position: "top-center",
+          style: { minWidth: '320px' }
+        }
+      );
+    });
   };
 
   const showSuccessSwal = (title, text) => {
-    const config = buildSwalConfig(
-      {
-        title,
-        text,
-        icon: "success",
-        confirmButtonText: '<div class="flex items-center gap-2"><span class="iconify w-5 h-5" data-icon="mdi:hand-okay"></span> Mantap!</div>',
-      },
-      { confirmButton: "btn btn-success text-base-100 px-10 rounded-xl shadow-md" }
-    );
-    return Swal.fire(config);
+    toast.success(title, { description: text, duration: 4000 });
   };
 
   const showErrorSwal = (title, text) => {
-    const config = buildSwalConfig(
-      {
-        title,
-        text,
-        icon: "error",
-        confirmButtonText: '<div class="flex items-center gap-2"><span class="iconify w-5 h-5" data-icon="mdi:alert-circle"></span> Mengerti</div>',
-      },
-      { confirmButton: "btn btn-error text-base-100 px-10 rounded-xl shadow-md" }
-    );
-    return Swal.fire(config);
+    toast.error(title, { description: text, duration: 5000 });
   };
 
   return { showConfirmSwal, showSuccessSwal, showErrorSwal };

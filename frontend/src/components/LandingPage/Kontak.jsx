@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 import { m, LazyMotion, domAnimation } from "framer-motion";
 import { useSiteStore } from "../../stores/siteStore";
 import { useAuth } from "../../hooks/useAuth";

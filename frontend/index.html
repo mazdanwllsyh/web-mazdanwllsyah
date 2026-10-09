@@ -41,6 +41,7 @@
       name="twitter:image"
       content="https://res.cloudinary.com/dr7olcn4r/image/upload/v1761989348/portfolio_profile/portfolio_profile/MazdaN_Profile_Image_1761989345137.webp"
     />
+
     <link
       rel="preconnect"
       href="https://res.cloudinary.com"
@@ -74,58 +75,68 @@
     <script>
       (() => {
         try {
-          const e = [
-              "emerald",
-              "light",
-              "corporate",
-              "synthwave",
-              "dark",
-              "black",
-              "business",
-              "night",
-              "dim",
-              "abyss",
-              "bumblebee",
-              "caramellatte",
-              "nord",
-              "cupcake",
-              "retro",
-              "cyberpunk",
-              "valentine",
-              "halloween",
-              "garden",
-              "forest",
-              "aqua",
-              "lofi",
-              "pastel",
-              "fantasy",
-              "wireframe",
-              "luxury",
-              "dracula",
-              "cmyk",
-              "autumn",
-              "acid",
-              "lemonade",
-              "coffee",
-              "winter",
-              "sunset",
-            ],
-            t = localStorage.getItem("theme"),
-            a = window.matchMedia("(prefers-color-scheme: dark)").matches;
-          let r = t || (a ? "sunset" : "cmyk");
-          (e.includes(r) || (r = "dim"),
-            document.documentElement.setAttribute("data-theme", r));
-          const o = document.getElementById("theme-color-meta");
-          o &&
-            o.setAttribute("content", "sunset" === r ? "#121c22" : "#ffffff");
+          const validThemes = [
+            "emerald",
+            "light",
+            "corporate",
+            "synthwave",
+            "dark",
+            "black",
+            "business",
+            "night",
+            "dim",
+            "abyss",
+            "bumblebee",
+            "caramellatte",
+            "nord",
+            "cupcake",
+            "cyberpunk",
+            "halloween",
+            "forest",
+            "lofi",
+            "pastel",
+            "fantasy",
+            "wireframe",
+            "luxury",
+            "dracula",
+            "cmyk",
+            "autumn",
+            "acid",
+            "lemonade",
+            "coffee",
+            "winter",
+            "sunset",
+          ];
+          const storedTheme = localStorage.getItem("theme");
+          const prefersDark = window.matchMedia(
+            "(prefers-color-scheme: dark)",
+          ).matches;
+
+          let activeTheme = storedTheme || (prefersDark ? "sunset" : "cmyk");
+          if (!validThemes.includes(activeTheme)) activeTheme = "dim";
+
+          document.documentElement.setAttribute("data-theme", activeTheme);
+
+          const updateThemeColor = () => {
+            const bgColor = getComputedStyle(
+              document.documentElement,
+            ).getPropertyValue("--b1");
+            if (bgColor) {
+              document
+                .getElementById("theme-color-meta")
+                ?.setAttribute("content", `hsl(${bgColor})`);
+            }
+          };
+
+          setTimeout(updateThemeColor, 100);
         } catch (e) {}
       })();
     </script>
   </head>
   <body>
     <div id="root"></div>
-    <noscript
-      ><div
+    <noscript>
+      <div
         style="
           display: flex;
           height: 100vh;
@@ -145,8 +156,8 @@
             portofolio ini.
           </p>
         </div>
-      </div></noscript
-    >
+      </div>
+    </noscript>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

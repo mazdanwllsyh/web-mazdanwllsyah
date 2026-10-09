@@ -19,12 +19,11 @@
     "pdfjs-dist": "^3.4.120",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "react-hot-toast": "^2.6.0",
     "react-is": "^19.2.6",
     "react-router-dom": "^7.9.4",
     "react-router-hash-link": "^2.4.3",
     "recharts": "^3.8.1",
-    "sweetalert2": "^11.26.24",
+    "sonner": "^2.0.8",
     "zustand": "^5.0.12"
   },
   "devDependencies": {

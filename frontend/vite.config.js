@@ -5,78 +5,76 @@ import { visualizer } from "rollup-plugin-visualizer";
 import Sitemap from "vite-plugin-sitemap";
 
 export default defineConfig(({ mode }) => {
-  const plugins = [
-    tailwindcss({
-      config: {
-        content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
-        daisyui: {
-          themes: [
-            "emerald",
-            "light",
-            "corporate",
-            "synthwave",
-            "dark",
-            "black",
-            "business",
-            "night",
-            "dim",
-            "abyss",
-            "bumblebee",
-            "caramellatte",
-            "nord",
-            "cupcake",
-            "retro",
-            "valentine",
-            "halloween",
-            "garden",
-            "forest",
-            "aqua",
-            "lofi",
-            "pastel",
-            "fantasy",
-            "wireframe",
-            "luxury",
-            "dracula",
-            "cmyk",
-            "autumn",
-            "acid",
-            "lemonade",
-            "coffee",
-            "winter",
-            "sunset",
-          ],
-        },
-      },
-    }),
-    react(),
-    Sitemap({
-      hostname: "https://mazdaweb.bejalen.com",
-      dynamicRoutes: ["/tentang", "/sertifikasi", "/donasi"],
-      exclude: ["/signin", "/signup", "/verifikasi", "/dashboard", "/profil"],
-      generateRobotsTxt: true,
-      robots: [
-        {
-          userAgent: "*",
-          allow: "/",
-          disallow: [
-            "/dashboard/",
-            "/profil/",
-            "/signin/",
-            "/signup/",
-            "/verifikasi/",
-          ],
-        },
-      ],
-    }),
-  ];
-
-  if (process.env.ANALYZE === "true") {
-    plugins.push(visualizer({ open: true, filename: "stats.html" }));
-  }
-
   return {
     base: "/",
-    plugins: plugins,
+    plugins: [
+      tailwindcss({
+        config: {
+          content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+          daisyui: {
+            themes: [
+              "emerald",
+              "light",
+              "corporate",
+              "synthwave",
+              "dark",
+              "black",
+              "business",
+              "night",
+              "dim",
+              "abyss",
+              "bumblebee",
+              "caramellatte",
+              "nord",
+              "cupcake",
+              "halloween",
+              "forest",
+              "lofi",
+              "pastel",
+              "fantasy",
+              "wireframe",
+              "luxury",
+              "dracula",
+              "cmyk",
+              "autumn",
+              "acid",
+              "lemonade",
+              "coffee",
+              "winter",
+              "sunset",
+            ],
+          },
+        },
+      }),
+      react(),
+      Sitemap({
+        hostname: "https://mazdaweb.bejalen.com",
+        outDir: "dist",
+        exclude: ["/signin", "/signup", "/verifikasi", "/dashboard", "/profil"],
+        generateRobotsTxt: true,
+        customRouteConfig: [
+          { url: "/", priority: 1.0, changefreq: "weekly" },
+          { url: "/tentang", priority: 0.9, changefreq: "monthly" },
+          { url: "/sertifikasi", priority: 0.8, changefreq: "monthly" },
+          { url: "/donasi", priority: 0.5, changefreq: "yearly" },
+        ],
+        robots: [
+          {
+            userAgent: "*",
+            allow: "/",
+            disallow: [
+              "/dashboard/",
+              "/profil/",
+              "/signin/",
+              "/signup/",
+              "/verifikasi/",
+            ],
+          },
+        ],
+      }),
+      process.env.ANALYZE === "true" &&
+        visualizer({ open: true, filename: "stats.html" }),
+    ].filter(Boolean),
     server: {
       headers: {
         "Cross-Origin-Opener-Policy": "same-origin-allow-popups",

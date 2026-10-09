@@ -19,7 +19,7 @@ const CustomCursor = () => {
 
         const checkTheme = () => {
             const theme = document.documentElement.getAttribute("data-theme");
-            const darkThemes = ["synthwave", "dark", "black", "business", "night", "dim", "abyss", "sunset", "forest", "aqua", "luxury", "dracula", "coffee"];
+            const darkThemes = ["synthwave", "dark", "black", "business", "night", "dim", "abyss", "sunset", "forest", "luxury", "dracula", "coffee"];
             const nowDark = darkThemes.includes(theme);
             if (nowDark !== isDarkMode.current) {
                 isDarkMode.current = nowDark;

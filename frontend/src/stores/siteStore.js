@@ -10,9 +10,7 @@ const lightThemes = [
   "cupcake",
   "caramellatte",
   "nord",
-  "retro",
-  "valentine",
-  "garden",
+
   "lofi",
   "pastel",
   "fantasy",
@@ -34,7 +32,6 @@ const darkThemes = [
   "halloween",
   "sunset",
   "forest",
-  "aqua",
   "luxury",
   "dracula",
   "coffee",

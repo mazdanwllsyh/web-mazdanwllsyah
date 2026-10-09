@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { useSiteStore } from "../stores/siteStore";
 import { useCustomToast } from "../hooks/useCustomToast";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 
 function ThemeSwitcher() {
   const toggleTheme = useSiteStore((state) => state.toggleTheme);
@@ -10,7 +10,7 @@ function ThemeSwitcher() {
   const { success } = useCustomToast();
 
   const darkThemes = ["synthwave", "dark", "black", "business", "night", "dim", "abyss",
-    "sunset", "forest", "aqua", "luxury", "dracula", "coffee"];
+    "sunset", "forest", "luxury", "dracula", "coffee"];
   const isDarkMode = darkThemes.includes(theme);
 
   const handleToggle = useCallback((e) => {
