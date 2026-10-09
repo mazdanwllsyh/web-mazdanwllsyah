@@ -50,14 +50,14 @@ export default defineConfig(({ mode }) => {
       Sitemap({
         hostname: "https://mazdaweb.bejalen.com",
         outDir: "dist",
-        exclude: ["/signin", "/signup", "/verifikasi", "/dashboard", "/profil"],
-        generateRobotsTxt: true,
         customRouteConfig: [
-          { url: "/", priority: 1.0, changefreq: "weekly" },
-          { url: "/tentang", priority: 0.9, changefreq: "monthly" },
+          { url: "/", priority: 1.0, changefreq: "daily" },
+          { url: "/tentang", priority: 0.9, changefreq: "weekly" },
           { url: "/sertifikasi", priority: 0.8, changefreq: "monthly" },
           { url: "/donasi", priority: 0.5, changefreq: "yearly" },
         ],
+        exclude: ["/signin", "/signup", "/verifikasi", "/dashboard", "/profil"],
+        generateRobotsTxt: true,
         robots: [
           {
             userAgent: "*",
